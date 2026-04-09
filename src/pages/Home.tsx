@@ -768,7 +768,7 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
               Assine nossa newsletter e receba...
             </h2>
             <p className="text-sm sm:text-base text-white/70 mb-6 sm:mb-8">
-              Receba {discountPercent}% de desconto na primeira compra!
+              Para ficar actualizados!
             </p>
             
             <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto lg:mx-0">
