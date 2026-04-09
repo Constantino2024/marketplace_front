@@ -761,9 +761,6 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
       <section className="bg-blue-900 py-10 sm:py-16 px-4 md:px-8 relative overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 relative z-10">
           <div className="text-white max-w-xl text-center lg:text-left">
-            <p className="text-xs sm:text-sm font-bold uppercase tracking-widest mb-3 sm:mb-4 text-orange-300">
-              Desconto de Kz {discountAmount.toLocaleString()} no seu primeiro pedido
-            </p>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-4 sm:mb-6 leading-tight">
               Assine nossa newsletter e receba...
             </h2>
