@@ -31,6 +31,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
+import bannerLocal from '../img/banner.png';
 import { createProductSlug } from '../utils/slug';
 import { formatCurrency } from '../utils/currency';
 import { useCart, Product } from '../context/CartContext';
@@ -80,35 +81,13 @@ const Hero = ({ banners }: { banners: Banner[] }) => {
       id: 1, 
       title: 'Poppies on the sea', 
       subtitle: "SS'24", 
-      image_url: 'https://picsum.photos/seed/hero1/1920/800',
+      image_url: bannerLocal,
       button_text: 'Comprar agora',
       link: '/',
       description: '',
       position: 1,
       discount_text: ''
-    },
-    { 
-      id: 2, 
-      title: 'Summer Collection', 
-      subtitle: "SS'24", 
-      image_url: 'https://picsum.photos/seed/hero2/1920/800',
-      button_text: 'Comprar agora',
-      link: '/',
-      description: '',
-      position: 1,
-      discount_text: ''
-    },
-    { 
-      id: 3, 
-      title: 'New Arrivals', 
-      subtitle: "SS'24", 
-      image_url: 'https://picsum.photos/seed/hero3/1920/800',
-      button_text: 'Comprar agora',
-      link: '/',
-      description: '',
-      position: 1,
-      discount_text: ''
-    },
+    }
   ];
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
