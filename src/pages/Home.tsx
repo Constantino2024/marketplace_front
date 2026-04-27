@@ -31,12 +31,13 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import bannerLocal from '../img/banner.png';
 import { createProductSlug } from '../utils/slug';
 import { formatCurrency } from '../utils/currency';
 import { useCart, Product } from '../context/CartContext';
 import { homeService, HomeCategory, HomeProduct, Banner, Promotion, Feature, SiteConfig, CategoryWithProducts } from '../services/home';
 import { ProductCardSkeleton, CategorySkeleton, Skeleton } from '../components/Skeleton';
+
+import bannerLocal from '../img/banner.png';
 
 // --- Toast Component ---
 interface ToastProps {
@@ -44,6 +45,17 @@ interface ToastProps {
   type: 'success' | 'error' | 'info';
   onClose: () => void;
 }
+
+
+const createSlug = (name: string, id?: number): string => {
+  const slug = name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  return id ? `${slug}-${id}` : slug;
+};
 
 const Toast = ({ message, type, onClose }: ToastProps) => {
   useEffect(() => {
@@ -238,9 +250,9 @@ const CategoryCircles = ({ categories, loading }: CategoryCirclesProps) => {
         >
           {categories.map((cat) => (
             <Link 
-              to={`/category/${cat.id}`} 
-              key={cat.id} 
-              className="flex flex-col items-center gap-2 sm:gap-3 min-w-[100px] sm:min-w-[120px] group"
+              to={`/category/${cat.slug}`} 
+                  key={cat.id} 
+                  className="flex flex-col items-center gap-2 sm:gap-3 min-w-[100px] sm:min-w-[120px] group"
             >
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-4 border-gray-50 shadow-sm group-hover:scale-105 transition-transform cursor-pointer relative">
                 {cat.image_url ? (
@@ -712,6 +724,8 @@ const FeaturedCarousel = ({ products, loading }: FeaturedCarouselProps) => {
   );
 };
 
+
+
 // --- Newsletter ---
 const Newsletter = ({ config }: { config: SiteConfig }) => {
   const [email, setEmail] = useState('');
@@ -852,6 +866,29 @@ const Features = ({ features }: { features: Feature[] }) => {
   );
 };
 
+// --- Sell Button Section (Nova seção) ---
+const SellButton = () => (
+  <section className="px-2 sm:px-4 md:px-8 py-8 sm:py-12">
+    <div className="max-w-7xl mx-auto bg-gradient-to-r from-blue-900 to-blue-800 rounded-2xl overflow-hidden shadow-xl">
+      <div className="flex flex-col md:flex-row items-center justify-between p-6 sm:p-8 md:p-12">
+        <div className="text-white text-center md:text-left mb-6 md:mb-0">
+          <h3 className="text-xl sm:text-2xl font-black mb-2">Venda na maior plataforma HSE de Angola!</h3>
+          <p className="text-sm sm:text-base text-blue-100">
+            Junte-se a milhares de vendedores e expanda seus negócios
+          </p>
+        </div>
+        <Link 
+          to="/company/register" 
+          className="bg-orange-500 text-white px-6 sm:px-8 py-3 rounded-xl font-bold text-sm sm:text-base hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex items-center gap-2 whitespace-nowrap"
+        >
+          <Store className="w-5 h-5" />
+          Quero vender na plataforma
+        </Link>
+      </div>
+    </div>
+  </section>
+);
+
 // --- Secondary Banners ---
 const SecondaryBanners = ({ promotions }: { promotions: Promotion[] }) => {
   const promoItems = promotions.length > 0 ? promotions : [
@@ -942,6 +979,7 @@ export default function Home() {
         setCategories(data.categories_with_products.map(c => ({
           id: c.id,
           name: c.name,
+          slug: c.slug,
           description: c.description,
           image_url: c.image_url,
           products_count: c.products.length,
@@ -1037,6 +1075,9 @@ export default function Home() {
       <FeaturedCarousel products={featuredProducts} loading={loading} />
       
       <SecondaryBanners promotions={promotions} />
+      
+      {/* Botão Quero Vender */}
+      <SellButton />
       
       <Newsletter config={siteConfig} />
       

@@ -4,6 +4,7 @@ import { Product } from "../context/CartContext";
 export interface HomeCategory {
   id: number;
   name: string;
+  slug: string;  // Adicione esta linha
   description?: string;
   image_url?: string;
   products_count: number;
@@ -72,6 +73,7 @@ export interface SiteConfig {
 export interface CategoryWithProducts {
   id: number;
   name: string;
+  slug: string;
   description?: string;
   image_url?: string;
   products: HomeProduct[];
@@ -132,6 +134,7 @@ export const homeService = {
           return {
             id: category.id,
             name: category.name,
+            slug: category.slug,  // Adicione esta linha
             description: category.description,
             image_url: category.image_url,
             products: productsResponse.data.results
@@ -141,6 +144,7 @@ export const homeService = {
           return {
             id: category.id,
             name: category.name,
+            slug: category.slug, 
             description: category.description,
             image_url: category.image_url,
             products: []
@@ -215,6 +219,21 @@ export const homeService = {
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar promoções:', error);
+      return [];
+    }
+  },
+
+  getFeaturedCategories: async () => {
+    try {
+      const response = await api.get<HomeCategory[]>('categories/', {
+        params: {
+          is_active: true,
+          limit: 8
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Erro ao buscar categorias em destaque:', error);
       return [];
     }
   },

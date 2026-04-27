@@ -226,17 +226,13 @@ export default function Login() {
                 Criar conta
               </Link>
             </p>
+            <Link to="/company/register" className="text-xs text-gray-500 hover:text-orange-500">
+              Quero vender na plataforma?
+            </Link>
           </div>
 
-          {/* Áreas administrativas (apenas links informativos) */}
-          <div className="mt-6 text-center">
-            <p className="text-[10px] text-gray-400">
-              Área reservada para{' '}
-              <Link to="/admin" className="text-primary hover:underline">Administradores</Link>
-              {' '}e{' '}
-              <Link to="/store-admin" className="text-accent hover:underline">Vendedores</Link>
-            </p>
-          </div>
+          
+
         </motion.div>
       </div>
     </>

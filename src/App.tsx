@@ -45,6 +45,11 @@ import MyOrders from './pages/MyOrders';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 
+//pagina de NotFound
+import NotFound from './pages/NotFound';
+import CategoryProducts from './pages/CategoryProducts';
+import CompanyRegister from './pages/CompanyRegister';
+
 // --- Shared Components ---
 
 const Header = () => {
@@ -395,6 +400,8 @@ export default function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/category/:categorySlug" element={<CategoryProducts />} />
+              <Route path="/company/register" element={<CompanyRegister />} />
             </Route>
             
             {/* Admin Routes - Apenas Admin */}
@@ -453,6 +460,8 @@ export default function App() {
                 </ProtectedRoute>
               } 
             />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </BrowserRouter>

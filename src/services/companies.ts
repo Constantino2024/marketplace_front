@@ -139,5 +139,33 @@ export const companiesService = {
       console.error('Erro na API companies.getStats:', error.response?.data || error);
       throw error;
     }
+  },
+
+  // Aprovar empresa (admin)
+  approveCompany: async (companyId: number): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+      const response = await api.post<{ success: boolean; message: string }>(`admin/companies/${companyId}/approve/`);
+      return { success: true, message: response.data.message };
+    } catch (error: any) {
+      console.error('Erro na API companies.approveCompany:', error);
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Erro ao aprovar empresa'
+      };
+    }
+  },
+
+  // Rejeitar empresa (admin)
+  rejectCompany: async (companyId: number, reason: string): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+      const response = await api.post<{ success: boolean; message: string }>(`admin/companies/${companyId}/reject/`, { reason });
+      return { success: true, message: response.data.message };
+    } catch (error: any) {
+      console.error('Erro na API companies.rejectCompany:', error);
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Erro ao rejeitar empresa'
+      };
+    }
   }
 };

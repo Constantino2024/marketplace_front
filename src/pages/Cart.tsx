@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { 
@@ -16,10 +16,14 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { formatCurrency } from '../utils/currency';
+import ProformaModal from '../components/ProformaModal';
 
 export default function Cart() {
   const navigate = useNavigate();
   const { cart, removeFromCart, updateQuantity, cartTotal, cartCount, clearCart } = useCart();
+  
+  // ✅ Mova o useState para DENTRO do componente
+  const [showProformaModal, setShowProformaModal] = useState(false);
 
   // Agrupar produtos por loja/empresa
   const groupedByStore = cart.reduce((groups, item) => {
@@ -307,12 +311,21 @@ export default function Cart() {
               </div>
             </div>
 
-            <button 
-              onClick={handleCheckout}
-              className="w-full bg-orange-500 text-white font-bold py-4 rounded-xl hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 mb-3"
-            >
-              Finalizar Compra
-            </button>
+            {/* Botões de ação */}
+            <div className="flex gap-3 mb-3">
+              <button
+                onClick={() => setShowProformaModal(true)}
+                className="flex-1 py-3 border-2 border-gray-200 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-all"
+              >
+                Fatura Proforma
+              </button>
+              <button 
+                onClick={handleCheckout}
+                className="flex-1 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20"
+              >
+                Finalizar Compra
+              </button>
+            </div>
 
             <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
               <Shield className="w-4 h-4" />
@@ -338,6 +351,14 @@ export default function Cart() {
           </div>
         </div>
       </div>
+
+      {/* Modal - colocado fora do summary, dentro do return principal */}
+      <ProformaModal
+        isOpen={showProformaModal}
+        onClose={() => setShowProformaModal(false)}
+        items={cart}
+        total={cartTotal}
+      />
     </div>
   );
 }

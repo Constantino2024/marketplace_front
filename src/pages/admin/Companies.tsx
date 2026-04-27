@@ -1,3 +1,4 @@
+// pages/admin/Companies.tsx
 import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
@@ -26,7 +27,10 @@ import {
   Lock,
   Briefcase,
   Users,
-  Settings
+  Settings,
+  ThumbsUp,
+  ThumbsDown,
+  MessageCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { companiesService, Company, CreateCompanyData } from '../../services/companies';
@@ -101,6 +105,150 @@ const ConfirmModal = ({
   );
 };
 
+// Modal de Aprovação/Rejeição
+const ApprovalModal = ({ 
+  isOpen, 
+  onClose, 
+  company, 
+  onApprove, 
+  onReject 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  company: Company | null; 
+  onApprove: (companyId: number) => Promise<void>;
+  onReject: (companyId: number, reason: string) => Promise<void>;
+}) => {
+  const [action, setAction] = useState<'approve' | 'reject'>('approve');
+  const [reason, setReason] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!company) return;
+    
+    setIsLoading(true);
+    try {
+      if (action === 'approve') {
+        await onApprove(company.id);
+      } else {
+        await onReject(company.id, reason);
+      }
+      onClose();
+    } catch (error) {
+      console.error('Erro:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!isOpen || !company) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-black text-gray-800">
+            {action === 'approve' ? 'Aprovar Empresa' : 'Rejeitar Empresa'}
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
+        </div>
+
+        <div className="mb-6">
+          <p className="text-gray-600">
+            <strong>Empresa:</strong> {company.company_name}
+          </p>
+          <p className="text-gray-600 mt-1">
+            <strong>Email:</strong> {company.email}
+          </p>
+        </div>
+
+        <div className="flex gap-3 mb-6">
+          <button
+            onClick={() => setAction('approve')}
+            className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
+              action === 'approve'
+                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            <ThumbsUp className="w-4 h-4" />
+            Aprovar
+          </button>
+          <button
+            onClick={() => setAction('reject')}
+            className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
+              action === 'reject'
+                ? 'bg-red-500 text-white shadow-lg shadow-red-500/20'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+            }`}
+          >
+            <ThumbsDown className="w-4 h-4" />
+            Rejeitar
+          </button>
+        </div>
+
+        {action === 'reject' && (
+          <div className="mb-6">
+            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
+              Motivo da Rejeição <span className="text-red-400">*</span>
+            </label>
+            <textarea
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              rows={3}
+              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-200"
+              placeholder="Informe o motivo da rejeição..."
+            />
+          </div>
+        )}
+
+        <div className="flex gap-4">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading || (action === 'reject' && !reason.trim())}
+            className={`flex-1 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
+              action === 'approve'
+                ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                : 'bg-red-500 text-white hover:bg-red-600'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <>
+                {action === 'approve' ? (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Confirmar Aprovação
+                  </>
+                ) : (
+                  <>
+                    <X className="w-4 h-4" />
+                    Confirmar Rejeição
+                  </>
+                )}
+              </>
+            )}
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 // Componente de Progresso
 const StepProgress = ({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) => {
   const steps = [
@@ -120,14 +268,12 @@ const StepProgress = ({ currentStep, totalSteps }: { currentStep: number; totalS
           
           return (
             <div key={step.number} className="flex-1 relative">
-              {/* Linha de conexão */}
               {index < steps.length - 1 && (
                 <div className={`absolute top-5 left-[60%] w-full h-0.5 ${
                   isCompleted ? 'bg-primary' : 'bg-gray-200'
                 }`} />
               )}
               
-              {/* Círculo do passo */}
               <div className="flex flex-col items-center relative z-10">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                   isActive ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-110' :
@@ -186,36 +332,26 @@ const CompanyModal = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showGeneratedPassword, setShowGeneratedPassword] = useState(false);
 
-  // Carregar dados da empresa quando estiver editando
   useEffect(() => {
     if (company) {
       setFormData({
-        // Dados do usuário
         username: company.username || '',
         email: company.email || '',
-        password: '', // Nunca carregar senha existente
-        
-        // Dados da empresa
+        password: '',
         company_name: company.company_name || '',
         nif: company.nif || '',
         address: company.address || '',
         phone: company.phone || '',
         website: company.website || '',
         logo: company.logo || '',
-        
-        // Dados de contacto
         contact_name: company.contact_name || '',
         contact_email: company.contact_email || '',
         contact_phone: company.contact_phone || '',
-        
-        // Configurações
         status: company.status || 'pending',
         is_verified: company.is_verified || false
       });
-      
-      setCurrentStep(1); // Começar na primeira etapa
+      setCurrentStep(1);
     } else {
-      // Reset form para nova empresa
       setFormData({
         username: '',
         email: '',
@@ -238,7 +374,6 @@ const CompanyModal = ({
     setShowGeneratedPassword(false);
   }, [company, isOpen]);
 
-  // Validar passo atual
   const validateStep = (step: number): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -255,7 +390,6 @@ const CompanyModal = ({
         newErrors.email = 'Email inválido';
       }
       
-      // Na criação, validar senha; na edição, senha é opcional
       if (!company && !formData.password) {
         newErrors.password = 'Senha é obrigatória (ou clique em "Gerar Senha")';
       } else if (!company && formData.password && formData.password.length < 6) {
@@ -296,26 +430,22 @@ const CompanyModal = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  // Avançar para próxima etapa
   const handleNext = () => {
     if (validateStep(currentStep)) {
       setCurrentStep(prev => prev + 1);
     }
   };
 
-  // Voltar para etapa anterior
   const handlePrevious = () => {
     setCurrentStep(prev => prev - 1);
   };
 
-  // Ir para etapa específica (usado no resumo)
   const goToStep = (step: number) => {
     setCurrentStep(step);
   };
 
-  // Gerar username único
   const generateUniqueUsername = () => {
-    if (company) return; // Não gerar novo username na edição
+    if (company) return;
     
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000);
@@ -326,10 +456,8 @@ const CompanyModal = ({
     }
   };
 
-  // Gerar senha forte
   const generatePassword = () => {
     if (company) {
-      // Na edição, mostrar opção de gerar nova senha
       if (window.confirm('Deseja gerar uma nova senha para esta empresa? A senha atual será substituída.')) {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
         let password = '';
@@ -356,16 +484,13 @@ const CompanyModal = ({
     }
   };
 
-  // Submeter formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validar última etapa
     if (!validateStep(currentStep)) {
       return;
     }
 
-    // Validar todas as etapas antes de enviar
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
       setCurrentStep(1);
       return;
@@ -374,7 +499,6 @@ const CompanyModal = ({
     setIsLoading(true);
     
     try {
-      // 👇 CHAMAR onSave COM OS DADOS DO FORMULÁRIO
       await onSave(formData);
       onClose();
     } catch (error) {
@@ -384,7 +508,6 @@ const CompanyModal = ({
     }
   };
 
-  // Renderizar campo com erro
   const renderField = (name: string, field: React.ReactNode) => (
     <div>
       {field}
@@ -423,10 +546,8 @@ const CompanyModal = ({
           </button>
         </div>
 
-        {/* Barra de Progresso - mostrada tanto para criação quanto edição */}
         <StepProgress currentStep={currentStep} totalSteps={4} />
 
-        {/* Aviso de senha gerada */}
         <AnimatePresence>
           {showGeneratedPassword && (
             <motion.div
@@ -447,7 +568,6 @@ const CompanyModal = ({
         </AnimatePresence>
 
         <form onSubmit={handleSubmit}>
-          {/* ETAPA 1: DADOS DE LOGIN */}
           {currentStep === 1 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -468,7 +588,6 @@ const CompanyModal = ({
               </div>
 
               <div className="space-y-4">
-                {/* Username */}
                 {renderField('username', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -510,7 +629,6 @@ const CompanyModal = ({
                   </div>
                 ))}
 
-                {/* Email */}
                 {renderField('email', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -531,7 +649,6 @@ const CompanyModal = ({
                   </div>
                 ))}
 
-                {/* Senha */}
                 {renderField('password', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -579,7 +696,6 @@ const CompanyModal = ({
             </motion.div>
           )}
 
-          {/* ETAPA 2: DADOS DA EMPRESA */}
           {currentStep === 2 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -596,7 +712,6 @@ const CompanyModal = ({
               </div>
 
               <div className="space-y-4">
-                {/* Nome da Empresa */}
                 {renderField('company_name', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -618,7 +733,6 @@ const CompanyModal = ({
                 ))}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* NIF */}
                   {renderField('nif', (
                     <div>
                       <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -639,7 +753,6 @@ const CompanyModal = ({
                     </div>
                   ))}
 
-                  {/* Telefone */}
                   {renderField('phone', (
                     <div>
                       <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -661,7 +774,6 @@ const CompanyModal = ({
                   ))}
                 </div>
 
-                {/* Endereço */}
                 {renderField('address', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -683,7 +795,6 @@ const CompanyModal = ({
                 ))}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Website */}
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
                       Website
@@ -696,8 +807,6 @@ const CompanyModal = ({
                       placeholder="https://www.exemplo.ao"
                     />
                   </div>
-
-                  {/* Logo */}
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
                       URL do Logo
@@ -715,7 +824,6 @@ const CompanyModal = ({
             </motion.div>
           )}
 
-          {/* ETAPA 3: CONTACTO PRINCIPAL */}
           {currentStep === 3 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -732,7 +840,6 @@ const CompanyModal = ({
               </div>
 
               <div className="space-y-4">
-                {/* Nome do Contacto */}
                 {renderField('contact_name', (
                   <div>
                     <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -754,7 +861,6 @@ const CompanyModal = ({
                 ))}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Email do Contacto */}
                   {renderField('contact_email', (
                     <div>
                       <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -775,7 +881,6 @@ const CompanyModal = ({
                     </div>
                   ))}
 
-                  {/* Telefone do Contacto */}
                   {renderField('contact_phone', (
                     <div>
                       <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
@@ -800,7 +905,6 @@ const CompanyModal = ({
             </motion.div>
           )}
 
-          {/* ETAPA 4: CONFIGURAÇÕES E RESUMO */}
           {currentStep === 4 && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
@@ -817,7 +921,6 @@ const CompanyModal = ({
               </div>
 
               <div className="space-y-4">
-                {/* Status */}
                 <div>
                   <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
                     Status
@@ -834,7 +937,6 @@ const CompanyModal = ({
                   </select>
                 </div>
 
-                {/* Verificado */}
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
                   <input
                     type="checkbox"
@@ -848,7 +950,6 @@ const CompanyModal = ({
                   </label>
                 </div>
 
-                {/* Resumo do Cadastro */}
                 <div className="mt-6 p-6 bg-gray-50 rounded-xl">
                   <h4 className="font-black text-gray-700 mb-4 flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
@@ -905,7 +1006,6 @@ const CompanyModal = ({
                     </div>
                   </div>
 
-                  {/* Botões de navegação rápida */}
                   <div className="mt-4 flex gap-2 justify-end">
                     <button
                       type="button"
@@ -934,7 +1034,6 @@ const CompanyModal = ({
             </motion.div>
           )}
 
-          {/* Botões de navegação */}
           <div className="flex gap-4 mt-8 pt-4 border-t border-gray-100">
             {currentStep > 1 && (
               <button
@@ -991,13 +1090,14 @@ const CompanyModal = ({
   );
 };
 
-// Componente principal Companies (restante do código permanece igual)
+// Componente principal Companies
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -1054,30 +1154,57 @@ export default function Companies() {
     setFilteredCompanies(filtered);
   }, [searchTerm, companies]);
 
-  // Mostrar toast
   const showToast = (message: string, type: 'success' | 'error' | 'info') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 5000);
+  };
+
+  // Aprovar empresa
+  const handleApproveCompany = async (companyId: number) => {
+    try {
+      const result = await companiesService.approveCompany(companyId);
+      if (result.success) {
+        showToast('Empresa aprovada com sucesso!', 'success');
+        await loadCompanies();
+      } else {
+        showToast(result.error || 'Erro ao aprovar empresa', 'error');
+      }
+    } catch (error: any) {
+      console.error('Erro ao aprovar empresa:', error);
+      showToast(error.response?.data?.error || 'Erro ao aprovar empresa', 'error');
+      throw error;
+    }
+  };
+
+  // Rejeitar empresa
+  const handleRejectCompany = async (companyId: number, reason: string) => {
+    try {
+      const result = await companiesService.rejectCompany(companyId, reason);
+      if (result.success) {
+        showToast('Empresa rejeitada!', 'success');
+        await loadCompanies();
+      } else {
+        showToast(result.error || 'Erro ao rejeitar empresa', 'error');
+      }
+    } catch (error: any) {
+      console.error('Erro ao rejeitar empresa:', error);
+      showToast(error.response?.data?.error || 'Erro ao rejeitar empresa', 'error');
+      throw error;
+    }
   };
 
   // Criar/Atualizar empresa
   const handleSaveCompany = async (data: CreateCompanyData) => {
     try {
       if (selectedCompany) {
-        // EDIÇÃO - remover campos que não devem ser atualizados
         const updateData = { ...data };
-        
-        // Se password estiver vazio, não enviar para não alterar
         if (!updateData.password) {
           delete updateData.password;
         }
-        
         await companiesService.update(selectedCompany.id, updateData);
         showToast('Empresa atualizada com sucesso!', 'success');
       } else {
-        // CRIAÇÃO
         const newCompany = await companiesService.create(data);
-        
         if ((newCompany as any).generated_password) {
           showToast(`Empresa criada! Senha: ${(newCompany as any).generated_password}`, 'info');
         } else {
@@ -1194,6 +1321,18 @@ export default function Companies() {
         onConfirm={handleDeleteCompany}
         title="Eliminar Empresa"
         message={`Tem certeza que deseja eliminar a empresa "${selectedCompany?.company_name}"? Esta ação não pode ser desfeita.`}
+      />
+
+      {/* Approval Modal */}
+      <ApprovalModal
+        isOpen={showApprovalModal}
+        onClose={() => {
+          setShowApprovalModal(false);
+          setSelectedCompany(null);
+        }}
+        company={selectedCompany}
+        onApprove={handleApproveCompany}
+        onReject={handleRejectCompany}
       />
 
       {/* Company Modal */}
@@ -1347,14 +1486,42 @@ export default function Companies() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-1">
+                        {/* Botões para empresas pendentes */}
+                        {company.status === 'pending' && (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedCompany(company);
+                                setShowApprovalModal(true);
+                              }}
+                              className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                              title="Aprovar Empresa"
+                            >
+                              <ThumbsUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedCompany(company);
+                                setShowApprovalModal(true);
+                              }}
+                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Rejeitar Empresa"
+                            >
+                              <ThumbsDown className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                         <button
                           onClick={() => handleToggleStatus(company)}
                           className={`p-2 rounded-lg transition-colors ${
                             company.status === 'active' 
                               ? 'text-gray-400 hover:text-yellow-600 hover:bg-yellow-50' 
+                              : company.status === 'pending'
+                              ? 'text-gray-400 cursor-not-allowed opacity-50'
                               : 'text-gray-400 hover:text-emerald-600 hover:bg-emerald-50'
                           }`}
-                          title={company.status === 'active' ? 'Desativar' : 'Ativar'}
+                          title={company.status === 'active' ? 'Desativar' : company.status === 'pending' ? 'Aguardando aprovação' : 'Ativar'}
+                          disabled={company.status === 'pending'}
                         >
                           {company.status === 'active' ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         </button>

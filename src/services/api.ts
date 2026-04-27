@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://187.77.56.103:8000/api/",
+  baseURL: "http://187.77.56.103:8000/api/market/",
 });
 
 // Interceptor para adicionar o token em todas as requisições
@@ -32,7 +32,7 @@ api.interceptors.response.use(
         const refreshToken = localStorage.getItem("refresh");
         if (refreshToken) {
           // Tentar fazer refresh do token
-          const response = await axios.post("http://187.77.56.103:8000/api/refresh/", {
+          const response = await axios.post("http://187.77.56.103:8000/api/market/refresh/", {
             refresh: refreshToken
           });
 
