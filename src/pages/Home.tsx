@@ -831,8 +831,7 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
 // --- Features ---
 const Features = ({ features }: { features: Feature[] }) => {
   const defaultFeatures = [
-    { icon: 'Leaf', text: 'Produtos frescos todos os dias', color: 'text-blue-900' },
-    { icon: 'Truck', text: 'Entrega gratuita para encomendas acima de 70 dólares', color: 'text-orange-500' },
+    { icon: 'Leaf', text: 'Produtos Hse todos os dias', color: 'text-blue-900' },
     { icon: 'BadgePercent', text: 'Mega descontos diários', color: 'text-blue-900' },
     { icon: 'Tag', text: 'Melhor preço do mercado', color: 'text-orange-500' },
   ];
@@ -1075,9 +1074,6 @@ export default function Home() {
       <FeaturedCarousel products={featuredProducts} loading={loading} />
       
       <SecondaryBanners promotions={promotions} />
-      
-      {/* Botão Quero Vender */}
-      <SellButton />
       
       <Newsletter config={siteConfig} />
       

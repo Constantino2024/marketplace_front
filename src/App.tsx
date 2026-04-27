@@ -298,67 +298,6 @@ const Header = () => {
 const Footer = () => (
   <footer className="bg-white pt-16 pb-8 px-4 md:px-8">
     <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-16">
-        <div>
-          <h5 className="text-xs font-bold text-gray-800 uppercase mb-6">FRUTAS E VEGETAIS</h5>
-          <ul className="flex flex-col gap-3 text-[11px] text-gray-500 font-medium">
-            <li><a href="#" className="hover:text-primary">Vegetais frescos</a></li>
-            <li><a href="#" className="hover:text-primary">Ervas e temperos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas frescas</a></li>
-            <li><a href="#" className="hover:text-primary">Cortes e Brotos</a></li>
-            <li><a href="#" className="hover:text-primary">Produtos embalados</a></li>
-            <li><a href="#" className="hover:text-primary">Bandejas para Festas</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-xs font-bold text-gray-800 uppercase mb-6">CAFÉ DA MANHÃ E LATICÍNIOS</h5>
-          <ul className="flex flex-col gap-3 text-[11px] text-gray-500 font-medium">
-            <li><a href="#" className="hover:text-primary">Vegetais frescos</a></li>
-            <li><a href="#" className="hover:text-primary">Ervas e temperos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas frescas</a></li>
-            <li><a href="#" className="hover:text-primary">Cortes e Brotos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas e Vegetais Exóticos</a></li>
-            <li><a href="#" className="hover:text-primary">Produtos embalados</a></li>
-            <li><a href="#" className="hover:text-primary">Bandejas para Festas</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-xs font-bold text-gray-800 uppercase mb-6">CARNES E FRUTOS DO MAR</h5>
-          <ul className="flex flex-col gap-3 text-[11px] text-gray-500 font-medium">
-            <li><a href="#" className="hover:text-primary">Vegetais frescos</a></li>
-            <li><a href="#" className="hover:text-primary">Ervas e temperos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas frescas</a></li>
-            <li><a href="#" className="hover:text-primary">Cortes e Brotos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas e Vegetais Exóticos</a></li>
-            <li><a href="#" className="hover:text-primary">Produtos embalados</a></li>
-            <li><a href="#" className="hover:text-primary">Bandejas para Festas</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-xs font-bold text-gray-800 uppercase mb-6">BEBIDAS</h5>
-          <ul className="flex flex-col gap-3 text-[11px] text-gray-500 font-medium">
-            <li><a href="#" className="hover:text-primary">Vegetais frescos</a></li>
-            <li><a href="#" className="hover:text-primary">Ervas e temperos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas frescas</a></li>
-            <li><a href="#" className="hover:text-primary">Cortes e Brotos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas e Vegetais Exóticos</a></li>
-            <li><a href="#" className="hover:text-primary">Produtos embalados</a></li>
-            <li><a href="#" className="hover:text-primary">Bandejas para Festas</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5 className="text-xs font-bold text-gray-800 uppercase mb-6">PÃES E PADARIA</h5>
-          <ul className="flex flex-col gap-3 text-[11px] text-gray-500 font-medium">
-            <li><a href="#" className="hover:text-primary">Vegetais frescos</a></li>
-            <li><a href="#" className="hover:text-primary">Ervas e temperos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas frescas</a></li>
-            <li><a href="#" className="hover:text-primary">Cortes e Brotos</a></li>
-            <li><a href="#" className="hover:text-primary">Frutas e Vegetais Exóticos</a></li>
-            <li><a href="#" className="hover:text-primary">Produtos embalados</a></li>
-            <li><a href="#" className="hover:text-primary">Bandejas para Festas</a></li>
-          </ul>
-        </div>
-      </div>
       
       <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
