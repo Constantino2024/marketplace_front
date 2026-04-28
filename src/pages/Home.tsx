@@ -1074,6 +1074,8 @@ export default function Home() {
       <FeaturedCarousel products={featuredProducts} loading={loading} />
       
       <SecondaryBanners promotions={promotions} />
+      {/* Botão Quero Vender */}
+      <SellButton />
       
       <Newsletter config={siteConfig} />
       
