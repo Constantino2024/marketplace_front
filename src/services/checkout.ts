@@ -17,7 +17,7 @@ export interface CheckoutData {
     company_name?: string;
   }>;
   total: number;
-  paymentMethod: 'reference' | 'card' | 'cash';
+  paymentMethod: 'express' | 'reference' | 'ekwanza' | 'card' | 'cash';
 }
 
 export interface PaymentReference {
@@ -61,7 +61,6 @@ export const checkoutService = {
         items: items
       };
       
-      console.log('Enviando dados para o backend:', orderData);
       
       const response = await api.post<OrderResponse>('orders/', orderData);
       return response.data;
@@ -71,14 +70,13 @@ export const checkoutService = {
     }
   },
 
-  // Baixar fatura em PDF (usando o ID do pedido)
+  // Baixar fatura em PDF
   downloadInvoice: async (orderId: number): Promise<void> => {
     try {
       const response = await api.get(`invoice/${orderId}/download/`, {
         responseType: 'blob'
       });
       
-      // Criar link para download
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -93,9 +91,15 @@ export const checkoutService = {
     }
   },
 
-  // Gerar PDF a partir dos dados do pedido (antes de salvar)
+  // Gerar PDF
   generateInvoicePDF: async (orderData: CheckoutData, orderNumber?: string): Promise<void> => {
     try {
+      let paymentMethodName = 'Multicaixa Express';
+      if (orderData.paymentMethod === 'reference') paymentMethodName = 'Referência Multicaixa';
+      if (orderData.paymentMethod === 'ekwanza') paymentMethodName = 'E-Kwanza';
+      if (orderData.paymentMethod === 'card') paymentMethodName = 'Cartão de Crédito';
+      if (orderData.paymentMethod === 'cash') paymentMethodName = 'Dinheiro';
+      
       const pdfData = {
         order_data: {
           full_name: orderData.fullName,
@@ -109,7 +113,7 @@ export const checkoutService = {
             price: item.price,
             quantity: item.quantity
           })),
-          payment_method: orderData.paymentMethod === 'multicaixa' ? 'Multicaixa Express' : 'Referência Multicaixa',
+          payment_method: paymentMethodName,
           order_number: orderNumber || 'PENDENTE'
         }
       };
@@ -132,17 +136,23 @@ export const checkoutService = {
     }
   },
 
-  // Gerar referência de pagamento
-  generatePaymentReference: async (amount: number): Promise<PaymentReference> => {
+  // Gerar referência de pagamento (local)
+  generatePaymentReference: async (amount: number, paymentMethod?: string): Promise<PaymentReference> => {
     try {
-      const reference = `REF${Date.now()}${Math.floor(Math.random() * 1000)}`;
+      const timestamp = Date.now();
+      const random = Math.floor(Math.random() * 1000);
+      const reference = `REF${timestamp}${random}`;
       const expiryDate = new Date();
       expiryDate.setDate(expiryDate.getDate() + 1);
+      
+      let entity = 'MULTICAIXA EXPRESS';
+      if (paymentMethod === 'reference') entity = 'REFERÊNCIA MULTICAIXA';
+      if (paymentMethod === 'ekwanza') entity = 'E-KWANZA';
       
       return {
         reference,
         amount,
-        entity: 'MULTICAIXA EXPRESS',
+        entity,
         expiryDate: expiryDate.toISOString(),
         status: 'pending'
       };

@@ -660,9 +660,7 @@ export default function ProductDetails() {
       setError(null);
       
       try {
-        console.log('📦 Carregando produto ID:', productId);
         const data = await productsService.getById(productId);
-        console.log('✅ Produto carregado:', data);
         setProduct(data);
         
         // Processar imagens
@@ -759,6 +757,7 @@ export default function ProductDetails() {
         });
       } catch (error) {
         console.log('Compartilhamento cancelado');
+        
       }
     } else {
       // Fallback - copiar link
@@ -1205,7 +1204,7 @@ export default function ProductDetails() {
                       key={question.id} 
                       question={question}
                       onAnswer={(id, answer) => {
-                        console.log('Responder pergunta', id, answer);
+                        console.log('Responder pergunta');
                         // Implementar lógica de resposta
                       }}
                     />

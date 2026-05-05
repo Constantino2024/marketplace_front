@@ -49,10 +49,6 @@ export const loginUser = async (emailOrUsername: string, password: string) => {
     // Decodificar o token para debug
     const decoded: DecodedToken = jwtDecode(access);
     
-    console.log("=== DADOS DO LOGIN ===");
-    console.log("Perfil:", user);
-    console.log("Token decodificado:", decoded);
-    console.log("======================");
     
     // Salvar tokens e informações do usuário
     localStorage.setItem("token", access);
