@@ -56,13 +56,14 @@ const Header = () => {
   const { cartCount, cartTotal } = useCart();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Estados para o Autocomplete
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   
-  const debouncedSearch = useDebounce(searchQuery, 300); // 300ms de espera
+  const debouncedSearch = useDebounce(searchQuery, 300);
   const navigate = useNavigate();
   const user = getCurrentUser();
   const authenticated = isAuthenticated();
@@ -105,113 +106,388 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100 py-4 px-4 md:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        {/* Logo (mantido igual) */}
-        <Link to="/" className="flex items-center gap-2">
-           <img src="https://caluloglobal.ao/img/Market_Place1.webp" alt="Logo" className="h-30 w-auto object-contain" />
-        </Link>
+    <header className="bg-white border-b border-gray-100 py-3 px-4 md:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Primeira linha: Logo e ações principais */}
+        <div className="flex items-center justify-between gap-3">
+          {/* Botão Menu Mobile */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <Menu className="w-6 h-6 text-gray-700" />
+          </button>
 
-        {/* Search Bar com Autocomplete */}
-        <div className="flex-1 w-full max-w-2xl relative">
-          <form onSubmit={handleSearch} className="flex items-center gap-2 w-full">
-            <div className="relative flex-1">
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
-                placeholder="O que você está procurando hoje?" 
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                {isSearching && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
-                <button type="submit">
-                  <Search className="w-5 h-5 text-gray-400 hover:text-primary transition-colors" />
-                </button>
-              </div>
-            </div>
-          </form>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+            <img src="https://caluloglobal.ao/img/Market_Place1.webp" alt="Logo" className="h-12 sm:h-16 md:h-20 lg:h-24 w-auto object-contain" />
+          </Link>
 
-          {/* Menu de Sugestões (Dropdown) */}
-          <AnimatePresence>
-            {showSuggestions && suggestions.length > 0 && (
-              <>
-                {/* Backdrop invisível para fechar ao clicar fora */}
-                <div 
-                  className="fixed inset-0 z-10" 
-                  onClick={() => setShowSuggestions(false)} 
-                />
-                <motion.div 
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 z-20 overflow-hidden"
-                >
-                  <div className="p-2">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase px-3 py-2">Sugestões de busca</p>
-                    {suggestions.map((term, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleSuggestionClick(term)}
-                        className="w-full text-left px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary rounded-lg flex items-center gap-3 transition-colors group"
-                      >
-                        <Search className="w-4 h-4 text-gray-300 group-hover:text-primary" />
-                        <span>{term}</span>
-                      </button>
-                    ))}
+          {/* Ações do usuário (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4 xl:gap-6">
+            {/* User Menu */}
+            <div className="relative">
+              {authenticated ? (
+                <>
+                  <button 
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
+                      <UserIcon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="hidden xl:block text-left">
+                      <p className="text-xs text-gray-400">Olá,</p>
+                      <p className="text-sm font-bold text-gray-800">{user?.username}</p>
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-gray-400" />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {showUserMenu && (
+                    <>
+                      <div 
+                        className="fixed inset-0 z-10"
+                        onClick={() => setShowUserMenu(false)}
+                      />
+                      <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-2">
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm font-bold text-gray-800">{user?.username}</p>
+                          <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                          <p className="text-[10px] font-bold uppercase mt-1 text-primary">
+                            {user?.is_admin ? 'Administrador' : user?.is_company ? 'Vendedor' : 'Cliente'}
+                          </p>
+                        </div>
+
+                        {user?.is_admin && (
+                          <Link
+                            to="/admin"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <Settings className="w-4 h-4" />
+                            Dashboard Admin
+                          </Link>
+                        )}
+                        
+                        {user?.is_company && (
+                          <Link
+                            to="/store-admin"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <Store className="w-4 h-4" />
+                            Minha Loja
+                          </Link>
+                        )}
+                        
+                        {user?.is_customer && (
+                          <>
+                            <Link
+                              to="/profile"
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                              onClick={() => setShowUserMenu(false)}
+                            >
+                              <UserIcon className="w-4 h-4" />
+                              Meu Perfil
+                            </Link>
+                            <Link
+                              to="/orders"
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                              onClick={() => setShowUserMenu(false)}
+                            >
+                              <ShoppingCart className="w-4 h-4" />
+                              Meus Pedidos
+                            </Link>
+                          </>
+                        )}
+                        
+                        <hr className="my-2 border-gray-100" />
+                        
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            if (window.confirm('Tem certeza que deseja sair?')) {
+                              logout();
+                            }
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sair
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <Link to="/login" className="flex items-center gap-2 cursor-pointer">
+                  <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                    <User className="w-5 h-5 text-gray-600" />
                   </div>
-                </motion.div>
-              </>
+                  <span className="text-sm font-bold text-gray-700 hidden xl:block">Entrar</span>
+                </Link>
+              )}
+            </div>
+
+            {/* Cart */}
+            <div className="flex flex-col items-end">
+              <span className="text-xs text-gray-400 hidden sm:block">Carrinho</span>
+              <span className="font-bold text-sm text-primary">Kz {cartTotal.toLocaleString()}</span>
+            </div>
+            <Link to="/cart" className="relative cursor-pointer">
+              <ShoppingCart className="w-6 h-6 text-gray-700" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
+
+          {/* Ícones Mobile (Carrinho e Login) */}
+          <div className="flex lg:hidden items-center gap-3">
+            <Link to="/cart" className="relative">
+              <ShoppingCart className="w-5 h-5 text-gray-700" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            {authenticated ? (
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"
+              >
+                <UserIcon className="w-4 h-4 text-primary" />
+              </button>
+            ) : (
+              <Link to="/login" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <User className="w-4 h-4 text-gray-600" />
+              </Link>
             )}
-          </AnimatePresence>
+          </div>
         </div>
 
-        {/* User Actions */}
-        <div className="flex items-center gap-6 relative">
-          {/* User Menu */}
-          <div className="relative">
-            {authenticated ? (
-              <>
-                <button 
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                    <UserIcon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="hidden md:block text-left">
-                    <p className="text-xs text-gray-400">Olá,</p>
-                    <p className="text-sm font-bold text-gray-800">{user?.username}</p>
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
-                </button>
+        {/* Segunda linha: Search Bar (Desktop e Mobile) */}
+        <div className="mt-3 w-full">
+          <div className="flex-1 w-full max-w-2xl mx-auto relative">
+            <form onSubmit={handleSearch} className="flex items-center gap-2 w-full">
+              <div className="relative flex-1">
+                <input 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+                  placeholder="O que você está procurando hoje?" 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm sm:text-base"
+                />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  {isSearching && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
+                  <button type="submit">
+                    <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 hover:text-primary transition-colors" />
+                  </button>
+                </div>
+              </div>
+            </form>
 
-                {/* Dropdown Menu */}
-                {showUserMenu && (
+            {/* Menu de Sugestões */}
+            <AnimatePresence>
+              {showSuggestions && suggestions.length > 0 && (
                 <>
                   <div 
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowUserMenu(false)}
+                    className="fixed inset-0 z-10" 
+                    onClick={() => setShowSuggestions(false)} 
                   />
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 z-20 py-2">
-                    {/* Informações do usuário */}
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-bold text-gray-800">{user?.username}</p>
-                      <p className="text-xs text-gray-400">{user?.email}</p>
-                      <p className="text-[10px] font-bold uppercase mt-1 text-primary">
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 z-20 overflow-hidden"
+                  >
+                    <div className="p-2">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase px-3 py-2">Sugestões de busca</p>
+                      {suggestions.map((term, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleSuggestionClick(term)}
+                          className="w-full text-left px-3 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary rounded-lg flex items-center gap-3 transition-colors group"
+                        >
+                          <Search className="w-4 h-4 text-gray-300 group-hover:text-primary" />
+                          <span className="truncate">{term}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Menu Mobile Dropdown */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <motion.div 
+                initial={{ x: -300 }}
+                animate={{ x: 0 }}
+                exit={{ x: -300 }}
+                transition={{ type: "spring", damping: 25 }}
+                className="fixed left-0 top-0 bottom-0 w-80 bg-white shadow-2xl z-50 lg:hidden overflow-y-auto"
+              >
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <img src="https://caluloglobal.ao/img/Market_Place1.webp" alt="Logo" className="h-12 w-auto" />
+                    <button 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-lg"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  {authenticated && (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                      <p className="font-bold text-gray-800">{user?.username}</p>
+                      <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                      <p className="text-xs font-bold text-primary mt-1">
                         {user?.is_admin ? 'Administrador' : user?.is_company ? 'Vendedor' : 'Cliente'}
                       </p>
                     </div>
+                  )}
+                  
+                  <nav className="space-y-1">
+                    <Link 
+                      to="/" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                    >
+                      🏠 Início
+                    </Link>
+                    
+                    {authenticated ? (
+                      <>
+                        {user?.is_admin && (
+                          <Link 
+                            to="/admin" 
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                          >
+                            <Settings className="w-4 h-4" />
+                            Dashboard Admin
+                          </Link>
+                        )}
+                        {user?.is_company && (
+                          <Link 
+                            to="/store-admin" 
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                          >
+                            <Store className="w-4 h-4" />
+                            Minha Loja
+                          </Link>
+                        )}
+                        {user?.is_customer && (
+                          <>
+                            <Link 
+                              to="/profile" 
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                            >
+                              <UserIcon className="w-4 h-4" />
+                              Meu Perfil
+                            </Link>
+                            <Link 
+                              to="/orders" 
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                            >
+                              <ShoppingCart className="w-4 h-4" />
+                              Meus Pedidos
+                            </Link>
+                          </>
+                        )}
+                        <hr className="my-2" />
+                        <button
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            if (window.confirm('Tem certeza que deseja sair?')) {
+                              logout();
+                            }
+                          }}
+                          className="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg w-full"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sair
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link 
+                          to="/login" 
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                        >
+                          🔑 Entrar
+                        </Link>
+                        <Link 
+                          to="/register" 
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg"
+                        >
+                          📝 Cadastrar
+                        </Link>
+                      </>
+                    )}
+                  </nav>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
-                    {/* Links baseados no tipo de usuário */}
+        {/* Dropdown Mobile para User Menu (quando clica no ícone) */}
+        <AnimatePresence>
+          {showUserMenu && (
+            <>
+              <div 
+                className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                onClick={() => setShowUserMenu(false)}
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 lg:hidden"
+              >
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+                    <div>
+                      <p className="font-bold text-gray-800">{user?.username}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                    <button 
+                      onClick={() => setShowUserMenu(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                  
+                  <nav className="space-y-2">
                     {user?.is_admin && (
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <Settings className="w-4 h-4" />
+                        <Settings className="w-5 h-5" />
                         Dashboard Admin
                       </Link>
                     )}
@@ -219,10 +495,10 @@ const Header = () => {
                     {user?.is_company && (
                       <Link
                         to="/store-admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
                         onClick={() => setShowUserMenu(false)}
                       >
-                        <Store className="w-4 h-4" />
+                        <Store className="w-5 h-5" />
                         Minha Loja
                       </Link>
                     )}
@@ -231,24 +507,22 @@ const Header = () => {
                       <>
                         <Link
                           to="/profile"
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
                           onClick={() => setShowUserMenu(false)}
                         >
-                          <UserIcon className="w-4 h-4" />
+                          <UserIcon className="w-5 h-5" />
                           Meu Perfil
                         </Link>
                         <Link
                           to="/orders"
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="flex items-center gap-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
                           onClick={() => setShowUserMenu(false)}
                         >
-                          <ShoppingCart className="w-4 h-4" />
+                          <ShoppingCart className="w-5 h-5" />
                           Meus Pedidos
                         </Link>
                       </>
                     )}
-                    
-                    <hr className="my-2 border-gray-100" />
                     
                     <button
                       onClick={() => {
@@ -257,56 +531,53 @@ const Header = () => {
                           logout();
                         }
                       }}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      className="flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 rounded-lg w-full"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-5 h-5" />
                       Sair
                     </button>
-                  </div>
-                </>
-              )}
-              </>
-            ) : (
-              <Link to="/login" className="flex items-center gap-2 cursor-pointer">
-                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                  <User className="w-5 h-5 text-gray-600" />
+                  </nav>
                 </div>
-                <span className="text-sm font-bold text-gray-700 hidden md:block">Entrar</span>
-              </Link>
-            )}
-          </div>
-
-          {/* Cart */}
-          <div className="flex flex-col items-end">
-            <span className="text-xs text-gray-400">Carrinho</span>
-            <span className="font-bold text-sm text-primary">Kz {cartTotal.toLocaleString()}</span>
-          </div>
-          <Link to="/cart" className="relative cursor-pointer">
-            <ShoppingCart className="w-6 h-6 text-gray-700" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-accent text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-        </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
 };
 
 const Footer = () => (
-  <footer className="bg-white pt-16 pb-8 px-4 md:px-8">
+  <footer className="bg-white pt-12 sm:pt-16 pb-6 sm:pb-8 px-4 md:px-6 lg:px-8 mt-auto">
     <div className="max-w-7xl mx-auto">
-      
-      <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <p className="text-[11px] text-gray-400">Hse Marketplace &copy; 2026. Todos os direitos reservados.</p>
+      <div className="border-t border-gray-100 pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-center sm:text-left">
+          <p className="text-[10px] sm:text-[11px] text-gray-400">
+            Hse Marketplace &copy; 2026. Todos os direitos reservados.
+          </p>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="#" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"><Facebook className="w-4 h-4" /></a>
-          <a href="#" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"><Twitter className="w-4 h-4" /></a>
-          <a href="#" className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"><Instagram className="w-4 h-4" /></a>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <a 
+            href="#" 
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"
+            aria-label="Facebook"
+          >
+            <Facebook className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </a>
+          <a 
+            href="#" 
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"
+            aria-label="Twitter"
+          >
+            <Twitter className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </a>
+          <a 
+            href="#" 
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <Instagram className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </a>
         </div>
       </div>
     </div>
@@ -314,13 +585,15 @@ const Footer = () => (
 );
 
 const PublicLayout = () => (
-  <>
-    <div className="sticky top-0 z-50 shadow-sm">
+  <div className="flex flex-col min-h-screen">
+    <div className="sticky top-0 z-50 shadow-sm bg-white">
       <Header />
     </div>
-    <Outlet />
+    <main className="flex-grow">
+      <Outlet />
+    </main>
     <Footer />
-  </>
+  </div>
 );
 
 export default function App() {
@@ -359,8 +632,8 @@ export default function App() {
               <Route path="orders" element={<OrdersAdmin />} />
               <Route path="customers" element={<AdminCustomers />} />
               <Route path="banners" element={<BannerAdmin/>} />
-              <Route path="admins" element={<div className="p-8">Gestão de Administradores (Em breve)</div>} />
-              <Route path="settings" element={<div className="p-8">Configurações (Em breve)</div>} />
+              <Route path="admins" element={<div className="p-4 sm:p-8">Gestão de Administradores (Em breve)</div>} />
+              <Route path="settings" element={<div className="p-4 sm:p-8">Configurações (Em breve)</div>} />
             </Route>
 
             {/* Store Admin Routes - Apenas Empresas */}
@@ -378,7 +651,7 @@ export default function App() {
               <Route path="orders" element={<OrdersAdmin />} />
               <Route path="customers" element={<StoreCustomers />} />
               <Route path="reports" element={<StoreReports />} />
-              <Route path="settings" element={<div className="p-8">Configurações da Loja (Em breve)</div>} />
+              <Route path="settings" element={<div className="p-4 sm:p-8">Configurações da Loja (Em breve)</div>} />
             </Route>
 
             {/* Rotas para Clientes */}
