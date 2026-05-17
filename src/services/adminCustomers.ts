@@ -43,58 +43,40 @@ export interface CustomerStats {
 }
 
 export const adminCustomersService = {
-  // Listar clientes
   list: async (params?: CustomerFilters): Promise<CustomersResponse> => {
-    try {
-      const response = await api.get('admin/customers/', { params });
-      console.log('Resposta da API (raw):', response.data);
-      
-      // Se a resposta for um array direto, converter para o formato esperado
-      if (Array.isArray(response.data)) {
-        return {
-          count: response.data.length,
-          next: null,
-          previous: null,
-          results: response.data
-        };
-      }
-      
-      // Se já estiver no formato esperado
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao listar clientes:', error);
-      throw error;
+    const response = await api.get('admin/customers/', { params });
+
+    if (Array.isArray(response.data)) {
+      return {
+        count: response.data.length,
+        next: null,
+        previous: null,
+        results: response.data,
+      };
     }
+
+    return response.data;
   },
 
-  // Buscar cliente por ID
   getById: async (id: number): Promise<AdminCustomer> => {
-    try {
-      const response = await api.get<AdminCustomer>(`admin/customers/${id}/`);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar cliente:', error);
-      throw error;
-    }
+    const response = await api.get<AdminCustomer>(`admin/customers/${id}/`);
+    return response.data;
   },
 
-  // Obter estatísticas dos clientes
   getStats: async (): Promise<CustomerStats> => {
     try {
       const response = await api.get<CustomerStats>('admin/customers/stats/');
-      // Garantir que top_cities seja sempre um array
       return {
         ...response.data,
-        top_cities: response.data.top_cities || []
+        top_cities: response.data.top_cities ?? [],
       };
-    } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error);
+    } catch {
       return {
         total_customers: 0,
         active_today: 0,
         new_this_month: 0,
-        top_cities: []
+        top_cities: [],
       };
     }
-  }
+  },
 };

@@ -1,5 +1,4 @@
 import api from "./api";
-import { getCurrentUser } from "./auth";
 
 export interface CustomerProfile {
   id: number;
@@ -15,6 +14,15 @@ export interface CustomerProfile {
   tax_id?: string;
 }
 
+export interface CustomerOrderItem {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_image?: string;
+  quantity: number;
+  price: number;
+}
+
 export interface CustomerOrder {
   id: number;
   order_number: string;
@@ -23,6 +31,8 @@ export interface CustomerOrder {
   created_at: string;
   items_count: number;
   status_display: string;
+  payment_method?: 'express' | 'reference' | 'ekwanza';
+  items?: CustomerOrderItem[];
 }
 
 export interface RegisterData {
@@ -45,87 +55,59 @@ export interface RegisterResponse {
   };
 }
 
+export interface TrackOrderResponse {
+  order_number: string;
+  status: string;
+  status_display: string;
+  created_at: string;
+  estimated_delivery: string;
+}
+
 export const customerService = {
-  // Registrar novo cliente
   register: async (data: RegisterData): Promise<RegisterResponse> => {
     try {
       const response = await api.post<RegisterResponse>('customer/register/', data);
       return response.data;
     } catch (error: any) {
-      console.error('Erro no registro:', error.response?.data || error);
       return {
         success: false,
-        error: error.response?.data?.error || 'Erro ao realizar registro'
+        error: error?.response?.data?.error ?? 'Erro ao realizar registro',
       };
     }
   },
 
-  // Buscar perfil do cliente
   getProfile: async (): Promise<CustomerProfile> => {
-    try {
-      const response = await api.get<CustomerProfile>('customer/profile/');
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar perfil:', error);
-      throw error;
-    }
+    const response = await api.get<CustomerProfile>('customer/profile/');
+    return response.data;
   },
 
-  // Atualizar perfil
   updateProfile: async (data: Partial<CustomerProfile>): Promise<CustomerProfile> => {
-    try {
-      const response = await api.put<CustomerProfile>('customer/profile/', data);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      throw error;
-    }
+    const response = await api.put<CustomerProfile>('customer/profile/', data);
+    return response.data;
   },
 
-  // Listar pedidos do cliente
   getOrders: async (params?: {
     page?: number;
     page_size?: number;
   }): Promise<{ count: number; results: CustomerOrder[] }> => {
     try {
       const response = await api.get('customer/orders/', { params });
-      
-      // Garantir estrutura correta
       return {
-        count: response.data.count || response.data.length || 0,
-        results: response.data.results || response.data || []
+        count: response.data.count ?? response.data.length ?? 0,
+        results: response.data.results ?? response.data ?? [],
       };
-    } catch (error) {
-      console.error('Erro ao buscar pedidos:', error);
+    } catch {
       return { count: 0, results: [] };
     }
   },
 
-  // Buscar detalhes de um pedido
   getOrderDetails: async (orderId: number): Promise<CustomerOrder> => {
-    try {
-      const response = await api.get(`customer/orders/${orderId}/`);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar detalhes do pedido:', error);
-      throw error;
-    }
+    const response = await api.get(`customer/orders/${orderId}/`);
+    return response.data;
   },
 
-  // Acompanhar pedido
-  trackOrder: async (orderId: number): Promise<{
-    order_number: string;
-    status: string;
-    status_display: string;
-    created_at: string;
-    estimated_delivery: string;
-  }> => {
-    try {
-      const response = await api.get(`customer/orders/${orderId}/track/`);
-      return response.data;
-    } catch (error) {
-      console.error('Erro ao acompanhar pedido:', error);
-      throw error;
-    }
-  }
+  trackOrder: async (orderId: number): Promise<TrackOrderResponse> => {
+    const response = await api.get(`customer/orders/${orderId}/track/`);
+    return response.data;
+  },
 };

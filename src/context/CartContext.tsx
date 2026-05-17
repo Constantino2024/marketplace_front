@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { favoritesService } from '../services/favorites';
+import { isAuthenticated } from '../services/auth';
 
 export interface Product {
   id: number;
@@ -30,23 +32,24 @@ interface CartContextType {
   cartCount: number;
   cartTotal: number;
   wishlist: number[];
-  toggleWishlist: (productId: number) => void;
+  toggleWishlist: (productId: number) => Promise<void>;
+  isInWishlist: (productId: number) => boolean;
+  wishlistCount: number;
+  loadWishlist: () => Promise<void>;
+  loadingWishlist: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// Chaves para o localStorage
 const CART_STORAGE_KEY = 'hse_cart';
 const WISHLIST_STORAGE_KEY = 'hse_wishlist';
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  // Inicializar estado com dados do localStorage
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error('Erro ao carregar carrinho do localStorage:', error);
+    } catch {
       return [];
     }
   });
@@ -55,38 +58,90 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       const savedWishlist = localStorage.getItem(WISHLIST_STORAGE_KEY);
       return savedWishlist ? JSON.parse(savedWishlist) : [];
-    } catch (error) {
-      console.error('Erro ao carregar wishlist do localStorage:', error);
+    } catch {
       return [];
     }
   });
 
-  // Salvar carrinho no localStorage sempre que mudar
+  const [loadingWishlist, setLoadingWishlist] = useState(false);
+
   useEffect(() => {
     try {
       localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-    } catch (error) {
-      console.error('Erro ao salvar carrinho no localStorage:', error);
+    } catch {
+      // Silencioso
     }
   }, [cart]);
 
-  // Salvar wishlist no localStorage sempre que mudar
   useEffect(() => {
     try {
       localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist));
-    } catch (error) {
-      console.error('Erro ao salvar wishlist no localStorage:', error);
+    } catch {
+      // Silencioso
     }
   }, [wishlist]);
+
+  const loadWishlist = async () => {
+    if (!isAuthenticated()) {
+      setWishlist([]);
+      return;
+    }
+
+    setLoadingWishlist(true);
+    try {
+      const ids = await favoritesService.getFavoriteIds();
+      setWishlist(ids);
+    } catch {
+      // Silencioso
+    } finally {
+      setLoadingWishlist(false);
+    }
+  };
+
+  const toggleWishlist = async (productId: number) => {
+    if (!isAuthenticated()) {
+      const event = new CustomEvent('showAuthModal', { detail: { message: 'Faça login para adicionar aos favoritos' } });
+      window.dispatchEvent(event);
+      return;
+    }
+
+    const isFav = wishlist.includes(productId);
+    
+    if (isFav) {
+      const success = await favoritesService.removeFavorite(productId);
+      if (success) {
+        setWishlist(prev => prev.filter(id => id !== productId));
+        const updateEvent = new CustomEvent('wishlistUpdated', { 
+          detail: { action: 'remove', productId, count: wishlist.length - 1 } 
+        });
+        window.dispatchEvent(updateEvent);
+      }
+    } else {
+      const success = await favoritesService.addFavorite(productId);
+      if (success) {
+        setWishlist(prev => [...prev, productId]);
+        const updateEvent = new CustomEvent('wishlistUpdated', { 
+          detail: { action: 'add', productId, count: wishlist.length + 1 } 
+        });
+        window.dispatchEvent(updateEvent);
+      }
+    }
+  };
+
+  const isInWishlist = (productId: number): boolean => {
+    return wishlist.includes(productId);
+  };
 
   const addToCart = (product: Product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       
-      // Verificar se há estoque disponível
       const currentQuantity = existing ? existing.quantity : 0;
       if (currentQuantity >= product.stock) {
-        alert('Quantidade máxima em estoque atingida!');
+        const errorEvent = new CustomEvent('cartError', { 
+          detail: { message: 'Quantidade máxima em estoque atingida!' } 
+        });
+        window.dispatchEvent(errorEvent);
         return prev;
       }
 
@@ -100,7 +155,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return [...prev, { ...product, quantity: 1 }];
     });
 
-    // Feedback visual (opcional)
     const event = new CustomEvent('cartUpdated', { 
       detail: { action: 'add', productId: product.id } 
     });
@@ -110,13 +164,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeFromCart = (productId: number) => {
     setCart(prev => {
       const newCart = prev.filter(item => item.id !== productId);
-      
-      // Disparar evento para feedback
       const event = new CustomEvent('cartUpdated', { 
         detail: { action: 'remove', productId } 
       });
       window.dispatchEvent(event);
-      
       return newCart;
     });
   };
@@ -129,9 +180,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     setCart(prev => prev.map(item => {
       if (item.id === productId) {
-        // Verificar limite de estoque
         if (quantity > item.stock) {
-          alert(`Quantidade máxima disponível: ${item.stock} unidades`);
+          const errorEvent = new CustomEvent('cartError', { 
+            detail: { message: `Quantidade máxima disponível: ${item.stock} unidades` } 
+          });
+          window.dispatchEvent(errorEvent);
           return { ...item, quantity: item.stock };
         }
         return { ...item, quantity };
@@ -141,9 +194,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = () => {
-    if (window.confirm('Tem certeza que deseja limpar o carrinho?')) {
+    const confirmed = window.confirm('Tem certeza que deseja limpar o carrinho?');
+    if (confirmed) {
       setCart([]);
-      // Disparar evento para feedback
       const event = new CustomEvent('cartUpdated', { 
         detail: { action: 'clear' } 
       });
@@ -151,27 +204,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const toggleWishlist = (productId: number) => {
-    setWishlist(prev => {
-      const newWishlist = prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId];
-      
-      // Disparar evento para feedback
-      const event = new CustomEvent('wishlistUpdated', { 
-        detail: { 
-          action: prev.includes(productId) ? 'remove' : 'add',
-          productId 
-        } 
-      });
-      window.dispatchEvent(event);
-      
-      return newWishlist;
-    });
-  };
-
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const wishlistCount = wishlist.length;
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      loadWishlist();
+    }
+  }, []);
 
   return (
     <CartContext.Provider value={{ 
@@ -183,7 +224,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       cartCount, 
       cartTotal,
       wishlist,
-      toggleWishlist
+      toggleWishlist,
+      isInWishlist,
+      wishlistCount,
+      loadWishlist,
+      loadingWishlist
     }}>
       {children}
     </CartContext.Provider>
@@ -196,27 +241,4 @@ export const useCart = () => {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
-};
-
-// Hook auxiliar para sincronizar carrinho entre abas (opcional)
-export const useCartSync = () => {
-  const { cart } = useCart();
-
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === CART_STORAGE_KEY && e.newValue) {
-        try {
-          const newCart = JSON.parse(e.newValue);
-          // Atualizar estado se necessário
-          // Nota: Isso requer uma função de atualização no contexto
-          // Você pode implementar um método syncCart no contexto se precisar
-        } catch (error) {
-          console.error('Erro ao sincronizar carrinho:', error);
-        }
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 };

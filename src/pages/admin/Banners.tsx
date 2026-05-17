@@ -1,823 +1,672 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
-  Image,
-  X,
-  AlertCircle,
-  CheckCircle,
-  Upload,
-  MoveUp,
-  MoveDown,
-  Link as LinkIcon,
-  Type,
-  AlignLeft,
-  Hash,
-  Eye
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Plus, Search, Edit, Trash2, Image as ImageIcon, X, AlertCircle,
+  CheckCircle2, Upload, MoveUp, MoveDown, Link as LinkIcon, Type,
+  Eye, EyeOff, MoreVertical, RefreshCw, AlertTriangle, Loader2,
+  LayoutTemplate, Megaphone, PanelRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { homeService, Banner } from '../../services/home';
 import api from '../../services/api';
 
-// Componente de Toast
-const Toast = ({ message, type, onClose }: { message: string; type: 'success' | 'error' | 'info'; onClose: () => void }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 50 }}
-    className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-xl z-50 flex items-center gap-3 ${
-      type === 'success' ? 'bg-emerald-500' :
-      type === 'error' ? 'bg-red-500' :
-      'bg-blue-500'
-    } text-white`}
-  >
-    {type === 'success' ? <CheckCircle className="w-5 h-5" /> :
-     type === 'error' ? <AlertCircle className="w-5 h-5" /> :
-     <AlertCircle className="w-5 h-5" />}
-    <p className="font-bold">{message}</p>
-    <button onClick={onClose} className="ml-4 hover:opacity-80">
-      <X className="w-4 h-4" />
-    </button>
-  </motion.div>
-);
+// ─── Types ────────────────────────────────────────────────────────────────────
+type ToastType = 'success' | 'error' | 'info';
 
-// Modal de confirmação
-const ConfirmModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  title, 
-  message 
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onConfirm: () => void; 
-  title: string; 
-  message: string;
-}) => {
-  if (!isOpen) return null;
+const POSITION_MAP: Record<number, { label: string; pill: string; icon: React.ElementType }> = {
+  1: { label: 'Hero',    pill: 'bg-violet-50 text-violet-700 border-violet-100', icon: LayoutTemplate },
+  2: { label: 'Promo',   pill: 'bg-orange-50 text-orange-600 border-orange-100', icon: Megaphone },
+  3: { label: 'Sidebar', pill: 'bg-sky-50 text-sky-700 border-sky-100',          icon: PanelRight },
+};
+const getPos = (p: number) => POSITION_MAP[p] ?? POSITION_MAP[2];
 
+// ─── Toast ────────────────────────────────────────────────────────────────────
+function Toast({ message, type, onClose }: { message: string; type: ToastType; onClose: () => void }) {
+  const bg = type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+  const Icon = type === 'success' ? CheckCircle2 : AlertCircle;
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <motion.div
+      initial={{ opacity: 0, y: 60, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 60, scale: 0.95 }}
+      className={`fixed bottom-4 right-4 left-4 sm:left-auto sm:max-w-sm px-4 py-3 rounded-2xl shadow-2xl z-[100] flex items-center gap-3 ${bg} text-white`}
+    >
+      <Icon className="w-5 h-5 flex-shrink-0" />
+      <p className="font-semibold text-sm flex-1">{message}</p>
+      <button onClick={onClose} className="p-1 hover:bg-white/20 rounded-lg transition-colors flex-shrink-0">
+        <X className="w-4 h-4" />
+      </button>
+    </motion.div>
+  );
+}
+
+// ─── Confirm Modal ────────────────────────────────────────────────────────────
+function ConfirmModal({ isOpen, onClose, onConfirm, title, message }: {
+  isOpen: boolean; onClose: () => void; onConfirm: () => void; title: string; message: string;
+}) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 40 }}
+        className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl"
       >
-        <h2 className="text-2xl font-black text-gray-800 mb-4">{title}</h2>
-        <p className="text-gray-600 mb-8">{message}</p>
-        <div className="flex gap-4">
-          <button
-            onClick={onClose}
-            className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition-all"
-          >
+        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
+          <AlertTriangle className="w-6 h-6 text-red-500" />
+        </div>
+        <h2 className="text-xl font-black text-gray-800 mb-2">{title}</h2>
+        <p className="text-sm text-gray-500 mb-6 leading-relaxed">{message}</p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button onClick={onClose} className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-500 hover:bg-gray-50 transition-all text-sm">
             Cancelar
           </button>
-          <button
-            onClick={() => {
-              onConfirm();
-              onClose();
-            }}
-            className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-500/20"
-          >
-            Confirmar
+          <button onClick={() => { onConfirm(); onClose(); }} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-all text-sm shadow-lg shadow-red-500/20">
+            Eliminar
           </button>
         </div>
       </motion.div>
     </div>
   );
-};
+}
 
-// Modal de Banner (Criação/Edição)
-const BannerModal = ({ 
-  isOpen, 
-  onClose, 
-  banner, 
-  onSave 
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  banner?: Banner | null; 
-  onSave: (formData: FormData) => Promise<void>;
-}) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    subtitle: '',
-    description: '',
-    link: '',
-    position: 2,
-    discount_text: '',
-    button_text: 'Comprar agora',
-    is_active: true
-  });
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+// ─── Field Helper ─────────────────────────────────────────────────────────────
+const inputCls = (err?: string) =>
+  `w-full bg-gray-50 border ${err ? 'border-red-300' : 'border-gray-200'} rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all placeholder-gray-300`;
+
+function FormField({ label, required, optional, error, children }: {
+  label: string; required?: boolean; optional?: boolean; error?: string; children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
+        {label}
+        {required && <span className="text-red-400">*</span>}
+        {optional && <span className="text-gray-300 normal-case font-normal">(opcional)</span>}
+      </label>
+      {children}
+      {error && (
+        <p className="flex items-center gap-1 text-red-500 text-[10px] font-bold mt-1">
+          <AlertCircle className="w-3 h-3" />{error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Banner Modal ─────────────────────────────────────────────────────────────
+function BannerModal({ isOpen, onClose, banner, onSave }: {
+  isOpen: boolean; onClose: () => void; banner?: Banner | null;
+  onSave: (fd: FormData) => Promise<void>;
+}) {
+  const blank = { title: '', subtitle: '', description: '', link: '', position: 2, discount_text: '', button_text: 'Comprar agora', is_active: true };
+  const [form, setForm] = useState(blank);
+  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [imgPreview, setImgPreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Carregar dados do banner quando estiver editando
   useEffect(() => {
+    if (!isOpen) return;
     if (banner) {
-      setFormData({
-        title: banner.title || '',
-        subtitle: banner.subtitle || '',
-        description: banner.description || '',
-        link: banner.link || '',
-        position: banner.position || 2,
-        discount_text: banner.discount_text || '',
-        button_text: banner.button_text || 'Comprar agora',
-        is_active: banner.is_active !== undefined ? banner.is_active : true
-      });
-      setImagePreview(banner.image_url || null);
+      setForm({ title: banner.title || '', subtitle: banner.subtitle || '', description: banner.description || '', link: banner.link || '', position: banner.position ?? 2, discount_text: banner.discount_text || '', button_text: banner.button_text || 'Comprar agora', is_active: banner.is_active ?? true });
+      setImgPreview(banner.image_url || null);
     } else {
-      setFormData({
-        title: '',
-        subtitle: '',
-        description: '',
-        link: '',
-        position: 2,
-        discount_text: '',
-        button_text: 'Comprar agora',
-        is_active: true
-      });
-      setImagePreview(null);
-      setImageFile(null);
+      setForm(blank);
+      setImgPreview(null);
+      setImgFile(null);
     }
     setErrors({});
   }, [banner, isOpen]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    setForm(p => ({ ...p, [name]: val }));
+    if (errors[name]) setErrors(p => ({ ...p, [name]: '' }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Validar tamanho (máx 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setErrors(prev => ({ ...prev, image: 'A imagem deve ter no máximo 5MB' }));
-        return;
-      }
-      
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { setErrors(p => ({ ...p, image: 'Máximo 5MB' })); return; }
+    setImgFile(file);
+    const r = new FileReader();
+    r.onloadend = () => setImgPreview(r.result as string);
+    r.readAsDataURL(file);
   };
 
-  const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.title?.trim()) e.title = 'Título é obrigatório';
+    if (!imgPreview && !banner) e.image = 'Imagem é obrigatória para novos banners';
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title?.trim()) {
-      newErrors.title = 'Título é obrigatório';
-    }
-
-    if (!imagePreview && !banner) {
-      newErrors.image = 'Imagem é obrigatória';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    
+  const submit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (!validate()) return;
+    setSaving(true);
     try {
-      const submitData = new FormData();
-      submitData.append('title', formData.title);
-      submitData.append('subtitle', formData.subtitle || '');
-      submitData.append('description', formData.description || '');
-      submitData.append('link', formData.link || '');
-      submitData.append('position', String(formData.position));
-      submitData.append('discount_text', formData.discount_text || '');
-      submitData.append('button_text', formData.button_text);
-      submitData.append('is_active', String(formData.is_active));
-      
-      if (imageFile) {
-        submitData.append('image', imageFile);
-      }
-
-      await onSave(submitData);
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, String(v)));
+      if (imgFile) fd.append('image', imgFile);
+      await onSave(fd);
       onClose();
-    } catch (error) {
-      console.error('Erro ao salvar banner:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    } catch { /* handled upstream */ }
+    finally { setSaving(false); }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl my-8"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 40 }}
+        className="bg-white w-full sm:max-w-2xl sm:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col max-h-[96dvh] sm:max-h-[92vh] sm:my-4"
       >
-        <div className="flex items-center justify-between mb-6">
+        {/* drag handle */}
+        <div className="flex justify-center pt-3 sm:hidden flex-shrink-0">
+          <div className="w-10 h-1 rounded-full bg-gray-200" />
+        </div>
+
+        {/* header */}
+        <div className="flex items-center justify-between px-5 sm:px-8 pt-4 pb-4 border-b border-gray-100 flex-shrink-0">
           <div>
-            <h2 className="text-2xl font-black text-gray-800">
-              {banner ? 'Editar Banner' : 'Novo Banner'}
-            </h2>
-            {banner && (
-              <p className="text-sm text-gray-400 mt-1">
-                Editando: <span className="font-bold text-primary">{banner.title}</span>
-              </p>
-            )}
+            <h2 className="text-lg font-black text-gray-800">{banner ? 'Editar Banner' : 'Novo Banner'}</h2>
+            {banner && <p className="text-xs text-gray-400 mt-0.5">Editando: <span className="font-bold text-orange-500">{banner.title}</span></p>}
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+          <button onClick={onClose} className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+            <X className="w-4 h-4 text-gray-500" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Upload de Imagem */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Imagem do Banner <span className="text-red-400">*</span>
-            </label>
-            <div className="flex gap-4 items-start">
-              <div className="relative w-40 h-40 rounded-xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center group">
-                {imagePreview ? (
-                  <>
-                    <img 
-                      src={imagePreview} 
-                      alt="Preview" 
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Upload className="w-6 h-6 text-white" />
-                    </div>
-                  </>
-                ) : (
-                  <Image className="w-12 h-12 text-gray-300" />
-                )}
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-              </div>
-              
-              <div className="flex-1">
-                <p className="text-sm font-bold text-gray-700 mb-1">Upload de imagem</p>
-                <p className="text-xs text-gray-400 mb-2">Formatos aceitos: JPG, PNG, WEBP</p>
-                <p className="text-xs text-gray-400">Tamanho máximo: 5MB</p>
-                
-                {imagePreview && (
-                  <button
-                    type="button"
-                    onClick={handleRemoveImage}
-                    className="mt-2 text-xs text-red-500 hover:text-red-600 font-bold"
-                  >
-                    Remover imagem
+        {/* scrollable body */}
+        <form id="banner-form" onSubmit={submit} className="flex-1 overflow-y-auto px-5 sm:px-8 py-5 space-y-5">
+
+          {/* Image upload */}
+          <FormField label="Imagem do Banner" required error={errors.image}>
+            <div className="flex items-start gap-4">
+              <div className="relative flex-shrink-0">
+                <label className="block w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer group hover:border-orange-400 transition-colors bg-gray-50">
+                  {imgPreview
+                    ? <img src={imgPreview} alt="Preview" className="w-full h-full object-cover" />
+                    : <div className="w-full h-full flex flex-col items-center justify-center gap-1">
+                        <ImageIcon className="w-7 h-7 text-gray-300 group-hover:text-orange-400 transition-colors" />
+                        <span className="text-[10px] text-gray-400 font-medium">Clique</span>
+                      </div>}
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Upload className="w-5 h-5 text-white" />
+                  </div>
+                  <input type="file" accept="image/*" onChange={handleImg} className="hidden" />
+                </label>
+                {imgPreview && (
+                  <button type="button" onClick={() => { setImgFile(null); setImgPreview(null); }}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 shadow">
+                    <X className="w-2.5 h-2.5" />
                   </button>
                 )}
-                
-                {errors.image && (
-                  <p className="text-red-500 text-xs font-bold mt-2">{errors.image}</p>
-                )}
+              </div>
+              <div className="flex-1 text-xs text-gray-400 leading-relaxed pt-1">
+                <p className="font-semibold text-gray-600 mb-1 text-sm">Upload de imagem</p>
+                <p>JPG, PNG, WEBP</p>
+                <p>Máximo 5MB</p>
+                <p className="mt-2 text-[10px] text-gray-300">Resolução recomendada: 1920×600px para Hero</p>
               </div>
             </div>
-          </div>
+          </FormField>
 
-          {/* Título */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Título <span className="text-red-400">*</span>
-            </label>
+          {/* Title */}
+          <FormField label="Título" required error={errors.title}>
             <div className="relative">
-              <Type className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                className={`w-full bg-gray-50 border ${
-                  errors.title ? 'border-red-300' : 'border-gray-200'
-                } rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary`}
-                placeholder="Ex: Summer Collection"
-              />
+              <Type className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+              <input type="text" name="title" value={form.title} onChange={handle} placeholder="Ex: Summer Collection" className={`${inputCls(errors.title)} pl-10`} />
             </div>
-            {errors.title && (
-              <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                {errors.title}
-              </p>
-            )}
+          </FormField>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Subtitle */}
+            <FormField label="Subtítulo" optional>
+              <input type="text" name="subtitle" value={form.subtitle} onChange={handle} placeholder="Ex: SS'24" className={inputCls()} />
+            </FormField>
+
+            {/* Position */}
+            <FormField label="Posição">
+              <select name="position" value={form.position} onChange={handle} className={inputCls()}>
+                <option value={1}>Hero (Slide principal)</option>
+                <option value={2}>Promo (Banners promocionais)</option>
+                <option value={3}>Sidebar (Barra lateral)</option>
+              </select>
+            </FormField>
           </div>
 
-          {/* Subtítulo */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Subtítulo <span className="text-gray-300">(opcional)</span>
-            </label>
-            <input
-              type="text"
-              name="subtitle"
-              value={formData.subtitle}
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Ex: SS'24"
-            />
-          </div>
-
-          {/* Descrição */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Descrição <span className="text-gray-300">(opcional)</span>
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={3}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Descrição do banner..."
-            />
-          </div>
+          {/* Description */}
+          <FormField label="Descrição" optional>
+            <textarea name="description" value={form.description} onChange={handle} rows={3} placeholder="Descrição do banner…" className={`${inputCls()} resize-none`} />
+          </FormField>
 
           {/* Link */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Link <span className="text-gray-300">(opcional)</span>
-            </label>
+          <FormField label="Link" optional>
             <div className="relative">
-              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                type="url"
-                name="link"
-                value={formData.link}
-                onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="https://exemplo.com/promocao"
-              />
+              <LinkIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+              <input type="url" name="link" value={form.link} onChange={handle} placeholder="https://exemplo.com/promocao" className={`${inputCls()} pl-10`} />
             </div>
+          </FormField>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Discount text */}
+            <FormField label="Texto de Desconto" optional>
+              <input type="text" name="discount_text" value={form.discount_text} onChange={handle} placeholder="Ex: SALE UP TO 50%" className={inputCls()} />
+            </FormField>
+
+            {/* Button text */}
+            <FormField label="Texto do Botão">
+              <input type="text" name="button_text" value={form.button_text} onChange={handle} placeholder="Comprar agora" className={inputCls()} />
+            </FormField>
           </div>
 
-          {/* Posição */}
-          <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Posição
-            </label>
-            <select
-              name="position"
-              value={formData.position}
-              onChange={handleChange}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value={1}>Hero (Slide principal)</option>
-              <option value={2}>Promo (Banners promocionais)</option>
-              <option value={3}>Sidebar (Barra lateral)</option>
-            </select>
-          </div>
-
-          {/* Grid para campos opcionais */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Texto de desconto */}
-            <div>
-              <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-                Texto de desconto <span className="text-gray-300">(opcional)</span>
-              </label>
-              <input
-                type="text"
-                name="discount_text"
-                value={formData.discount_text}
-                onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Ex: SALE UP TO 50%"
-              />
+          {/* Active toggle */}
+          <label className="flex items-center gap-3 cursor-pointer p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-orange-200 transition-colors">
+            <input type="checkbox" name="is_active" checked={form.is_active} onChange={handle} className="w-4 h-4 rounded accent-orange-500" />
+            <div className="flex-1">
+              <p className="text-sm font-bold text-gray-700">Banner ativo</p>
+              <p className="text-xs text-gray-400 mt-0.5">Visível na loja para os clientes</p>
             </div>
-
-            {/* Texto do botão */}
-            <div>
-              <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-                Texto do botão
-              </label>
-              <input
-                type="text"
-                name="button_text"
-                value={formData.button_text}
-                onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="Comprar agora"
-              />
-            </div>
-          </div>
-
-          {/* Status */}
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-            <input
-              type="checkbox"
-              name="is_active"
-              id="is_active"
-              checked={formData.is_active}
-              onChange={handleChange}
-              className="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary"
-            />
-            <label htmlFor="is_active" className="text-sm font-medium text-gray-700">
-              Banner ativo
-            </label>
-          </div>
-
-          {/* Botões */}
-          <div className="flex gap-4 pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition-all"
-              disabled={isLoading}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
-            >
-              {isLoading ? 'A processar...' : (banner ? 'Atualizar Banner' : 'Criar Banner')}
-            </button>
-          </div>
+            {form.is_active
+              ? <Eye className="w-4 h-4 text-emerald-500" />
+              : <EyeOff className="w-4 h-4 text-gray-300" />}
+          </label>
         </form>
+
+        {/* footer */}
+        <div className="px-5 sm:px-8 py-4 border-t border-gray-100 flex gap-3 flex-shrink-0">
+          <button type="button" onClick={onClose} disabled={saving}
+            className="flex-1 py-3 border-2 border-gray-100 rounded-2xl font-bold text-gray-500 hover:bg-gray-50 transition-all text-sm">
+            Cancelar
+          </button>
+          <button type="submit" form="banner-form" disabled={saving}
+            className="flex-[2] py-3 bg-orange-500 text-white rounded-2xl font-bold hover:bg-orange-600 transition-all text-sm shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center justify-center gap-2">
+            {saving
+              ? <><Loader2 className="w-4 h-4 animate-spin" />A processar…</>
+              : banner ? 'Atualizar Banner' : 'Criar Banner'}
+          </button>
+        </div>
       </motion.div>
     </div>
   );
-};
+}
 
+// ─── Mobile Banner Card ───────────────────────────────────────────────────────
+function BannerCard({ banner, index, total, onEdit, onDelete, onToggle, onMove }: {
+  banner: Banner; index: number; total: number;
+  onEdit: () => void; onDelete: () => void; onToggle: () => void;
+  onMove: (dir: 'up' | 'down') => void;
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pos = getPos(banner.position);
+  const PosIcon = pos.icon;
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+      {/* image strip */}
+      <div className="relative h-28 bg-gray-100 overflow-hidden">
+        <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        {/* overlays */}
+        <div className="absolute bottom-2 left-3 right-10">
+          <p className="text-white font-black text-sm leading-tight truncate">{banner.title}</p>
+          {banner.subtitle && <p className="text-white/70 text-xs truncate">{banner.subtitle}</p>}
+        </div>
+        {/* status dot */}
+        <div className={`absolute top-2 right-2 w-2.5 h-2.5 rounded-full border-2 border-white ${banner.is_active ? 'bg-emerald-400' : 'bg-gray-400'}`} />
+      </div>
+
+      <div className="p-3 flex items-center gap-2">
+        {/* position pill */}
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${pos.pill} flex-shrink-0`}>
+          <PosIcon className="w-3 h-3" /> {pos.label}
+        </span>
+
+        {/* order controls */}
+        <div className="flex items-center gap-0.5 ml-auto">
+          <button onClick={() => onMove('up')} disabled={index === 0} className="w-7 h-7 rounded-lg text-gray-300 hover:text-orange-500 hover:bg-orange-50 flex items-center justify-center disabled:opacity-30 transition-colors">
+            <MoveUp className="w-3.5 h-3.5" />
+          </button>
+          <button onClick={() => onMove('down')} disabled={index === total - 1} className="w-7 h-7 rounded-lg text-gray-300 hover:text-orange-500 hover:bg-orange-50 flex items-center justify-center disabled:opacity-30 transition-colors">
+            <MoveDown className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* status toggle */}
+        <button onClick={onToggle} className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors ${banner.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}`}>
+          {banner.is_active ? 'Ativo' : 'Inativo'}
+        </button>
+
+        {/* context menu */}
+        <div className="relative">
+          <button onClick={() => setMenuOpen(p => !p)} className="w-7 h-7 rounded-lg bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
+          </button>
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -4 }}
+                className="absolute right-0 bottom-8 bg-white rounded-2xl shadow-xl border border-gray-100 z-20 w-36 overflow-hidden"
+                onMouseLeave={() => setMenuOpen(false)}
+              >
+                <button onClick={() => { onEdit(); setMenuOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                  <Edit className="w-4 h-4 text-blue-400" /> Editar
+                </button>
+                <button onClick={() => { onDelete(); setMenuOpen(false); }} className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                  <Trash2 className="w-4 h-4" /> Eliminar
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Banners() {
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [filteredBanners, setFilteredBanners] = useState<Banner[]>([]);
+  const [filtered, setFiltered] = useState<Banner[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [posFilter, setPosFilter] = useState<number | 'all'>('all');
   const [showModal, setShowModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [positionFilter, setPositionFilter] = useState<number | 'all'>('all');
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selected, setSelected] = useState<Banner | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
-  // Carregar banners
-  const loadBanners = async () => {
-    setIsLoading(true);
+  const notify = useCallback((message: string, type: ToastType) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  }, []);
+
+  const load = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await homeService.getBanners();
       setBanners(data);
-      setFilteredBanners(data);
-    } catch (error) {
-      console.error('Erro ao carregar banners:', error);
-      showToast('Erro ao carregar banners', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    } catch { notify('Erro ao carregar banners', 'error'); }
+    finally { setLoading(false); }
+  }, [notify]);
 
+  useEffect(() => { load(); }, [load]);
+
+  // filter
   useEffect(() => {
-    loadBanners();
-  }, []);
+    let list = banners;
+    if (searchTerm) list = list.filter(b =>
+      b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      b.subtitle?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    if (posFilter !== 'all') list = list.filter(b => b.position === posFilter);
+    setFiltered(list);
+  }, [searchTerm, posFilter, banners]);
 
-  // Filtrar banners
-  useEffect(() => {
-    let filtered = banners;
-    
-    if (searchTerm) {
-      filtered = filtered.filter(b => 
-        b.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.subtitle?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-    
-    if (positionFilter !== 'all') {
-      filtered = filtered.filter(b => b.position === positionFilter);
-    }
-    
-    setFilteredBanners(filtered);
-  }, [searchTerm, positionFilter, banners]);
-
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 5000);
-  };
-
-  // Mover banner (ordenar)
-  const moveBanner = async (id: number, direction: 'up' | 'down') => {
+  const move = async (id: number, dir: 'up' | 'down') => {
+    const idx = banners.findIndex(b => b.id === id);
+    const swap = dir === 'up' ? idx - 1 : idx + 1;
+    if (swap < 0 || swap >= banners.length) return;
+    const next = [...banners];
+    [next[idx], next[swap]] = [next[swap], next[idx]];
     try {
-      const index = banners.findIndex(b => b.id === id);
-      if (
-        (direction === 'up' && index === 0) || 
-        (direction === 'down' && index === banners.length - 1)
-      ) return;
-
-      const newBanners = [...banners];
-      const swapIndex = direction === 'up' ? index - 1 : index + 1;
-      [newBanners[index], newBanners[swapIndex]] = [newBanners[swapIndex], newBanners[index]];
-      
-      // Atualizar ordem no backend
       await Promise.all([
-        api.patch(`banners/${newBanners[index].id}/`, { order: index }),
-        api.patch(`banners/${newBanners[swapIndex].id}/`, { order: swapIndex })
+        api.patch(`banners/${next[idx].id}/`, { order: idx }),
+        api.patch(`banners/${next[swap].id}/`, { order: swap }),
       ]);
-      
-      setBanners(newBanners);
-      showToast('Ordem atualizada com sucesso!', 'success');
-    } catch (error) {
-      console.error('Erro ao mover banner:', error);
-      showToast('Erro ao atualizar ordem', 'error');
-    }
+      setBanners(next);
+      notify('Ordem atualizada!', 'success');
+    } catch { notify('Erro ao atualizar ordem', 'error'); }
   };
 
-  // Salvar banner (criar ou atualizar)
-  const handleSaveBanner = async (formData: FormData) => {
+  const handleSave = async (fd: FormData) => {
     try {
-      if (selectedBanner) {
-        // Atualizar banner existente
-        await api.put(`banners/${selectedBanner.id}/`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        showToast('Banner atualizado com sucesso!', 'success');
+      if (selected) {
+        await api.put(`banners/${selected.id}/`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        notify('Banner atualizado!', 'success');
       } else {
-        // Criar novo banner
-        await api.post('banners/', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        showToast('Banner criado com sucesso!', 'success');
+        await api.post('banners/', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+        notify('Banner criado!', 'success');
       }
-      await loadBanners();
-    } catch (error: any) {
-      console.error('Erro ao salvar banner:', error);
-      if (error.response?.data) {
-        const errorData = error.response.data;
-        let errorMessage = 'Erro ao salvar banner';
-        
-        if (typeof errorData === 'object') {
-          const firstKey = Object.keys(errorData)[0];
-          if (firstKey && errorData[firstKey]) {
-            errorMessage = `${firstKey}: ${errorData[firstKey]}`;
-          }
-        }
-        
-        showToast(errorMessage, 'error');
-      } else {
-        showToast('Erro ao salvar banner', 'error');
-      }
-      throw error;
+      await load();
+    } catch (err: any) {
+      const msg = typeof err.response?.data === 'object'
+        ? String(Object.values(err.response.data)[0])
+        : 'Erro ao salvar banner';
+      notify(msg, 'error');
+      throw err;
     }
   };
 
-  // Deletar banner
   const handleDelete = async () => {
-    if (!selectedBanner) return;
-    
+    if (!selected) return;
     try {
-      await api.delete(`banners/${selectedBanner.id}/`);
-      showToast('Banner eliminado com sucesso!', 'success');
-      await loadBanners();
-    } catch (error) {
-      console.error('Erro ao deletar banner:', error);
-      showToast('Erro ao deletar banner', 'error');
-    } finally {
-      setSelectedBanner(null);
-    }
+      await api.delete(`banners/${selected.id}/`);
+      notify('Banner eliminado!', 'success');
+      await load();
+    } catch { notify('Erro ao eliminar banner', 'error'); }
+    finally { setSelected(null); }
   };
 
-  // Ativar/desativar banner
-  const handleToggleActive = async (banner: Banner) => {
+  const toggleActive = async (banner: Banner) => {
     try {
       await api.patch(`banners/${banner.id}/`, { is_active: !banner.is_active });
-      showToast(`Banner ${!banner.is_active ? 'ativado' : 'desativado'} com sucesso!`, 'success');
-      await loadBanners();
-    } catch (error) {
-      console.error('Erro ao alterar status do banner:', error);
-      showToast('Erro ao alterar status', 'error');
-    }
+      notify(`Banner ${!banner.is_active ? 'ativado' : 'desativado'}!`, 'success');
+      await load();
+    } catch { notify('Erro ao alterar status', 'error'); }
   };
 
+  const openEdit = (b: Banner) => { setSelected(b); setShowModal(true); };
+  const openDelete = (b: Banner) => { setSelected(b); setShowConfirm(true); };
+  const openNew = () => { setSelected(null); setShowModal(true); };
+
+  // stats
+  const activeCount = banners.filter(b => b.is_active).length;
+
   return (
-    <div className="space-y-8">
-      {/* Toast e Modais */}
+    <div className="space-y-5 sm:space-y-6 pb-6">
+      {/* Toast */}
       <AnimatePresence>
-        {toast && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onClose={() => setToast(null)}
-          />
-        )}
+        {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
+      {/* Modals */}
       <ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={() => {
-          setShowConfirmModal(false);
-          setSelectedBanner(null);
-        }}
+        isOpen={showConfirm}
+        onClose={() => { setShowConfirm(false); setSelected(null); }}
         onConfirm={handleDelete}
         title="Eliminar Banner"
-        message={`Tem certeza que deseja eliminar o banner "${selectedBanner?.title}"?`}
+        message={`Tem certeza que deseja eliminar "${selected?.title}"? Esta ação não pode ser desfeita.`}
       />
-
-      <BannerModal
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setSelectedBanner(null);
-        }}
-        banner={selectedBanner}
-        onSave={handleSaveBanner}
-      />
+      <BannerModal isOpen={showModal} onClose={() => { setShowModal(false); setSelected(null); }} banner={selected} onSave={handleSave} />
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-black text-gray-800">Gestão de Banners</h1>
-          <p className="text-sm text-gray-400">Gerencie os banners da página inicial.</p>
+          <h1 className="text-xl sm:text-2xl font-black text-gray-800">Gestão de Banners</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Gerencie os banners da página inicial.</p>
         </div>
-        <button 
-          onClick={() => {
-            setSelectedBanner(null);
-            setShowModal(true);
-          }}
-          className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
-        >
-          <Plus className="w-4 h-4" />
-          Novo Banner
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={load} className="w-9 h-9 rounded-xl border border-gray-200 bg-white text-gray-400 hover:text-orange-500 hover:border-orange-300 flex items-center justify-center transition-all">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          <button onClick={openNew} className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-orange-500 text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20 flex-1 sm:flex-auto justify-center">
+            <Plus className="w-4 h-4" />
+            <span>Novo Banner</span>
+          </button>
+        </div>
       </div>
 
-      {/* Filtros */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Pesquisar banners..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-          />
+      {/* Quick stats */}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { label: 'Total', value: banners.length, color: 'text-gray-800' },
+          { label: 'Ativos', value: activeCount, color: 'text-emerald-600' },
+          { label: 'Inativos', value: banners.length - activeCount, color: 'text-gray-400' },
+        ].map(s => (
+          <div key={s.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
+            <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">{s.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Search + filter bar */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+          <input type="text" placeholder="Pesquisar banners…" value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all" />
         </div>
-        <select
-          value={positionFilter}
-          onChange={(e) => setPositionFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-          className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
-        >
+        <select value={posFilter} onChange={e => setPosFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+          className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-600 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all sm:w-44">
           <option value="all">Todas as posições</option>
-          <option value="1">Hero</option>
-          <option value="2">Promo</option>
-          <option value="3">Sidebar</option>
+          <option value={1}>Hero</option>
+          <option value={2}>Promo</option>
+          <option value={3}>Sidebar</option>
         </select>
       </div>
 
-      {/* Lista de Banners */}
+      {/* Content */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 gap-3">
+            <div className="relative w-12 h-12">
+              <div className="absolute inset-0 rounded-full border-4 border-orange-100 border-t-orange-500 animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <ImageIcon className="w-4 h-4 text-orange-400" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-400 font-medium">Carregando banners…</p>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+            <div className="w-20 h-20 rounded-3xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center mb-4">
+              <ImageIcon className="w-9 h-9 text-gray-300" />
+            </div>
+            <h3 className="text-base font-black text-gray-800 mb-1.5">
+              {searchTerm || posFilter !== 'all' ? 'Nenhum banner encontrado' : 'Sem banners'}
+            </h3>
+            <p className="text-sm text-gray-400 mb-5">
+              {searchTerm || posFilter !== 'all' ? 'Tente ajustar a pesquisa ou os filtros.' : 'Crie o seu primeiro banner agora.'}
+            </p>
+            {!(searchTerm || posFilter !== 'all') && (
+              <button onClick={openNew} className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition-all shadow-sm">
+                <Plus className="w-4 h-4" /> Criar banner
+              </button>
+            )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-gray-50/50 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                  <th className="px-6 py-4">Banner</th>
-                  <th className="px-6 py-4">Posição</th>
-                  <th className="px-6 py-4">Título</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Ordem</th>
-                  <th className="px-6 py-4 text-right">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filteredBanners.map((banner) => (
-                  <tr key={banner.id} className="text-sm hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden">
-                          <img 
-                            src={banner.image_url} 
-                            alt={banner.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">
-                        {banner.position === 1 ? 'Hero' : banner.position === 2 ? 'Promo' : 'Sidebar'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="font-bold text-gray-800">{banner.title}</p>
-                        {banner.subtitle && (
-                          <p className="text-xs text-gray-400">{banner.subtitle}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        onClick={() => handleToggleActive(banner)}
-                        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase transition-colors ${
-                          banner.is_active 
-                            ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' 
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
-                      >
-                        {banner.is_active ? 'Ativo' : 'Inativo'}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-gray-500">{banner.order}</span>
-                        <div className="flex flex-col">
-                          <button 
-                            onClick={() => moveBanner(banner.id, 'up')}
-                            className="text-gray-400 hover:text-primary"
-                            disabled={banners.findIndex(b => b.id === banner.id) === 0}
-                          >
-                            <MoveUp className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={() => moveBanner(banner.id, 'down')}
-                            className="text-gray-400 hover:text-primary"
-                            disabled={banners.findIndex(b => b.id === banner.id) === banners.length - 1}
-                          >
-                            <MoveDown className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedBanner(banner);
-                            setShowModal(true);
-                          }}
-                          className="p-2 text-gray-400 hover:text-primary transition-colors"
-                          title="Editar"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedBanner(banner);
-                            setShowConfirmModal(true);
-                          }}
-                          className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                          title="Eliminar"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+          <>
+            {/* ── Mobile Cards (< md) ── */}
+            <div className="block md:hidden">
+              <div className="px-4 py-3 bg-gray-50/80 border-b border-gray-100">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{filtered.length} banner{filtered.length !== 1 ? 's' : ''}</p>
+              </div>
+              <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {filtered.map((b, i) => (
+                  <BannerCard key={b.id} banner={b} index={i} total={filtered.length}
+                    onEdit={() => openEdit(b)} onDelete={() => openDelete(b)} onToggle={() => toggleActive(b)}
+                    onMove={dir => move(b.id, dir)} />
                 ))}
+              </div>
+            </div>
 
-                {filteredBanners.length === 0 && (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-400">
-                      <Image className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="font-bold">Nenhum banner encontrado</p>
-                      <p className="text-sm">Clique em "Novo Banner" para criar um.</p>
-                    </td>
+            {/* ── Desktop Table (≥ md) ── */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-50/70 border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                    <th className="px-6 py-4">Imagem</th>
+                    <th className="px-6 py-4">Título</th>
+                    <th className="px-6 py-4">Posição</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">Ordem</th>
+                    <th className="px-6 py-4 text-right">Ações</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map((banner, idx) => {
+                    const pos = getPos(banner.position);
+                    const PosIcon = pos.icon;
+                    return (
+                      <tr key={banner.id} className="hover:bg-gray-50/50 transition-colors group">
+                        {/* thumb */}
+                        <td className="px-6 py-4">
+                          <div className="w-20 h-14 rounded-xl bg-gray-100 overflow-hidden border border-gray-100">
+                            <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+                          </div>
+                        </td>
+                        {/* title */}
+                        <td className="px-6 py-4 max-w-[200px]">
+                          <p className="font-bold text-gray-800 text-sm truncate">{banner.title}</p>
+                          {banner.subtitle && <p className="text-xs text-gray-400 truncate mt-0.5">{banner.subtitle}</p>}
+                        </td>
+                        {/* position */}
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${pos.pill}`}>
+                            <PosIcon className="w-3 h-3" />{pos.label}
+                          </span>
+                        </td>
+                        {/* status */}
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => toggleActive(banner)}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold border transition-colors ${
+                              banner.is_active
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100'
+                                : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full ${banner.is_active ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                            {banner.is_active ? 'Ativo' : 'Inativo'}
+                          </button>
+                        </td>
+                        {/* order */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-gray-500 w-5 text-center">{banner.order ?? idx}</span>
+                            <div className="flex flex-col gap-0.5">
+                              <button onClick={() => move(banner.id, 'up')} disabled={idx === 0}
+                                className="w-6 h-6 rounded-lg text-gray-300 hover:text-orange-500 hover:bg-orange-50 flex items-center justify-center disabled:opacity-30 transition-colors">
+                                <MoveUp className="w-3.5 h-3.5" />
+                              </button>
+                              <button onClick={() => move(banner.id, 'down')} disabled={idx === filtered.length - 1}
+                                className="w-6 h-6 rounded-lg text-gray-300 hover:text-orange-500 hover:bg-orange-50 flex items-center justify-center disabled:opacity-30 transition-colors">
+                                <MoveDown className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                        {/* actions */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => openEdit(banner)} className="w-8 h-8 rounded-xl text-gray-400 hover:text-blue-500 hover:bg-blue-50 flex items-center justify-center transition-colors" title="Editar">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => openDelete(banner)} className="w-8 h-8 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 flex items-center justify-center transition-colors" title="Eliminar">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -31,7 +31,26 @@ export const paymentService = {
         phone_number: phoneNumber,
         order_id: orderId
       });
-      return response.data;
+      
+      // Extrair dados da estrutura correta
+      const responseData = response.data;
+      
+      if (responseData.success && responseData.data) {
+        return {
+          success: true,
+          transaction_id: responseData.data.transaction_id,
+          payment_id: responseData.data.payment_id,
+          reference: responseData.data.reference,
+          entity: responseData.data.entity,
+          amount: responseData.data.amount,
+          expiry_date: responseData.data.expiry_date,
+          status: responseData.data.status,
+          message: responseData.message,
+          rawResponse: responseData.data
+        };
+      }
+      
+      return responseData;
     } catch (error: any) {
       console.error('Erro no pagamento Express:', error);
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };
@@ -46,7 +65,40 @@ export const paymentService = {
         amount: amount,
         order_id: orderId
       });
-      return response.data;
+      
+      console.log('Resposta da API de referência:', response.data);
+      
+      // Extrair dados da estrutura correta
+      const responseData = response.data;
+      
+      if (responseData.success && responseData.data) {
+        // A referência pode vir em referenceNumber ou reference
+        const referenceNumber = responseData.data.reference || 
+                                (responseData.data.referenceNumber) ||
+                                (responseData.data.reference_number);
+        
+        const entity = responseData.data.entity;
+        const expiryDate = responseData.data.expiry_date || 
+                          (responseData.data.dueDate) ||
+                          responseData.data.due_date;
+        
+        console.log('Dados extraídos - Referência:', referenceNumber, 'Entidade:', entity, 'Expira:', expiryDate);
+        
+        return {
+          success: true,
+          transaction_id: responseData.data.transaction_id,
+          payment_id: responseData.data.payment_id,
+          reference: referenceNumber,
+          entity: entity,
+          amount: responseData.data.amount || amount,
+          expiry_date: expiryDate,
+          status: responseData.data.status || 'pending',
+          message: responseData.message || 'Referência gerada com sucesso',
+          rawResponse: responseData.data
+        };
+      }
+      
+      return responseData;
     } catch (error: any) {
       console.error('Erro no pagamento por Referência:', error);
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };
@@ -62,7 +114,28 @@ export const paymentService = {
         phone_number: phoneNumber,
         order_id: orderId
       });
-      return response.data;
+      
+      // Extrair dados da estrutura correta
+      const responseData = response.data;
+      
+      if (responseData.success && responseData.data) {
+        return {
+          success: true,
+          transaction_id: responseData.data.transaction_id,
+          payment_id: responseData.data.payment_id,
+          reference: responseData.data.reference,
+          entity: responseData.data.entity,
+          amount: responseData.data.amount || amount,
+          expiry_date: responseData.data.expiry_date,
+          status: responseData.data.status,
+          confirmation_code: responseData.data.confirmation_code,
+          qr_code: responseData.data.qr_code,
+          message: responseData.message,
+          rawResponse: responseData.data
+        };
+      }
+      
+      return responseData;
     } catch (error: any) {
       console.error('Erro no pagamento E-Kwanza:', error);
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };

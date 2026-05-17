@@ -1,101 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
-  FolderPlus,
-  ChevronRight,
-  X,
-  Eye,
-  EyeOff,
-  Upload,
-  Image as ImageIcon,
-  AlertCircle,
-  CheckCircle,
-  Building2,
-  Globe,
-  Lock
+import {
+  Plus, Search, Edit, Trash2, FolderPlus,
+  X, Eye, EyeOff, Upload, Globe,
+  Building2, Lock, AlertCircle, CheckCircle, Package
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { categoriesService, Category, CreateCategoryData } from '../../services/categories';
 import { getCurrentUser } from '../../services/auth';
 
-// Componente de Toast
-const Toast = ({ message, type, onClose }: { message: string; type: 'success' | 'error' | 'info'; onClose: () => void }) => (
+// ── Paleta ───────────────────────────────────────────────
+const C = {
+  navy:        '#0C2340',
+  navySoft:    '#163354',
+  orange:      '#E8600A',
+  orangeLight: '#FDF0E8',
+  orangeMid:   '#F5D0B5',
+};
+
+// ── Toast ────────────────────────────────────────────────
+type ToastType = 'success' | 'error' | 'info';
+
+const Toast = ({ message, type, onClose }: {
+  message: string; type: ToastType; onClose: () => void;
+}) => (
   <motion.div
-    initial={{ opacity: 0, y: 50 }}
+    initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: 50 }}
-    className={`fixed bottom-4 right-4 px-6 py-4 rounded-xl shadow-xl z-50 flex items-center gap-3 ${
-      type === 'success' ? 'bg-emerald-500' :
-      type === 'error' ? 'bg-red-500' :
-      'bg-blue-500'
-    } text-white`}
+    exit={{ opacity: 0, y: 16 }}
+    className="fixed bottom-6 right-6 z-50 flex items-center gap-3
+      px-5 py-3 rounded-xl text-white text-sm font-medium"
+    style={{ background: type === 'success' ? '#1A6B35' : type === 'error' ? C.orange : C.navy }}
   >
-    {type === 'success' ? <CheckCircle className="w-5 h-5" /> :
-     type === 'error' ? <AlertCircle className="w-5 h-5" /> :
-     <AlertCircle className="w-5 h-5" />}
-    <p className="font-bold">{message}</p>
-    <button onClick={onClose} className="ml-4 hover:opacity-80">
+    {type === 'success'
+      ? <CheckCircle className="w-4 h-4 shrink-0" />
+      : <AlertCircle className="w-4 h-4 shrink-0" />}
+    <span>{message}</span>
+    <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100">
       <X className="w-4 h-4" />
     </button>
   </motion.div>
 );
 
-// Modal de confirmação
-const ConfirmModal = ({ 
-  isOpen, 
-  onClose, 
-  onConfirm, 
-  title, 
-  message,
-  isAdminOnly = false
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  onConfirm: () => void; 
-  title: string; 
-  message: string;
-  isAdminOnly?: boolean;
+// ── Modal de confirmação ─────────────────────────────────
+const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message, canDelete }: {
+  isOpen: boolean; onClose: () => void; onConfirm: () => void;
+  title: string; message: string; canDelete: boolean;
 }) => {
   if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(12,35,64,.45)' }}
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl"
+        onClick={e => e.stopPropagation()}
+        className="bg-white rounded-2xl p-6 w-full max-w-sm"
       >
-        <h2 className="text-2xl font-black text-gray-800 mb-4">{title}</h2>
-        <p className="text-gray-600 mb-8">{message}</p>
-        {isAdminOnly && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-            <p className="text-sm text-yellow-700 flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              Apenas administradores podem eliminar categorias.
-            </p>
+        <h2 className="text-base font-semibold mb-2" style={{ color: C.navy }}>{title}</h2>
+        <p className="text-sm text-gray-500 mb-5">{message}</p>
+
+        {!canDelete && (
+          <div className="flex items-start gap-2 p-3 rounded-xl mb-5 text-xs"
+            style={{ background: C.orangeLight, color: '#993C1D' }}>
+            <Lock className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>Apenas administradores podem eliminar categorias.</span>
           </div>
         )}
-        <div className="flex gap-4">
+
+        <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition-all"
-          >
-            Cancelar
-          </button>
-          {!isAdminOnly && (
+            className="flex-1 py-2.5 text-sm text-gray-400 border border-gray-100
+              rounded-xl hover:bg-gray-50 transition-colors"
+          >Cancelar</button>
+          {canDelete && (
             <button
-              onClick={() => {
-                onConfirm();
-                onClose();
-              }}
-              className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-500/20"
-            >
-              Confirmar
-            </button>
+              onClick={() => { onConfirm(); onClose(); }}
+              className="flex-1 py-2.5 text-sm font-medium text-white rounded-xl
+                transition-opacity hover:opacity-90"
+              style={{ background: C.orange }}
+            >Eliminar</button>
           )}
         </div>
       </motion.div>
@@ -103,47 +90,27 @@ const ConfirmModal = ({
   );
 };
 
-// Modal de categoria
-const CategoryModal = ({ 
-  isOpen, 
-  onClose, 
-  category, 
-  onSave,
-  canEdit = true
-}: { 
-  isOpen: boolean; 
-  onClose: () => void; 
-  category?: Category | null; 
+// ── Modal de categoria ───────────────────────────────────
+const CategoryModal = ({ isOpen, onClose, category, onSave, canEdit }: {
+  isOpen: boolean; onClose: () => void;
+  category?: Category | null;
   onSave: (data: CreateCategoryData) => Promise<void>;
-  canEdit?: boolean;
+  canEdit: boolean;
 }) => {
   const [formData, setFormData] = useState<CreateCategoryData>({
-    name: '',
-    description: '',
-    image: null,
-    is_active: true
+    name: '', description: '', image: null, is_active: true
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading]       = useState(false);
+  const [errors, setErrors]             = useState<Record<string, string>>({});
 
-  // Carregar dados da categoria quando estiver editando
   useEffect(() => {
     if (category) {
-      setFormData({
-        name: category.name || '',
-        description: category.description || '',
-        image: null,
-        is_active: category.is_active
-      });
+      setFormData({ name: category.name || '', description: category.description || '',
+        image: null, is_active: category.is_active });
       setImagePreview(category.image_url || null);
     } else {
-      setFormData({
-        name: '',
-        description: '',
-        image: null,
-        is_active: true
-      });
+      setFormData({ name: '', description: '', image: null, is_active: true });
       setImagePreview(null);
     }
     setErrors({});
@@ -151,205 +118,154 @@ const CategoryModal = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked;
-      setFormData(prev => ({ ...prev, [name]: checked }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    setFormData(p => ({
+      ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+    if (errors[name]) setErrors(p => ({ ...p, [name]: '' }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFormData(p => ({ ...p, image: f }));
+    const r = new FileReader();
+    r.onloadend = () => setImagePreview(r.result as string);
+    r.readAsDataURL(f);
   };
 
-  const handleRemoveImage = () => {
-    setFormData(prev => ({ ...prev, image: null }));
-    setImagePreview(null);
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!formData.name?.trim())        e.name = 'Nome é obrigatório';
+    else if (formData.name.length < 3) e.name = 'Mínimo 3 caracteres';
+    setErrors(e);
+    return !Object.keys(e).length;
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name?.trim()) {
-      newErrors.name = 'Nome da categoria é obrigatório';
-    } else if (formData.name.length < 3) {
-      newErrors.name = 'Nome deve ter pelo menos 3 caracteres';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleSubmit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (!validate()) return;
     setIsLoading(true);
-    
-    try {
-      await onSave(formData);
-      onClose();
-    } catch (error) {
-      console.error('Erro ao salvar categoria:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    try { await onSave(formData); onClose(); }
+    catch (err) { console.error(err); }
+    finally { setIsLoading(false); }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+      style={{ background: 'rgba(12,35,64,.45)' }}
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        className="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl my-8"
+        onClick={e => e.stopPropagation()}
+        className="bg-white rounded-2xl w-full max-w-lg overflow-hidden my-8"
       >
-        <div className="flex items-center justify-between mb-6">
+        {/* Cabeçalho azul-escuro */}
+        <div className="px-6 py-5 flex items-start justify-between"
+          style={{ background: C.navy }}>
           <div>
-            <h2 className="text-2xl font-black text-gray-800">
-              {category ? 'Editar Categoria' : 'Nova Categoria'}
+            <h2 className="text-base font-medium text-white">
+              {category ? 'Editar categoria' : 'Nova categoria'}
             </h2>
-            {category && (
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-sm text-gray-400">
-                  Editando: <span className="font-bold text-primary">{category.name}</span>
+            {category
+              ? <p className="text-xs mt-0.5" style={{ color: '#A0BAD0' }}>
+                  A editar: <span className="text-white font-medium">{category.name}</span>
                 </p>
-                {category.is_global ? (
-                  <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold flex items-center gap-1">
-                    <Globe className="w-3 h-3" />
-                    Global
-                  </span>
-                ) : (
-                  <span className="px-2 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-bold flex items-center gap-1">
-                    <Building2 className="w-3 h-3" />
-                    {category.company_name}
-                  </span>
-                )}
-              </div>
-            )}
+              : <p className="text-xs mt-0.5" style={{ color: '#A0BAD0' }}>Preencha os dados abaixo</p>
+            }
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X className="w-5 h-5 text-gray-500" />
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-7 h-7 rounded-lg
+              transition-colors cursor-pointer"
+            style={{ background: 'rgba(255,255,255,.12)', color: '#fff' }}
+            aria-label="Fechar"
+          >
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {!canEdit && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-            <p className="text-sm text-yellow-700 flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              Esta categoria é global e não pode ser editada por empresas.
-            </p>
+          <div className="mx-6 mt-4 flex items-start gap-2 p-3 rounded-xl text-xs"
+            style={{ background: C.orangeLight, color: '#993C1D' }}>
+            <Lock className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>Esta categoria é global e não pode ser editada por lojas.</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Upload de Imagem */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Upload */}
           <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Imagem da Categoria <span className="text-gray-300">(opcional)</span>
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+              Imagem <span className="normal-case text-gray-300 font-normal">(opcional)</span>
             </label>
-            <div className="flex items-start gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    disabled={!canEdit}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label
-                    htmlFor="image-upload"
-                    className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-200 rounded-xl transition-all group ${
-                      canEdit 
-                        ? 'cursor-pointer hover:border-primary hover:bg-primary/5' 
-                        : 'cursor-not-allowed opacity-60'
-                    }`}
-                  >
-                    <Upload className={`w-8 h-8 text-gray-300 ${
-                      canEdit ? 'group-hover:text-primary' : ''
-                    } transition-colors`} />
-                    <span className={`text-xs text-gray-400 mt-2 ${
-                      canEdit ? 'group-hover:text-primary' : ''
-                    } transition-colors`}>
-                      {canEdit ? 'Clique para fazer upload' : 'Upload desabilitado'}
-                    </span>
-                    <span className="text-[10px] text-gray-300 mt-1">
-                      PNG, JPG até 5MB
-                    </span>
-                  </label>
-                </div>
-              </div>
-              
+            <div className="flex gap-4 items-start">
+              <label
+                htmlFor="img-up"
+                className={`flex-1 flex flex-col items-center justify-center h-28
+                  border border-dashed border-gray-200 rounded-xl transition-colors
+                  ${canEdit ? 'cursor-pointer hover:border-orange-400 hover:bg-orange-50/40'
+                    : 'opacity-50 cursor-not-allowed'}`}
+              >
+                <Upload className="w-5 h-5 text-gray-300 mb-1.5" />
+                <span className="text-xs text-gray-400">
+                  {canEdit ? 'Clique para fazer upload' : 'Desabilitado'}
+                </span>
+                <span className="text-[11px] text-gray-300 mt-0.5">PNG, JPG até 5 MB</span>
+                <input id="img-up" type="file" accept="image/*"
+                  className="hidden" onChange={handleImage} disabled={!canEdit} />
+              </label>
               {imagePreview && (
-                <div className="relative w-40 h-40 rounded-xl overflow-hidden border border-gray-200">
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-100">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   {canEdit && (
                     <button
                       type="button"
-                      onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                      onClick={() => { setImagePreview(null); setFormData(p => ({ ...p, image: null })); }}
+                      className="absolute top-1.5 right-1.5 p-1 rounded-lg text-white"
+                      style={{ background: C.orange }}
+                      aria-label="Remover"
+                    ><X className="w-3 h-3" /></button>
                   )}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Nome da Categoria */}
+          {/* Nome */}
           <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Nome da Categoria <span className="text-red-400">*</span>
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+              Nome <span style={{ color: C.orange }}>*</span>
             </label>
             <input
-              type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               disabled={!canEdit}
-              className={`w-full bg-gray-50 border ${
-                errors.name ? 'border-red-300' : 'border-gray-200'
-              } rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${
-                !canEdit ? 'opacity-60 cursor-not-allowed' : ''
-              }`}
-              placeholder="Ex: Eletrônicos, Moda, Alimentos..."
+              placeholder="Ex: Eletrónicos, Moda, Alimentos..."
+              className={`w-full px-4 py-2.5 text-sm bg-gray-50 border rounded-xl
+                focus:outline-none transition-colors
+                ${errors.name ? 'border-red-300' : 'border-gray-200'}
+                ${!canEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+              style={{ color: C.navy }}
+              onFocus={e => e.target.style.borderColor = C.orange}
+              onBlur={e => e.target.style.borderColor = errors.name ? '#fca5a5' : '#e5e7eb'}
             />
             {errors.name && (
-              <p className="text-red-500 text-[10px] font-bold mt-1 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                {errors.name}
+              <p className="flex items-center gap-1 text-[11px] mt-1" style={{ color: C.orange }}>
+                <AlertCircle className="w-3 h-3" />{errors.name}
               </p>
             )}
           </div>
 
           {/* Descrição */}
           <div>
-            <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">
-              Descrição <span className="text-gray-300">(opcional)</span>
+            <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">
+              Descrição <span className="normal-case text-gray-300 font-normal">(opcional)</span>
             </label>
             <textarea
               name="description"
@@ -357,46 +273,59 @@ const CategoryModal = ({
               onChange={handleChange}
               disabled={!canEdit}
               rows={3}
-              className={`w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${
-                !canEdit ? 'opacity-60 cursor-not-allowed' : ''
-              }`}
               placeholder="Descreva a categoria..."
+              className={`w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200
+                rounded-xl focus:outline-none resize-none transition-colors
+                ${!canEdit ? 'opacity-60 cursor-not-allowed' : ''}`}
+              style={{ color: C.navy }}
+              onFocus={e => e.target.style.borderColor = C.orange}
+              onBlur={e => e.target.style.borderColor = '#e5e7eb'}
             />
           </div>
 
-          {/* Status */}
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-            <input
-              type="checkbox"
-              name="is_active"
-              id="is_active"
-              checked={formData.is_active}
-              onChange={handleChange}
-              disabled={!canEdit}
-              className="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary"
-            />
-            <label htmlFor="is_active" className="text-sm font-medium text-gray-700">
-              Categoria ativa
+          {/* Toggle */}
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
+            <div>
+              <p className="text-sm font-medium" style={{ color: C.navy }}>Categoria ativa</p>
+              <p className="text-xs text-gray-400">Visível para os utilizadores</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                name="is_active"
+                checked={formData.is_active}
+                onChange={handleChange}
+                disabled={!canEdit}
+                className="sr-only peer"
+              />
+              <div
+                className="w-10 h-6 rounded-full transition-colors
+                  after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                  after:bg-white after:rounded-full after:h-5 after:w-5
+                  after:transition-all peer-checked:after:translate-x-4"
+                style={{ background: formData.is_active ? C.orange : '#D1D5DB' }}
+              />
             </label>
           </div>
 
           {/* Botões */}
-          <div className="flex gap-4 pt-4 border-t border-gray-100">
+          <div className="flex gap-3 pt-2 border-t border-gray-100">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-bold text-gray-400 hover:bg-gray-50 transition-all"
               disabled={isLoading}
-            >
-              Cancelar
-            </button>
+              className="flex-1 py-2.5 text-sm text-gray-400 border border-gray-100
+                rounded-xl hover:bg-gray-50 transition-colors"
+            >Cancelar</button>
             {canEdit && (
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                className="flex-1 py-2.5 text-sm font-medium text-white rounded-xl
+                  transition-opacity hover:opacity-90 disabled:opacity-50"
+                style={{ background: C.orange }}
               >
-                {isLoading ? 'A processar...' : (category ? 'Atualizar Categoria' : 'Criar Categoria')}
+                {isLoading ? 'A processar...' : category ? 'Guardar alterações' : 'Criar categoria'}
               </button>
             )}
           </div>
@@ -406,417 +335,356 @@ const CategoryModal = ({
   );
 };
 
+// ── Card de categoria ────────────────────────────────────
+const CategoryCard = ({ category, canEdit, canDelete, onEdit, onDelete, onToggle }: {
+  category: Category; canEdit: boolean; canDelete: boolean;
+  onEdit: () => void; onDelete: () => void; onToggle: () => void;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="bg-white rounded-2xl border border-gray-100 overflow-hidden
+      hover:border-orange-200 transition-colors group"
+  >
+    <div className="h-36 bg-gray-50 relative flex items-center justify-center">
+      {category.image_url
+        ? <img src={category.image_url} alt={category.name}
+            className="w-full h-full object-cover" />
+        : <FolderPlus className="w-10 h-10 text-gray-200" />
+      }
+
+      <div className="absolute inset-0 p-3 flex items-start justify-between">
+        {category.is_global
+          ? <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
+              text-[10px] font-medium text-white"
+              style={{ background: C.navy }}>
+              <Globe className="w-3 h-3" />Global
+            </span>
+          : <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
+              text-[10px] font-medium text-white"
+              style={{ background: C.orange }}>
+              <Building2 className="w-3 h-3" />{category.company_name || 'Loja'}
+            </span>
+        }
+
+        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          {(canEdit || canDelete) && (
+            <button
+              onClick={onToggle}
+              className="w-7 h-7 rounded-lg bg-white flex items-center justify-center
+                transition-colors hover:bg-orange-50"
+              style={{ color: category.is_active ? '#1A6B35' : '#8A97A8' }}
+              aria-label={category.is_active ? 'Desativar' : 'Ativar'}
+            >
+              {category.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+            </button>
+          )}
+          {canEdit && (
+            <button onClick={onEdit}
+              className="w-7 h-7 rounded-lg bg-white flex items-center justify-center
+                text-gray-400 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+              aria-label="Editar"
+            ><Edit className="w-3.5 h-3.5" /></button>
+          )}
+          {canDelete && (
+            <button onClick={onDelete}
+              className="w-7 h-7 rounded-lg bg-white flex items-center justify-center
+                text-gray-400 transition-colors"
+              style={{ }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = C.orange; (e.currentTarget as HTMLElement).style.background = C.orangeLight; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#9CA3AF'; (e.currentTarget as HTMLElement).style.background = '#fff'; }}
+              aria-label="Eliminar"
+            ><Trash2 className="w-3.5 h-3.5" /></button>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div className="p-4">
+      <h3 className="text-sm font-medium truncate mb-1" style={{ color: C.navy }}>
+        {category.name}
+      </h3>
+      {category.description && (
+        <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed min-h-[2rem]">
+          {category.description}
+        </p>
+      )}
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+        <span className="flex items-center gap-1 text-[11px] text-gray-400">
+          <Package className="w-3 h-3" />
+          {category.products_count ?? 0} produtos
+        </span>
+        <span
+          className="px-2.5 py-0.5 rounded-full text-[10px] font-medium"
+          style={category.is_active
+            ? { background: '#E6F4EC', color: '#1A6B35' }
+            : { background: C.orangeLight, color: '#993C1D' }}
+        >
+          {category.is_active ? 'Ativa' : 'Inativa'}
+        </span>
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ── Card de estatística ──────────────────────────────────
+const StatCard = ({ label, value, sub, accent }: {
+  label: string; value: number; sub: string; accent: string;
+}) => (
+  <div className="bg-white border border-gray-100 rounded-xl p-4 relative overflow-hidden">
+    <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-xl"
+      style={{ background: accent }} />
+    <p className="text-xs text-gray-400 mb-1.5 pl-2">{label}</p>
+    <p className="text-2xl font-medium pl-2" style={{ color: C.navy }}>{value}</p>
+    <p className="text-xs text-gray-400 mt-0.5 pl-2">{sub}</p>
+  </div>
+);
+
+// ── Página principal ─────────────────────────────────────
 export default function Categories() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories,         setCategories]         = useState<Category[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [filterActive, setFilterActive] = useState<boolean | null>(null);
-  const [filterCompany, setFilterCompany] = useState<'all' | 'global' | 'mine'>('all');
-  
-  const user = getCurrentUser();
-  const isAdmin = user?.is_admin;
+  const [searchTerm,         setSearchTerm]         = useState('');
+  const [filterActive,       setFilterActive]       = useState('all');
+  const [filterType,         setFilterType]         = useState('all');
+  const [showModal,          setShowModal]          = useState(false);
+  const [showConfirm,        setShowConfirm]        = useState(false);
+  const [selectedCategory,   setSelectedCategory]   = useState<Category | null>(null);
+  const [isLoading,          setIsLoading]          = useState(true);
+  const [toast,              setToast]              = useState<{ message: string; type: ToastType } | null>(null);
+
+  const user      = getCurrentUser();
+  const isAdmin   = user?.is_admin;
   const isCompany = user?.is_company;
 
-  // Carregar categorias
+  const showToast = (message: string, type: ToastType) => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   const loadCategories = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "/login";
-        return;
-      }
-      
-      const params: any = {};
-      
-      if (filterActive !== null) {
-        params.is_active = filterActive;
-      }
-      
-      if (filterCompany === 'global') {
-        params.company = 'global';
-      } else if (filterCompany === 'mine' && isCompany) {
-        params.company = 'mine';
-      }
-      
-      const data = await categoriesService.list(params);
+      const data = await categoriesService.list({});
       setCategories(data);
-      setFilteredCategories(data);
-    } catch (error: any) {
-      console.error('Erro ao carregar categorias:', error);
-      
-      if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refresh");
-        localStorage.removeItem("user");
-        window.location.href = "/login";
-      } else {
-        showToast('Erro ao carregar categorias', 'error');
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (err: any) {
+      if (err.response?.status === 401) { localStorage.clear(); window.location.href = '/login'; }
+      else showToast('Erro ao carregar categorias', 'error');
+    } finally { setIsLoading(false); }
   };
+
+  useEffect(() => { loadCategories(); }, []);
 
   useEffect(() => {
-    loadCategories();
-  }, [filterActive, filterCompany]);
+    let r = [...categories];
+    const q = searchTerm.toLowerCase();
+    if (q) r = r.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      c.description?.toLowerCase().includes(q) ||
+      c.company_name?.toLowerCase().includes(q)
+    );
+    if (filterActive !== 'all') r = r.filter(c => c.is_active === (filterActive === 'active'));
+    if (filterType === 'global')   r = r.filter(c => c.is_global);
+    if (filterType === 'company')  r = r.filter(c => !c.is_global);
+    setFilteredCategories(r);
+  }, [searchTerm, filterActive, filterType, categories]);
 
-  // Filtrar categorias por busca
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredCategories(categories);
-    } else {
-      const filtered = categories.filter(cat => 
-        cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cat.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cat.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredCategories(filtered);
-    }
-  }, [searchTerm, categories]);
+  const canEdit   = (c: Category) => !!(isAdmin || (isCompany && !c.is_global));
+  const canDelete = (_c: Category) => !!isAdmin;
 
-  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 5000);
-  };
-
-  // Verificar se pode editar categoria
-  const canEditCategory = (category: Category): boolean => {
-    if (isAdmin) return true;
-    if (isCompany && !category.is_global) return true;
-    return false;
-  };
-
-  // Verificar se pode deletar categoria
-  const canDeleteCategory = (category: Category): boolean => {
-    return isAdmin; // Apenas admin pode deletar
-  };
-
-  // Criar/Atualizar categoria
-  const handleSaveCategory = async (data: CreateCategoryData) => {
+  const handleSave = async (data: CreateCategoryData) => {
     try {
       if (selectedCategory) {
         await categoriesService.update(selectedCategory.id, data);
-        showToast('Categoria atualizada com sucesso!', 'success');
+        showToast('Categoria atualizada!', 'success');
       } else {
         await categoriesService.create(data);
-        showToast('Categoria criada com sucesso!', 'success');
+        showToast('Categoria criada!', 'success');
       }
       await loadCategories();
       setSelectedCategory(null);
       setShowModal(false);
-    } catch (error: any) {
-      console.error('Erro ao salvar categoria:', error);
-      
-      if (error.response?.data) {
-        const errorData = error.response.data;
-        let errorMessage = 'Erro ao salvar categoria';
-        
-        if (typeof errorData === 'object') {
-          const firstKey = Object.keys(errorData)[0];
-          if (firstKey && errorData[firstKey]) {
-            errorMessage = `${firstKey}: ${errorData[firstKey]}`;
-          }
-        }
-        
-        showToast(errorMessage, 'error');
-      } else {
-        showToast('Erro ao salvar categoria', 'error');
-      }
-      
-      throw error;
+    } catch (err: any) {
+      const msg = err.response?.data
+        ? String(Object.values(err.response.data)[0])
+        : 'Erro ao guardar';
+      showToast(msg, 'error');
+      throw err;
     }
   };
 
-  // Deletar categoria
-  const handleDeleteCategory = async () => {
+  const handleDelete = async () => {
     if (!selectedCategory) return;
-    
     try {
       await categoriesService.delete(selectedCategory.id);
-      showToast('Categoria eliminada com sucesso!', 'success');
+      showToast('Categoria eliminada!', 'success');
       await loadCategories();
-    } catch (error) {
-      console.error('Erro ao deletar categoria:', error);
-      showToast('Erro ao deletar categoria', 'error');
-    } finally {
-      setSelectedCategory(null);
-    }
+    } catch { showToast('Erro ao eliminar', 'error'); }
+    finally { setSelectedCategory(null); }
   };
 
-  // Ativar/desativar categoria
-  const handleToggleActive = async (category: Category) => {
+  const handleToggle = async (category: Category) => {
     try {
       await categoriesService.toggleActive(category.id, !category.is_active);
-      showToast(`Categoria ${!category.is_active ? 'ativada' : 'desativada'} com sucesso!`, 'success');
+      showToast(`Categoria ${!category.is_active ? 'ativada' : 'desativada'}!`, 'success');
       await loadCategories();
-    } catch (error) {
-      console.error('Erro ao alterar status da categoria:', error);
-      showToast('Erro ao alterar status', 'error');
-    }
+    } catch { showToast('Erro ao alterar estado', 'error'); }
   };
 
+  const totalActive  = categories.filter(c => c.is_active).length;
+  const totalGlobal  = categories.filter(c => c.is_global).length;
+  const totalCompany = categories.filter(c => !c.is_global).length;
+
   return (
-    <div className="space-y-8">
-      {/* Toast */}
+    <div className="space-y-5">
       <AnimatePresence>
-        {toast && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onClose={() => setToast(null)}
-          />
-        )}
+        {toast && <Toast {...toast} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
-      {/* Confirm Modal */}
       <ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={() => {
-          setShowConfirmModal(false);
-          setSelectedCategory(null);
-        }}
-        onConfirm={handleDeleteCategory}
-        title="Eliminar Categoria"
-        message={`Tem certeza que deseja eliminar a categoria "${selectedCategory?.name}"? Esta ação não pode ser desfeita.`}
-        isAdminOnly={!canDeleteCategory(selectedCategory!)}
+        isOpen={showConfirm}
+        onClose={() => { setShowConfirm(false); setSelectedCategory(null); }}
+        onConfirm={handleDelete}
+        title="Eliminar categoria"
+        message={`Tem a certeza que quer eliminar "${selectedCategory?.name}"? Esta ação não pode ser desfeita.`}
+        canDelete={canDelete(selectedCategory!)}
       />
 
-      {/* Category Modal */}
       <CategoryModal
         isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setSelectedCategory(null);
-        }}
+        onClose={() => { setShowModal(false); setSelectedCategory(null); }}
         category={selectedCategory}
-        onSave={handleSaveCategory}
-        canEdit={selectedCategory ? canEditCategory(selectedCategory) : true}
+        onSave={handleSave}
+        canEdit={selectedCategory ? canEdit(selectedCategory) : true}
       />
 
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Cabeçalho */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-800">Categorias</h1>
-          <p className="text-sm text-gray-400">
-            {isAdmin 
-              ? 'Gerencie todas as categorias da plataforma.'
-              : isCompany 
-                ? 'Gerencie as categorias da sua loja. Categorias globais são apenas para visualização.'
-                : 'Visualize as categorias disponíveis.'}
+          <h1 className="text-xl font-medium" style={{ color: C.navy }}>Categorias</h1>
+          <p className="text-sm text-gray-400 mt-0.5">
+            {isAdmin ? 'Gere todas as categorias da plataforma.'
+              : isCompany ? 'Gere as categorias da sua loja. Categorias globais são só de leitura.'
+              : 'Visualiza as categorias disponíveis.'}
           </p>
         </div>
         {(isAdmin || isCompany) && (
-          <button 
-            onClick={() => {
-              setSelectedCategory(null);
-              setShowModal(true);
-            }}
-            className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
+          <button
+            onClick={() => { setSelectedCategory(null); setShowModal(true); }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium
+              text-white rounded-xl transition-opacity hover:opacity-90 whitespace-nowrap"
+            style={{ background: C.orange }}
           >
-            <Plus className="w-4 h-4" />
-            Nova Categoria
+            <Plus className="w-4 h-4" />Nova categoria
           </button>
         )}
       </div>
 
-      {/* Filters & Search */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
-        <div className="relative flex-1 w-full">
+      {/* Estatísticas */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard label="Total"    value={categories.length} sub="categorias"    accent={C.navy} />
+        <StatCard label="Ativas"   value={totalActive}       sub="em uso"        accent={C.orange} />
+        <StatCard label="Globais"  value={totalGlobal}       sub="do sistema"    accent="#5B8DB8" />
+        <StatCard label="Por loja" value={totalCompany}      sub="personalizadas" accent="#A0BAD0" />
+      </div>
+
+      {/* Toolbar */}
+      <div className="bg-white border border-gray-100 rounded-2xl p-3
+        flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Pesquisar categorias..." 
+          <input
+            type="text"
+            placeholder="Pesquisar categorias..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-100
+              rounded-xl focus:outline-none transition-colors"
+            style={{ color: C.navy }}
+            onFocus={e => e.target.style.borderColor = C.orange}
+            onBlur={e => e.target.style.borderColor = '#F3F4F6'}
           />
         </div>
-        <div className="flex items-center gap-2 w-full md:w-auto">
-          <select
-            value={filterActive === null ? 'all' : filterActive ? 'active' : 'inactive'}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (value === 'all') setFilterActive(null);
-              else setFilterActive(value === 'active');
-            }}
-            className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
+        <div className="flex gap-2">
+          <select value={filterActive} onChange={e => setFilterActive(e.target.value)}
+            className="px-3 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl
+              text-gray-500 focus:outline-none cursor-pointer flex-1 sm:flex-none"
+            style={{ color: C.navy }}
           >
-            <option value="all">Todos os status</option>
+            <option value="all">Todos os estados</option>
             <option value="active">Ativas</option>
             <option value="inactive">Inativas</option>
           </select>
-
           {(isAdmin || isCompany) && (
-            <select
-              value={filterCompany}
-              onChange={(e) => setFilterCompany(e.target.value as any)}
-              className="px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
+            <select value={filterType} onChange={e => setFilterType(e.target.value)}
+              className="px-3 py-2 text-sm bg-gray-50 border border-gray-100 rounded-xl
+                text-gray-500 focus:outline-none cursor-pointer flex-1 sm:flex-none"
+              style={{ color: C.navy }}
             >
-              <option value="all">Todas as categorias</option>
-              <option value="global">Globais (Admin)</option>
-              {isCompany && <option value="mine">Minhas categorias</option>}
+              <option value="all">Todas</option>
+              <option value="global">Globais</option>
+              {isCompany && <option value="company">Minhas</option>}
             </select>
           )}
         </div>
       </div>
 
-      {/* Categories Grid */}
+      {/* Grid */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="flex items-center justify-center py-24">
+          <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
+            style={{ borderColor: C.orange, borderTopColor: 'transparent' }} />
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCategories.map((cat, i) => {
-            const canEdit = canEditCategory(cat);
-            const canDelete = canDeleteCategory(cat);
-            
-            return (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                key={cat.id} 
-                className={`bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all group overflow-hidden ${
-                  !canEdit && !cat.is_global ? 'opacity-75' : ''
-                }`}
-              >
-                {/* Imagem da categoria */}
-                <div className="h-40 bg-gradient-to-br from-gray-50 to-gray-100 relative">
-                  {cat.image_url ? (
-                    <img 
-                      src={cat.image_url} 
-                      alt={cat.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <FolderPlus className="w-12 h-12 text-gray-300" />
-                    </div>
-                  )}
-                  
-                  {/* Badge de origem */}
-                  <div className="absolute top-3 left-3">
-                    {cat.is_global ? (
-                      <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold flex items-center gap-1 backdrop-blur-sm">
-                        <Globe className="w-3 h-3" />
-                        Global
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-bold flex items-center gap-1 backdrop-blur-sm">
-                        <Building2 className="w-3 h-3" />
-                        {cat.company_name || 'Loja'}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Ações */}
-                  <div className="absolute top-3 right-3 flex items-center gap-2">
-                    {(canEdit || isAdmin) && (
-                      <button
-                        onClick={() => handleToggleActive(cat)}
-                        className={`p-2 rounded-lg transition-colors ${
-                          cat.is_active 
-                            ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200' 
-                            : 'bg-gray-100 text-gray-400 hover:bg-gray-200'
-                        }`}
-                        title={cat.is_active ? 'Desativar' : 'Ativar'}
-                      >
-                        {cat.is_active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Conteúdo */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="text-lg font-black text-gray-800">{cat.name}</h3>
-                    <div className="flex items-center gap-1">
-                      {canEdit && (
-                        <button
-                          onClick={() => {
-                            setSelectedCategory(cat);
-                            setShowModal(true);
-                          }}
-                          className="p-2 text-gray-400 hover:text-primary transition-colors"
-                          title="Editar"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                      )}
-                      {canDelete && (
-                        <button
-                          onClick={() => {
-                            setSelectedCategory(cat);
-                            setShowConfirmModal(true);
-                          }}
-                          className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                          title="Eliminar"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-
-                  {cat.description && (
-                    <p className="text-sm text-gray-500 mb-4 line-clamp-2">{cat.description}</p>
-                  )}
-
-                  <div className="mt-6 pt-6 border-t border-gray-50 flex items-center justify-between">
-                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                      {cat.products_count} {cat.products_count === 1 ? 'Produto' : 'Produtos'}
-                    </span>
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
-                      cat.is_active ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'
-                    }`}>
-                      {cat.is_active ? 'Ativo' : 'Inativo'}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-
-          {/* Add New Card */}
+      ) : filteredCategories.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 bg-white
+          border border-gray-100 rounded-2xl gap-3">
+          <FolderPlus className="w-10 h-10 text-gray-200" />
+          <p className="text-sm text-gray-400">Nenhuma categoria encontrada</p>
           {(isAdmin || isCompany) && (
-            <button 
-              onClick={() => {
-                setSelectedCategory(null);
-                setShowModal(true);
-              }}
-              className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-gray-400 hover:border-primary hover:text-primary transition-all group min-h-[320px]"
-            >
-              <div className="w-16 h-16 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center group-hover:border-primary">
-                <Plus className="w-8 h-8" />
-              </div>
-              <span className="text-sm font-bold">Adicionar Nova Categoria</span>
-            </button>
+            <button onClick={() => { setSelectedCategory(null); setShowModal(true); }}
+              className="text-sm font-medium hover:underline"
+              style={{ color: C.orange }}
+            >Criar primeira categoria</button>
           )}
         </div>
-      )}
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredCategories.map((cat, i) => (
+            <motion.div key={cat.id} initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}>
+              <CategoryCard
+                category={cat}
+                canEdit={canEdit(cat)}
+                canDelete={canDelete(cat)}
+                onEdit={() => { setSelectedCategory(cat); setShowModal(true); }}
+                onDelete={() => { setSelectedCategory(cat); setShowConfirm(true); }}
+                onToggle={() => handleToggle(cat)}
+              />
+            </motion.div>
+          ))}
 
-      {!isLoading && filteredCategories.length === 0 && (
-        <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-          <FolderPlus className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-400 font-bold">Nenhuma categoria encontrada</p>
           {(isAdmin || isCompany) && (
             <button
-              onClick={() => {
-                setSelectedCategory(null);
-                setShowModal(true);
+              onClick={() => { setSelectedCategory(null); setShowModal(true); }}
+              className="border border-dashed border-gray-200 rounded-2xl min-h-[220px]
+                flex flex-col items-center justify-center gap-3 transition-all group"
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = C.orange;
+                (e.currentTarget as HTMLElement).style.background = C.orangeLight;
               }}
-              className="mt-4 text-primary font-bold hover:underline"
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLElement).style.borderColor = '#E5E7EB';
+                (e.currentTarget as HTMLElement).style.background = 'transparent';
+              }}
             >
-              Criar primeira categoria
+              <div className="w-11 h-11 rounded-full border border-dashed border-gray-200
+                flex items-center justify-center text-gray-400 group-hover:border-orange-300
+                group-hover:text-orange-500 transition-colors">
+                <Plus className="w-5 h-5" />
+              </div>
+              <span className="text-xs text-gray-400 group-hover:text-orange-500 transition-colors">
+                Adicionar categoria
+              </span>
             </button>
           )}
         </div>

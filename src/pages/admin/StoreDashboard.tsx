@@ -38,12 +38,17 @@ export default function StoreDashboard() {
     total_customers: 0,
     recent_orders: [],
     top_products: [],
-    sales_by_day: [],
-    customers: []
+    sales_by_day: []
   });
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 0);
 
   useEffect(() => {
     loadDashboardData();
+    
+    // Monitorar resize da janela para atualizar os gráficos
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const loadDashboardData = async () => {
@@ -58,22 +63,26 @@ export default function StoreDashboard() {
     }
   };
 
-  // Calcular tendências (comparação com período anterior)
-  const getTrend = (current: number, previous: number) => {
-    if (previous === 0) return { value: '0%', isUp: true };
-    const change = ((current - previous) / previous) * 100;
+  // Calcular tendências baseadas nos dados reais
+  const getTrend = () => {
+    const sales_by_day = stats.sales_by_day;
+    if (sales_by_day.length < 2) return { value: '0%', isUp: true };
+    
+    const currentWeek = sales_by_day.slice(-7);
+    const previousWeek = sales_by_day.slice(-14, -7);
+    
+    const currentTotal = currentWeek.reduce((sum, day) => sum + day.total, 0);
+    const previousTotal = previousWeek.reduce((sum, day) => sum + day.total, 0);
+    
+    if (previousTotal === 0) return { value: '+100%', isUp: true };
+    const change = ((currentTotal - previousTotal) / previousTotal) * 100;
     return {
       value: `${change > 0 ? '+' : ''}${change.toFixed(1)}%`,
       isUp: change > 0
     };
   };
 
-  // Valores anteriores simulados (em produção, viriam do backend)
-  const previousPeriod = {
-    sales: stats.total_sales * 0.85,
-    orders: stats.total_orders * 0.9,
-    customers: stats.total_customers * 0.95
-  };
+  const trend = getTrend();
 
   const statCards = [
     { 
@@ -81,14 +90,14 @@ export default function StoreDashboard() {
       value: formatCurrency(stats.total_sales), 
       icon: DollarSign, 
       color: 'bg-emerald-500',
-      trend: getTrend(stats.total_sales, previousPeriod.sales)
+      trend: trend
     },
     { 
       label: 'Pedidos', 
       value: stats.total_orders.toString(), 
       icon: ShoppingBag, 
       color: 'bg-blue-500',
-      trend: getTrend(stats.total_orders, previousPeriod.orders)
+      trend: trend
     },
     { 
       label: 'Produtos', 
@@ -102,7 +111,7 @@ export default function StoreDashboard() {
       value: stats.total_customers.toString(), 
       icon: Users, 
       color: 'bg-orange-500',
-      trend: getTrend(stats.total_customers, previousPeriod.customers)
+      trend: trend
     },
   ];
 
@@ -128,7 +137,6 @@ export default function StoreDashboard() {
     return labels[status as keyof typeof labels] || status;
   };
 
-  // Customização do Tooltip do Gráfico
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -162,6 +170,10 @@ export default function StoreDashboard() {
       </div>
     );
   }
+
+  // Verificar se há dados para os gráficos
+  const hasSalesData = stats.sales_by_day && stats.sales_by_day.length > 0;
+  const hasOrdersData = stats.sales_by_day && stats.sales_by_day.length > 0;
 
   return (
     <div className="space-y-8">
@@ -198,8 +210,8 @@ export default function StoreDashboard() {
         ))}
       </div>
 
-      {/* Gráfico de Vendas Principal */}
-      {stats.sales_by_day.length > 0 && (
+      {/* Gráfico de Vendas Principal - com verificação de dados */}
+      {hasSalesData && (
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -212,6 +224,7 @@ export default function StoreDashboard() {
             </div>
           </div>
           
+          {/* Container com altura e largura definidas */}
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={stats.sales_by_day}>
@@ -245,6 +258,7 @@ export default function StoreDashboard() {
                   fillOpacity={1} 
                   fill="url(#colorTotal)" 
                   animationDuration={1500}
+                  isAnimationActive={false}
                 />
               </AreaChart>
             </ResponsiveContainer>
@@ -252,19 +266,19 @@ export default function StoreDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Gráfico de Pedidos (Barras) */}
-        {stats.sales_by_day.length > 0 && (
+      {/* Gráfico de Barras - com verificação de dados */}
+      {hasOrdersData && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
             <h2 className="font-black text-gray-800 mb-6 text-sm">Volume de Pedidos</h2>
-            <div className="h-48">
+            <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={stats.sales_by_day}>
                   <Bar 
                     dataKey="orders_count" 
                     fill="#f97316" 
                     radius={[4, 4, 0, 0]} 
-                    barSize={30}
+                    barSize={Math.max(20, Math.min(50, windowWidth / 15))}
                   />
                   <XAxis 
                     dataKey="date" 
@@ -274,6 +288,10 @@ export default function StoreDashboard() {
                     tickFormatter={(str) => new Date(str).toLocaleDateString('pt-PT', { 
                       weekday: 'short' 
                     })}
+                  />
+                  <YAxis 
+                    allowDecimals={false}
+                    tick={{ fontSize: 10, fill: '#9ca3af' }}
                   />
                   <Tooltip 
                     cursor={{fill: '#f8fafc'}} 
@@ -287,56 +305,60 @@ export default function StoreDashboard() {
               </ResponsiveContainer>
             </div>
           </div>
-        )}
 
-        {/* Top Products */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <h2 className="font-black text-gray-800 mb-6">Produtos Mais Vendidos</h2>
-          <div className="space-y-4">
-            {stats.top_products.length > 0 ? (
-              stats.top_products.map((product) => (
-                <div key={product.id} className="flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gray-100 overflow-hidden">
-                      {product.image_url ? (
-                        <img 
-                          src={product.image_url} 
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
+          {/* Top Products */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 className="font-black text-gray-800 mb-6">Produtos Mais Vendidos</h2>
+            <div className="space-y-4">
+              {stats.top_products.length > 0 ? (
+                stats.top_products.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between group">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0">
+                        {product.image_url ? (
+                          <img 
+                            src={product.image_url} 
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                              (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="w-full h-full flex items-center justify-center"><svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="w-5 h-5 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-gray-800 truncate">{product.name}</p>
+                        <p className="text-[10px] text-gray-400">{product.total_sold} unidades vendidas</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-800">{product.name}</p>
-                      <p className="text-[10px] text-gray-400">{product.total_sold} unidades vendidas</p>
+                    <div className="text-right flex-shrink-0 ml-3">
+                      <p className="text-sm font-black text-primary">
+                        {formatCurrency(product.total_revenue)}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-black text-primary">
-                      {formatCurrency(product.total_revenue)}
-                    </p>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                  <p className="text-gray-400">Nenhum produto vendido ainda</p>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <Package className="w-12 h-12 text-gray-200 mx-auto mb-4" />
-                <p className="text-gray-400">Nenhum produto vendido</p>
-              </div>
-            )}
+              )}
+            </div>
+            <Link 
+              to="/store-admin/products" 
+              className="w-full mt-6 py-3 border-2 border-dashed border-gray-100 rounded-xl text-xs font-bold text-gray-400 hover:border-primary hover:text-primary transition-all text-center block"
+            >
+              Ver Todos Produtos
+            </Link>
           </div>
-          <Link 
-            to="/store-admin/products" 
-            className="w-full mt-6 py-3 border-2 border-dashed border-gray-100 rounded-xl text-xs font-bold text-gray-400 hover:border-primary hover:text-primary transition-all text-center block"
-          >
-            Ver Todos Produtos
-          </Link>
         </div>
-      </div>
+      )}
 
       {/* Recent Orders */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -356,7 +378,7 @@ export default function StoreDashboard() {
                 <th className="px-6 py-4">Valor</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4"></th>
-              </tr>
+               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {stats.recent_orders.length > 0 ? (
@@ -365,18 +387,18 @@ export default function StoreDashboard() {
                     <td className="px-6 py-4 font-bold text-gray-800">{order.order_number}</td>
                     <td className="px-6 py-4">
                       <div>
-                        <p className="text-gray-800">{order.customer_name}</p>
-                        <p className="text-xs text-gray-400">{order.customer_email}</p>
+                        <p className="text-gray-800 line-clamp-1">{order.customer_name}</p>
+                        <p className="text-xs text-gray-400 truncate max-w-[200px]">{order.customer_email}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-400">
+                    <td className="px-6 py-4 text-gray-400 whitespace-nowrap">
                       {new Date(order.created_at).toLocaleDateString('pt-PT')}
                     </td>
-                    <td className="px-6 py-4 font-bold text-primary">
+                    <td className="px-6 py-4 font-bold text-primary whitespace-nowrap">
                       {formatCurrency(order.total)}
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusColor(order.status)}`}>
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase whitespace-nowrap ${getStatusColor(order.status)}`}>
                         {getStatusLabel(order.status)}
                       </span>
                     </td>

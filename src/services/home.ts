@@ -4,7 +4,7 @@ import { Product } from "../context/CartContext";
 export interface HomeCategory {
   id: number;
   name: string;
-  slug: string;  // Adicione esta linha
+  slug: string;
   description?: string;
   image_url?: string;
   products_count: number;
@@ -97,79 +97,65 @@ export interface NewsletterResponse {
 }
 
 export const homeService = {
-  // Buscar dados completos da home com produtos por categoria
   getHomeData: async (): Promise<HomeData> => {
     try {
-      // Buscar dados estáticos da home
-      const homeResponse = await api.get<{
-        hero_banners: Banner[];
-        promo_banners: Banner[];
-        sidebar_banners: Banner[];
-        promotions: Promotion[];
-        features: Feature[];
-        site_config: SiteConfig;
-      }>('home/');
-      
-      // Buscar categorias ativas
-      const categoriesResponse = await api.get<HomeCategory[]>('categories/', {
-        params: {
-          is_active: true,
-          limit: 10 // Buscar até 10 categorias
-        }
-      });
+      const [homeResponse, categoriesResponse] = await Promise.all([
+        api.get<{
+          hero_banners: Banner[];
+          promo_banners: Banner[];
+          sidebar_banners: Banner[];
+          promotions: Promotion[];
+          features: Feature[];
+          site_config: SiteConfig;
+        }>('home/'),
+        api.get<HomeCategory[]>('categories/', {
+          params: { is_active: true, limit: 10 },
+        }),
+      ]);
 
       const categories = categoriesResponse.data;
-      
-      // Para cada categoria, buscar seus produtos
-      const categoriesWithProductsPromises = categories.map(async (category) => {
-        try {
-          const productsResponse = await api.get<{ results: HomeProduct[] }>('products/', {
-            params: {
-              category: category.id,
-              status: 'active',
-              limit: 10 // 10 produtos por categoria
+
+      const [categoriesWithProducts, featuredResponse] = await Promise.all([
+        Promise.all(
+          categories.map(async (category) => {
+            try {
+              const productsResponse = await api.get<{ results: HomeProduct[] }>(
+                'products/',
+                { params: { category: category.id, status: 'active', limit: 10 } }
+              );
+              return {
+                id: category.id,
+                name: category.name,
+                slug: category.slug,
+                description: category.description,
+                image_url: category.image_url,
+                products: productsResponse.data.results,
+              };
+            } catch {
+              return {
+                id: category.id,
+                name: category.name,
+                slug: category.slug,
+                description: category.description,
+                image_url: category.image_url,
+                products: [] as HomeProduct[],
+              };
             }
-          });
-          
-          return {
-            id: category.id,
-            name: category.name,
-            slug: category.slug,  // Adicione esta linha
-            description: category.description,
-            image_url: category.image_url,
-            products: productsResponse.data.results
-          };
-        } catch (error) {
-          console.error(`Erro ao buscar produtos da categoria ${category.name}:`, error);
-          return {
-            id: category.id,
-            name: category.name,
-            slug: category.slug, 
-            description: category.description,
-            image_url: category.image_url,
-            products: []
-          };
-        }
-      });
-
-      const categoriesWithProducts = await Promise.all(categoriesWithProductsPromises);
-
-      // Buscar produtos em destaque
-      const featuredResponse = await api.get<{ results: HomeProduct[] }>('products/', {
-        params: {
-          featured: true,
-          status: 'active',
-          limit: 10
-        }
-      });
+          })
+        ),
+        api.get<{ results: HomeProduct[] }>('products/', {
+          params: { featured: true, status: 'active', limit: 10 },
+        }),
+      ]);
 
       return {
         ...homeResponse.data,
-        categories_with_products: categoriesWithProducts.filter(cat => cat.products.length > 0),
-        featured_products: featuredResponse.data.results
+        categories_with_products: categoriesWithProducts.filter(
+          (cat) => cat.products.length > 0
+        ),
+        featured_products: featuredResponse.data.results,
       };
-    } catch (error) {
-      console.error('Erro ao buscar dados da home:', error);
+    } catch {
       return {
         hero_banners: [],
         promo_banners: [],
@@ -178,74 +164,64 @@ export const homeService = {
         features: [],
         site_config: {} as SiteConfig,
         categories_with_products: [],
-        featured_products: []
+        featured_products: [],
       };
     }
   },
 
-  // Inscrever na newsletter
   subscribeNewsletter: async (email: string): Promise<NewsletterResponse> => {
     try {
-      const response = await api.post<NewsletterResponse>('newsletter/subscribe/', { email });
+      const response = await api.post<NewsletterResponse>(
+        'newsletter/subscribe/',
+        { email }
+      );
       return response.data;
     } catch (error: any) {
-      console.error('Erro ao inscrever na newsletter:', error);
-      if (error.response?.data) {
-        return error.response.data;
-      }
-      return {
-        success: false,
-        message: 'Erro ao processar inscrição. Tente novamente.'
-      };
+      return (
+        error?.response?.data ?? {
+          success: false,
+          message: 'Erro ao processar inscrição. Tente novamente.',
+        }
+      );
     }
   },
 
-  // Buscar apenas banners
-  getBanners: async (position?: number) => {
+  getBanners: async (position?: number): Promise<Banner[]> => {
     try {
       const params = position ? { position } : {};
       const response = await api.get<Banner[]>('banners/', { params });
       return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar banners:', error);
+    } catch {
       return [];
     }
   },
 
-  // Buscar apenas promoções
-  getPromotions: async () => {
+  getPromotions: async (): Promise<Promotion[]> => {
     try {
       const response = await api.get<Promotion[]>('promotions/');
       return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar promoções:', error);
+    } catch {
       return [];
     }
   },
 
-  getFeaturedCategories: async () => {
+  getFeaturedCategories: async (): Promise<HomeCategory[]> => {
     try {
       const response = await api.get<HomeCategory[]>('categories/', {
-        params: {
-          is_active: true,
-          limit: 8
-        }
+        params: { is_active: true, limit: 8 },
       });
       return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar categorias em destaque:', error);
+    } catch {
       return [];
     }
   },
 
-  // Buscar configurações do site
-  getSiteConfig: async () => {
+  getSiteConfig: async (): Promise<SiteConfig | null> => {
     try {
       const response = await api.get<SiteConfig>('site-configs/');
       return response.data;
-    } catch (error) {
-      console.error('Erro ao buscar configurações do site:', error);
+    } catch {
       return null;
     }
-  }
+  },
 };

@@ -26,7 +26,6 @@ const storeMenuItems = [
   { icon: Package, label: 'Meus Produtos', path: '/store-admin/products' },
   { icon: ListTree, label: 'Minhas Categorias', path: '/store-admin/categories' },
   { icon: ShoppingCart, label: 'Pedidos Recebidos', path: '/store-admin/orders' },
-  { icon: Users, label: 'Meus Clientes', path: '/store-admin/customers' },
   { icon: BarChart3, label: 'Relatórios de Vendas', path: '/store-admin/reports' },
   { icon: Settings, label: 'Configurações da Loja', path: '/store-admin/settings' },
 ];
@@ -84,7 +83,7 @@ export default function StoreAdminLayout() {
       <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
         <Link to="/" className="flex items-center gap-2">
           <img 
-            src="https://raw.githubusercontent.com/HSE-Market-Place/logo/main/logo.png" 
+            src="https://caluloglobal.ao/img/Market_Place1.webp" 
             alt="HSE Market Place" 
             className="h-8 w-auto object-contain"
           />

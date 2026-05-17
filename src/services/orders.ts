@@ -19,8 +19,10 @@ export interface Order {
   company: string;
   company_id?: number;
   date: string;
+  created_at: string;
   total: number;
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  payment_method?: 'express' | 'reference' | 'ekwanza';  // NOVO CAMPO
   items: OrderItem[];
   customer_info?: {
     full_name: string;
