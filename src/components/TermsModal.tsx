@@ -71,7 +71,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
             </div>
             <p className="text-sm text-blue-700 leading-relaxed">
               O HSE MarketPlace é uma plataforma exclusiva para produtos relacionados a <strong>Saúde, Segurança e Ergonomia (HSE)</strong>. 
-              Ao se cadastrar, sua empresa concorda em comercializar apenas produtos dentro destas categorias. 
+              Ao se cadastrar, a sua empresa concorda em comercializar apenas produtos dentro destas categorias. 
               O descumprimento resultará em suspensão ou banimento permanente da plataforma.
             </p>
           </div>
@@ -87,7 +87,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               <div className="text-sm text-gray-600 space-y-2">
                 <p>
                   O presente Termo de Uso e Política de Privacidade ("Termo") regula a relação entre 
-                  o <strong>HSE MarketPlace</strong> ("Plataforma", "Nós", "Nosso") e sua empresa ("Parceiro", "Vendedor", "Você") 
+                  o <strong>HSE MarketPlace</strong> ("Plataforma", "Nós", "Nosso") e a sua empresa ("Parceiro", "Vendedor", "Você") 
                   que deseja utilizar os serviços da plataforma para comercialização de produtos.
                 </p>
                 <p>
@@ -108,8 +108,8 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li><strong>Saúde (Health)</strong> - Equipamentos médicos, produtos de bem-estar, suplementos, medicamentos (quando permitido por lei), materiais hospitalares, produtos de higiene e cuidados pessoais.</li>
-                  <li><strong>Segurança (Safety)</strong> - Equipamentos de Proteção Individual (EPI's), sistemas de segurança, extintores, alarmes, câmeras de vigilância, coletes, capacetes, luvas, óculos de proteção, sinalização.</li>
-                  <li><strong>Ergonomia (Ergonomics)</strong> - Mobiliário ergonômico (cadeiras, mesas reguláveis), suportes para computadores, teclados ergonômicos, iluminação adequada, acessórios para postura correta.</li>
+                  <li><strong>Segurança (Safety)</strong> - Equipamentos de Proteção Individual (EPI's), sistemas de segurança, extintores, alarmes, câmaras de vigilância, coletes, capacetes, luvas, óculos de protecção, sinalização.</li>
+                  <li><strong>Ergonomia (Ergonomics)</strong> - Mobiliário ergonómico (cadeiras, mesas reguláveis), suportes para computadores, teclados ergonómicos, iluminação adequada, acessórios para postura correcta.</li>
                 </ul>
                 <div className="bg-yellow-50 p-3 rounded-lg mt-3">
                   <p className="text-sm text-yellow-800">
@@ -127,18 +127,18 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               </h3>
               <div className="text-sm text-gray-600 space-y-3">
                 <p>
-                  É expressamente <span className="font-bold text-red-600">PROIBIDO</span> o cadastro e comercialização de produtos que não estejam diretamente relacionados à Saúde, Segurança e Ergonomia (HSE).
+                  É expressamente <span className="font-bold text-red-600">PROIBIDO</span> o cadastro e comercialização de produtos que não estejam directamente relacionados à Saúde, Segurança e Ergonomia (HSE).
                 </p>
                 <p>Exemplos de produtos <span className="font-bold text-red-600">NÃO PERMITIDOS</span>:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Moda e vestuário em geral (exceto EPI's e roupas hospitalares)</li>
-                  <li>Calçados comuns (exceto sapatos de segurança)</li>
-                  <li>Eletrônicos de consumo (TVs, smartphones, tablets - exceto equipamentos médicos)</li>
-                  <li>Alimentos e bebidas (exceto suplementos alimentares)</li>
+                  <li>Moda e vestuário em geral (excepto EPI's e roupas hospitalares)</li>
+                  <li>Calçados comuns (excepto sapatos de segurança)</li>
+                  <li>Electrónicos de consumo (TVs, smartphones, tablets - excepto equipamentos médicos)</li>
+                  <li>Alimentos e bebidas (excepto suplementos alimentares)</li>
                   <li>Bolsas e acessórios de moda</li>
-                  <li>Produtos de beleza estéticos (exceto cosméticos médicos)</li>
-                  <li>Brinquedos e artigos infantis (exceto equipamentos de segurança infantil)</li>
-                  <li>Móveis convencionais (exceto móveis ergonômicos)</li>
+                  <li>Produtos de beleza estéticos (excepto cosméticos médicos)</li>
+                  <li>Brinquedos e artigos infantis (excepto equipamentos de segurança infantil)</li>
+                  <li>Móveis convencionais (excepto móveis ergonómicos)</li>
                 </ul>
               </div>
             </div>
@@ -170,7 +170,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
             <div className="border-b border-gray-100 pb-4">
               <h3 className="text-lg font-black text-gray-800 mb-3 flex items-center gap-2">
                 <Lock className="w-5 h-5 text-blue-900" />
-                5. Política de Privacidade e Proteção de Dados
+                5. Política de Privacidade e Protecção de Dados
               </h3>
               <div className="text-sm text-gray-600 space-y-3">
                 <p>
@@ -181,23 +181,23 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
                   <li>Dados cadastrais da empresa (razão social, NIF, endereço, telefone, email)</li>
                   <li>Dados dos representantes legais e contactos</li>
                   <li>Dados de produtos comercializados</li>
-                  <li>Dados de transações financeiras</li>
+                  <li>Dados de transacções financeiras</li>
                   <li>Dados de acesso à plataforma (logs, IP, navegador)</li>
                 </ul>
                 <p>
-                  Seus dados serão utilizados exclusivamente para:
+                  Os seus dados serão utilizados exclusivamente para:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Gerenciar sua conta na plataforma</li>
+                  <li>Gerenciar a sua conta na plataforma</li>
                   <li>Processar pedidos e pagamentos</li>
-                  <li>Enviar notificações sobre sua conta e pedidos</li>
-                  <li>Melhorar nossos serviços e experiência do usuário</li>
+                  <li>Enviar notificações sobre a sua conta e pedidos</li>
+                  <li>Melhorar os nossos serviços e experiência do utilizador</li>
                   <li>Cumprir obrigações legais e fiscais</li>
                 </ul>
                 <div className="bg-blue-50 p-3 rounded-lg mt-3">
                   <p className="text-sm text-blue-800">
-                    🔒 Seus dados são armazenados com segurança e não serão compartilhados com terceiros sem seu consentimento,
-                    exceto quando necessário para processamento de pagamentos ou por exigência legal.
+                    🔒 Os seus dados são armazenados com segurança e não serão partilhados com terceiros sem o seu consentimento,
+                    excepto quando necessário para processamento de pagamentos ou por exigência legal.
                   </p>
                 </div>
               </div>
@@ -212,20 +212,20 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               <div className="text-sm text-gray-600 space-y-3">
                 <p className="font-bold">Deveres do Vendedor:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Fornecer informações verdadeiras e atualizadas sobre sua empresa e produtos</li>
+                  <li>Fornecer informações verdadeiras e actualizadas sobre a sua empresa e produtos</li>
                   <li>Garantir que todos os produtos comercializados são genuínos e de qualidade</li>
                   <li>Cumprir os prazos de entrega estabelecidos</li>
                   <li>Oferecer suporte adequado aos clientes</li>
-                  <li>Manter estoque atualizado na plataforma</li>
+                  <li>Manter stock actualizado na plataforma</li>
                   <li>Respeitar a política de preços e promoções da plataforma</li>
                 </ul>
                 <p className="font-bold mt-3">Direitos do Vendedor:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Acessar relatórios de vendas e desempenho</li>
+                  <li>Aceder a relatórios de vendas e desempenho</li>
                   <li>Receber pagamentos conforme política estabelecida</li>
                   <li>Solicitar suporte da plataforma</li>
                   <li>Participar de programas promocionais</li>
-                  <li>Encerrar sua conta a qualquer momento</li>
+                  <li>Encerrar a sua conta a qualquer momento</li>
                 </ul>
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               </h3>
               <div className="text-sm text-gray-600 space-y-3">
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Fornecer infraestrutura tecnológica para a operação do marketplace</li>
+                  <li>Fornecer infra-estrutura tecnológica para a operação do marketplace</li>
                   <li>Processar pagamentos de forma segura</li>
                   <li>Oferecer suporte técnico aos vendedores</li>
                   <li>Promover a plataforma e atrair clientes</li>
@@ -256,7 +256,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               </h3>
               <div className="text-sm text-gray-600 space-y-3">
                 <p>
-                  As transações financeiras realizadas na plataforma estão sujeitas às seguintes condições:
+                  As transacções financeiras realizadas na plataforma estão sujeitas às seguintes condições:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Os pagamentos são processados em até 5 dias úteis após a confirmação da entrega</li>
@@ -275,7 +275,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
               </h3>
               <div className="text-sm text-gray-600 space-y-3">
                 <p>
-                  Este Termo entra em vigor na data do aceite e permanece válido enquanto sua empresa estiver cadastrada na plataforma.
+                  Este Termo entra em vigor na data do aceite e permanece válido enquanto a sua empresa estiver cadastrada na plataforma.
                 </p>
                 <p>
                   O contrato pode ser rescindido por qualquer das partes mediante comunicação por escrito, com antecedência mínima de 30 dias.
@@ -314,7 +314,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
                   <div className="w-5 h-5 border-2 border-gray-300 rounded-full" />
                 )}
                 <span className="text-sm font-medium text-gray-600">
-                  {hasScrolledToBottom ? "Termo lido até o final" : "Leia o termo até o final para continuar"}
+                  {hasScrolledToBottom ? "Termo lido até ao final" : "Leia o termo até ao final para continuar"}
                 </span>
               </div>
               <div className="w-32 h-1 bg-gray-200 rounded-full overflow-hidden">
@@ -341,7 +341,7 @@ export default function TermsModal({ isOpen, onClose, onAccept }: TermsModalProp
                   Declaro que li, compreendi e aceito integralmente os Termos e Condições do HSE MarketPlace
                 </span>
                 <p className="text-xs text-gray-500 mt-1">
-                  Concordo que minha empresa comercializará exclusivamente produtos relacionados à Saúde, Segurança e Ergonomia (HSE).
+                  Concordo que a minha empresa comercializará exclusivamente produtos relacionados à Saúde, Segurança e Ergonomia (HSE).
                   Estou ciente de que o descumprimento resultará em suspensão ou banimento da plataforma.
                 </p>
               </div>

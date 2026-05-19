@@ -12,7 +12,7 @@ export default function Returns() {
               <RefreshCw className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Política de Devoluções</h1>
             </div>
-            <p className="text-gray-300 text-sm">Última atualização: Janeiro 2025</p>
+            <p className="text-gray-300 text-sm">Última actualização: Janeiro 2025</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -27,10 +27,10 @@ export default function Returns() {
 
             <section>
               <h2 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-orange-500" /> 2. Motivos Aceitos para Devolução
+                <CheckCircle className="w-5 h-5 text-orange-500" /> 2. Motivos Aceites para Devolução
               </h2>
               <ul className="space-y-2 text-sm text-gray-600 list-disc list-inside">
-                <li>Produto com defeito de fabricação</li>
+                <li>Produto com defeito de fabrico</li>
                 <li>Produto diferente do anunciado</li>
                 <li>Arrependimento da compra (com prazo de 7 dias)</li>
                 <li>Produto danificado durante o transporte</li>
@@ -43,10 +43,10 @@ export default function Returns() {
                 <XCircle className="w-5 h-5 text-orange-500" /> 3. Condições para Devolução
               </h2>
               <ul className="space-y-2 text-sm text-gray-600 list-disc list-inside">
-                <li>Produto deve estar em sua embalagem original</li>
-                <li>Acessórios e manuais devem estar inclusos</li>
+                <li>Produto deve estar na sua embalagem original</li>
+                <li>Acessórios e manuais devem estar incluídos</li>
                 <li>Produto não pode apresentar sinais de uso</li>
-                <li>Nota fiscal deve ser apresentada</li>
+                <li>Factura deve ser apresentada</li>
               </ul>
             </section>
 
@@ -56,7 +56,7 @@ export default function Returns() {
               </h2>
               <div className="space-y-3">
                 {[
-                  'Entre em contato com nosso suporte informando o pedido e motivo',
+                  'Entre em contacto com o nosso suporte informando o pedido e motivo',
                   'Aguarde a análise e autorização da devolução',
                   'Envie o produto para o endereço indicado',
                   'Aguardamos a análise do produto (até 5 dias úteis)',
@@ -98,7 +98,7 @@ export default function Returns() {
                 <div>
                   <h3 className="text-sm font-black text-orange-800 mb-1">Ainda tem dúvidas?</h3>
                   <p className="text-xs text-orange-600">
-                    Entre em contato com nosso suporte através do email contacto@caluloglobal.co.ao ou pelo WhatsApp +244 923 979 915
+                    Entre em contacto com o nosso suporte através do e-mail contacto@caluloglobal.co.ao ou pelo WhatsApp +244 923 979 915
                   </p>
                 </div>
               </div>

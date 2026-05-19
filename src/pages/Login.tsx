@@ -14,7 +14,7 @@ export default function Login() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [errors, setErrors] = useState<{ emailOrUsername?: string; password?: string; form?: string }>({});
 
-  // Mostrar mensagem de sucesso do registro (se houver)
+  // Mostrar mensagem de sucesso do registo (se houver)
   useEffect(() => {
     if (location.state?.message) {
       setToast({
@@ -30,7 +30,7 @@ export default function Login() {
     const newErrors: { emailOrUsername?: string; password?: string } = {};
 
     if (!emailOrUsername.trim()) {
-      newErrors.emailOrUsername = 'Email ou username é obrigatório';
+      newErrors.emailOrUsername = 'E-mail ou nome de utilizador é obrigatório';
     }
 
     if (!password) {
@@ -53,7 +53,7 @@ export default function Login() {
       const result = await loginUser(emailOrUsername, password);
 
       if (result.success) {
-        // Redirecionar baseado no tipo de usuário
+        // Redireccionar baseado no tipo de utilizador
         if (result.isAdmin) {
           navigate('/admin');
         } else if (result.user?.is_company) {
@@ -110,7 +110,7 @@ export default function Login() {
               Bem-vindo de volta
             </h2>
             <p className="text-gray-500 text-sm">
-              Entre na sua conta para continuar comprando
+              Entre na sua conta para continuar a comprar
             </p>
           </div>
 
@@ -123,10 +123,10 @@ export default function Login() {
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Email / Username */}
+            {/* E-mail / Nome de utilizador */}
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Email ou Username <span className="text-red-400">*</span>
+                E-mail ou Nome de Utilizador <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -140,7 +140,7 @@ export default function Login() {
                   className={`w-full bg-gray-50 border ${
                     errors.emailOrUsername ? 'border-red-300' : 'border-gray-200'
                   } rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all`}
-                  placeholder="seu@email.com ou username"
+                  placeholder="seu@email.com ou nome de utilizador"
                   disabled={isLoading}
                 />
               </div>
@@ -152,7 +152,7 @@ export default function Login() {
               )}
             </div>
 
-            {/* Password */}
+            {/* Palavra-passe */}
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                 Palavra-passe <span className="text-red-400">*</span>
@@ -188,7 +188,7 @@ export default function Login() {
               )}
             </div>
 
-            {/* Esqueceu a senha? */}
+            {/* Esqueceu a palavra-passe? */}
             <div className="text-right">
               <Link 
                 to="/forgot-password"
@@ -215,7 +215,7 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Link para registro */}
+          {/* Link para registo */}
           <div className="mt-8 pt-8 border-t border-gray-100 text-center">
             <p className="text-sm text-gray-500">
               Não tem uma conta?{' '}

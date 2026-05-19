@@ -112,7 +112,7 @@ export default function CompanyRegister() {
   const validatePhone = (phone: string): string => {
     if (!phone || !phone.trim()) return 'Telefone é obrigatório';
     const cleanPhone = phone.replace(/\D/g, '');
-    if (cleanPhone.length !== 9) return 'Telefone deve ter exatamente 9 dígitos';
+    if (cleanPhone.length !== 9) return 'Telefone deve ter exactamente 9 dígitos';
     if (!cleanPhone.startsWith('9')) return 'Telefone deve começar com 9';
     return '';
   };
@@ -134,8 +134,8 @@ export default function CompanyRegister() {
   };
 
   const validatePassword = (password: string): string => {
-    if (!password) return 'Senha é obrigatória';
-    if (password.length < 6) return 'Senha deve ter pelo menos 6 caracteres';
+    if (!password) return 'Palavra-passe é obrigatória';
+    if (password.length < 6) return 'Palavra-passe deve ter pelo menos 6 caracteres';
     return '';
   };
 
@@ -178,7 +178,7 @@ export default function CompanyRegister() {
     if (passwordError) newErrors.password = passwordError;
     
     if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'As senhas não coincidem';
+      newErrors.confirm_password = 'As palavras-passe não coincidem';
     }
     
     setErrors(prev => ({ ...prev, ...newErrors }));
@@ -229,7 +229,7 @@ export default function CompanyRegister() {
     
     setFormData(prev => ({ ...prev, [name]: formattedValue }));
     
-    // Limpar erro do campo quando o usuário digita
+    // Limpar erro do campo quando o utilizador digita
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -248,7 +248,7 @@ export default function CompanyRegister() {
     if (name === 'email') error = validateEmail(formData.email);
     if (name === 'password') error = validatePassword(formData.password);
     if (name === 'confirm_password' && formData.password !== formData.confirm_password) {
-      error = 'As senhas não coincidem';
+      error = 'As palavras-passe não coincidem';
     }
     if (name === 'contact_name') error = validateRequired(formData.contact_name, 'Nome do contacto');
     if (name === 'contact_email') error = validateEmail(formData.contact_email);
@@ -274,7 +274,7 @@ export default function CompanyRegister() {
       setCurrentStep(prev => prev + 1);
     } else {
       setToast({
-        message: 'Por favor, preencha todos os campos corretamente antes de continuar.',
+        message: 'Por favor, preencha todos os campos correctamente antes de continuar.',
         type: 'error'
       });
       setTimeout(() => setToast(null), 3000);
@@ -294,7 +294,7 @@ export default function CompanyRegister() {
     
     if (!termsAccepted) {
       setToast({
-        message: 'Você precisa aceitar os Termos e Condições para continuar',
+        message: 'Precisa de aceitar os Termos e Condições para continuar',
         type: 'error'
       });
       setTimeout(() => setToast(null), 3000);
@@ -308,7 +308,7 @@ export default function CompanyRegister() {
     
     if (!isStep1Valid || !isStep2Valid || !isStep3Valid) {
       setToast({
-        message: 'Por favor, preencha todos os campos corretamente.',
+        message: 'Por favor, preencha todos os campos correctamente.',
         type: 'error'
       });
       setTimeout(() => setToast(null), 3000);
@@ -323,7 +323,7 @@ export default function CompanyRegister() {
       
       if (result.success) {
         setToast({
-          message: result.message || 'Empresa registrada com sucesso! Aguarde aprovação.',
+          message: result.message || 'Empresa registada com sucesso! Aguarde aprovação.',
           type: 'success'
         });
         setTimeout(() => {
@@ -334,10 +334,10 @@ export default function CompanyRegister() {
           });
         }, 3000);
       } else {
-        const errorMessages = result.errors || { form: result.error || 'Erro ao registrar' };
+        const errorMessages = result.errors || { form: result.error || 'Erro ao registar' };
         const firstError = Object.values(errorMessages)[0];
         setToast({
-          message: typeof firstError === 'string' ? firstError : 'Erro ao registrar empresa',
+          message: typeof firstError === 'string' ? firstError : 'Erro ao registar empresa',
           type: 'error'
         });
         setTimeout(() => setToast(null), 3000);
@@ -345,7 +345,7 @@ export default function CompanyRegister() {
     } catch (error) {
       console.error('Erro:', error);
       setToast({
-        message: 'Erro ao registrar empresa. Tente novamente.',
+        message: 'Erro ao registar empresa. Tente novamente.',
         type: 'error'
       });
       setTimeout(() => setToast(null), 3000);
@@ -522,7 +522,7 @@ export default function CompanyRegister() {
                   </div>
                   <div>
                     <label className="text-xs font-bold text-gray-600 uppercase mb-1 block">
-                      URL do Logo
+                      URL do Logótipo
                     </label>
                     <div className="relative">
                       <Store className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -575,7 +575,7 @@ export default function CompanyRegister() {
                 {renderField('password', (
                   <div>
                     <label className="text-xs font-bold text-gray-600 uppercase mb-1 block">
-                      Senha <span className="text-red-400">*</span>
+                      Palavra-passe <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -603,7 +603,7 @@ export default function CompanyRegister() {
                 {renderField('confirm_password', (
                   <div>
                     <label className="text-xs font-bold text-gray-600 uppercase mb-1 block">
-                      Confirmar Senha <span className="text-red-400">*</span>
+                      Confirmar Palavra-passe <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -719,8 +719,8 @@ export default function CompanyRegister() {
                     <h3 className="text-lg font-black text-gray-800">Confirmar Cadastro</h3>
                   </div>
                   <p className="text-sm text-gray-600">
-                    Revise os dados antes de finalizar o cadastro. Após a confirmação, 
-                    sua empresa será analisada pela nossa equipe.
+                    Reveja os dados antes de finalizar o cadastro. Após a confirmação, 
+                    a sua empresa será analisada pela nossa equipa.
                   </p>
                 </div>
 
@@ -764,7 +764,7 @@ export default function CompanyRegister() {
 
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                   <p className="text-xs text-amber-700">
-                    ⚠️ Ao finalizar, sua empresa ficará em análise. Você receberá um email quando for aprovada.
+                    ⚠️ Ao finalizar, a sua empresa ficará em análise. Receberá um email quando for aprovada.
                   </p>
                 </div>
 
@@ -795,7 +795,7 @@ export default function CompanyRegister() {
                         </button>
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
-                        Concordo que minha empresa comercializará exclusivamente produtos relacionados à Saúde, Segurança e Ergonomia (HSE).
+                        Concordo que a minha empresa comercializará exclusivamente produtos relacionados à Saúde, Segurança e Ergonomia (HSE).
                       </p>
                     </div>
                   </label>
@@ -835,7 +835,7 @@ export default function CompanyRegister() {
                   {isLoading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Registando...
+                      A registar...
                     </>
                   ) : (
                     <>

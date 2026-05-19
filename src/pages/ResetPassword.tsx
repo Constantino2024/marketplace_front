@@ -57,15 +57,15 @@ export default function ResetPassword() {
 
   const validateForm = () => {
     if (!newPassword) {
-      setError('Nova senha é obrigatória');
+      setError('Nova palavra-passe é obrigatória');
       return false;
     }
     if (newPassword.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres');
+      setError('A palavra-passe deve ter pelo menos 6 caracteres');
       return false;
     }
     if (newPassword !== confirmPassword) {
-      setError('As senhas não coincidem');
+      setError('As palavras-passe não coincidem');
       return false;
     }
     return true;
@@ -88,14 +88,14 @@ export default function ResetPassword() {
       
       if (result.success) {
         setToast({
-          message: result.message || 'Senha alterada com sucesso!',
+          message: result.message || 'Palavra-passe alterada com sucesso!',
           type: 'success'
         });
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       } else {
-        setError(result.message || 'Erro ao redefinir senha');
+        setError(result.message || 'Erro ao redefinir palavra-passe');
       }
     } catch (error) {
       console.error('Erro:', error);
@@ -122,7 +122,7 @@ export default function ResetPassword() {
           </div>
           <h2 className="text-2xl font-black text-gray-800 mb-2">Link Inválido</h2>
           <p className="text-gray-500 mb-6">
-            {error || 'Este link de redefinição de senha é inválido ou já expirou.'}
+            {error || 'Este link de redefinição de palavra-passe é inválido ou já expirou.'}
           </p>
           <Link
             to="/forgot-password"
@@ -154,9 +154,9 @@ export default function ResetPassword() {
           className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8"
         >
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-black text-primary mb-2">Nova Senha</h2>
+            <h2 className="text-3xl font-black text-primary mb-2">Nova Palavra-passe</h2>
             <p className="text-gray-500 text-sm">
-              Crie uma nova senha para sua conta
+              Crie uma nova palavra-passe para a sua conta
             </p>
             {email && (
               <p className="text-xs text-gray-400 mt-2">
@@ -175,7 +175,7 @@ export default function ResetPassword() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Nova Senha <span className="text-red-400">*</span>
+                Nova Palavra-passe <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -200,7 +200,7 @@ export default function ResetPassword() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Confirmar Senha <span className="text-red-400">*</span>
+                Confirmar Palavra-passe <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -233,7 +233,7 @@ export default function ResetPassword() {
                   A processar...
                 </>
               ) : (
-                'Redefinir Senha'
+                'Redefinir Palavra-passe'
               )}
             </button>
 

@@ -141,7 +141,7 @@ const ProductCard = ({ product, onAddToCart, onToggleWishlist, isWishlisted }: {
           </h3>
         </Link>
         <p className="text-[10px] text-green-500 font-bold mb-2">
-          {product.stock > 0 ? 'Em estoque' : 'Fora de estoque'}
+          {product.stock > 0 ? 'Em stock' : 'Fora de stock'}
         </p>
         <div className="flex gap-0.5 mb-3">
           {[...Array(5)].map((_, i) => (
@@ -496,9 +496,9 @@ export default function CategoryProducts() {
           <AlertCircle className="w-12 h-12 text-gray-400" />
         </div>
         <h2 className="text-2xl font-black text-gray-800 mb-2">Categoria não encontrada</h2>
-        <p className="text-gray-500 mb-8">A categoria que você procura não existe ou foi removida.</p>
+        <p className="text-gray-500 mb-8">A categoria que procura não existe ou foi removida.</p>
         <Link to="/" className="bg-orange-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-600 transition-all">
-          Voltar para Home
+          Voltar para a Página Inicial
         </Link>
       </div>
     );
@@ -529,7 +529,7 @@ export default function CategoryProducts() {
         <div className="mb-8">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 mb-4">
             <ArrowLeft className="w-4 h-4" />
-            Voltar para Home
+            Voltar para a Página Inicial
           </Link>
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -564,7 +564,7 @@ export default function CategoryProducts() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Buscar produtos nesta categoria..."
+              placeholder="Pesquisar produtos nesta categoria..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900/20"
@@ -617,7 +617,7 @@ export default function CategoryProducts() {
             <h3 className="text-xl font-black text-gray-800 mb-2">Nenhum produto encontrado</h3>
             <p className="text-gray-500 mb-6">
               {searchTerm 
-                ? `Não encontramos produtos com "${searchTerm}" nesta categoria.`
+                ? `Não encontrámos produtos com "${searchTerm}" nesta categoria.`
                 : 'Não há produtos disponíveis nesta categoria no momento.'}
             </p>
             {searchTerm && (
@@ -625,7 +625,7 @@ export default function CategoryProducts() {
                 onClick={() => setSearchTerm('')}
                 className="text-orange-500 font-bold hover:underline"
               >
-                Limpar busca
+                Limpar pesquisa
               </button>
             )}
           </div>

@@ -51,7 +51,7 @@ export default function TrackOrder() {
           <div className="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-8 text-white">
             <div className="flex items-center gap-3 mb-3">
               <Package className="w-8 h-8 text-orange-400" />
-              <h1 className="text-2xl sm:text-3xl font-black">Como Rastrear seu Pedido</h1>
+              <h1 className="text-2xl sm:text-3xl font-black">Como Rastrear o seu Pedido</h1>
             </div>
             <p className="text-gray-300 text-sm">Acompanhe cada etapa da sua compra</p>
           </div>
@@ -78,7 +78,7 @@ export default function TrackOrder() {
                 </button>
               </form>
               <p className="text-xs text-gray-400 mt-3">
-                O número do pedido foi enviado para seu email após a confirmação da compra
+                O número do pedido foi enviado para o seu e-mail após a confirmação da compra
               </p>
             </div>
 
@@ -147,9 +147,9 @@ export default function TrackOrder() {
                   <h3 className="text-sm font-black text-blue-800 mb-2">Dicas importantes</h3>
                   <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
                     <li>O código de rastreio pode levar até 24h para aparecer após o envio</li>
-                    <li>Verifique sua caixa de spam se não recebeu o email de confirmação</li>
-                    <li>Em caso de atraso, entre em contato com o vendedor pela plataforma</li>
-                    <li>Você também pode acompanhar seus pedidos na seção "Meus Pedidos"</li>
+                    <li>Verifique a sua caixa de spam se não recebeu o e-mail de confirmação</li>
+                    <li>Em caso de atraso, entre em contacto com o vendedor pela plataforma</li>
+                    <li>Você também pode acompanhar os seus pedidos na secção "Meus Pedidos"</li>
                   </ul>
                 </div>
               </div>

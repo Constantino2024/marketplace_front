@@ -514,7 +514,7 @@ const QuestionCard = ({ question, onAnswer }: { question: Question; onAnswer?: (
                     <textarea
                       value={answerText}
                       onChange={(e) => setAnswerText(e.target.value)}
-                      placeholder="Escreva sua resposta..."
+                      placeholder="Escreva a sua resposta..."
                       rows={3}
                       className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     />
@@ -599,7 +599,7 @@ export default function ProductDetails() {
       id: 1,
       user: { id: 1, name: 'João Silva' },
       rating: 5,
-      comment: 'Excelente produto! Superou minhas expectativas. Entrega rápida e bem embalado.',
+      comment: 'Excelente produto! Superou as minhas expectativas. Entrega rápida e bem embalado.',
       created_at: new Date().toISOString(),
       likes: 12,
       dislikes: 1,
@@ -622,7 +622,7 @@ export default function ProductDetails() {
       user: { id: 3, name: 'Pedro Costa' },
       question: 'Este produto tem garantia?',
       answer: {
-        text: 'Sim, possui 1 ano de garantia contra defeitos de fabricação.',
+        text: 'Sim, possui 1 ano de garantia contra defeitos de fabrico.',
         created_at: new Date().toISOString(),
         user: { id: 999, name: 'Suporte HSE' }
       },
@@ -683,7 +683,7 @@ export default function ProductDetails() {
         
         setImages(productImages);
         
-        // Atualizar especificações com dados reais
+        // Actualizar especificações com dados reais
         if (data.category_name) {
           specs['Categoria'] = data.category_name;
         }
@@ -756,7 +756,7 @@ export default function ProductDetails() {
           url: url,
         });
       } catch (error) {
-        console.log('Compartilhamento cancelado');
+        console.log('Partilha cancelada');
         
       }
     } else {
@@ -790,7 +790,7 @@ export default function ProductDetails() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center">
         <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-        <p className="text-gray-400">Carregando produto...</p>
+        <p className="text-gray-400">A carregar produto...</p>
       </div>
     );
   }
@@ -805,7 +805,7 @@ export default function ProductDetails() {
           {error || 'Produto não encontrado'}
         </h2>
         <p className="text-gray-500 mb-8 text-center max-w-md">
-          O produto que você está procurando pode ter sido removido ou está indisponível.
+          O produto que procura pode ter sido removido ou está indisponível.
         </p>
         <Link 
           to="/" 
@@ -835,7 +835,7 @@ export default function ProductDetails() {
         {/* Breadcrumb */}
         <div className="flex flex-wrap items-center gap-2 mb-8">
           <Link to="/" className="text-sm text-gray-400 hover:text-primary transition-colors">
-            Home
+            Página Inicial
           </Link>
           <span className="text-sm text-gray-300">/</span>
           <Link 
@@ -849,13 +849,13 @@ export default function ProductDetails() {
             {product.name}
           </span>
 
-          {/* Botão de compartilhar */}
+          {/* Botão de partilha */}
           <button
             onClick={handleShare}
             className="ml-auto flex items-center gap-2 px-4 py-2 text-gray-500 hover:text-primary transition-colors"
           >
             <Share2 className="w-5 h-5" />
-            <span className="hidden sm:inline text-sm font-bold">Compartilhar</span>
+            <span className="hidden sm:inline text-sm font-bold">Partilhar</span>
           </button>
         </div>
 
@@ -944,18 +944,18 @@ export default function ProductDetails() {
               </button>
             </div>
 
-            {/* Estoque */}
+            {/* Stock */}
             <div className="bg-gray-50 rounded-xl p-4 mb-8">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-500">Disponibilidade:</span>
                 <span className={`font-bold ${product.stock > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-                  {product.stock > 0 ? `${product.stock} unidades em estoque` : 'Fora de estoque'}
+                  {product.stock > 0 ? `${product.stock} unidades em stock` : 'Fora de stock'}
                 </span>
               </div>
               {product.stock > 0 && product.stock < 5 && (
                 <p className="text-xs text-orange-500 mt-2 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
-                  Apenas {product.stock} {product.stock === 1 ? 'unidade' : 'unidades'} restantes! Compre logo.
+                  Apenas {product.stock} {product.stock === 1 ? 'unidade' : 'unidades'} restantes! Compre já.
                 </p>
               )}
             </div>
@@ -1186,7 +1186,7 @@ export default function ProductDetails() {
                   <div className="flex gap-3">
                     <div className="flex-1">
                       <textarea
-                        placeholder="Digite sua pergunta..."
+                        placeholder="Digite a sua pergunta..."
                         rows={2}
                         className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                       />

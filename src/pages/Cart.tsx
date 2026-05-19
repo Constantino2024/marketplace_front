@@ -20,7 +20,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { formatCurrency } from '../utils/currency';
 import ProformaModal from '../components/ProformaModal';
 
-{/** Imagens de Pagamentos aceitaveis */}
+{/** Imagens de Pagamentos aceitáveis */}
 import express from '../img/express.webp';
 import referencia from '../img/referencia.webp';
 import ekwanza from '../img/ekwanza.png';
@@ -126,7 +126,7 @@ export default function Cart() {
 
           <button
             onClick={() => {
-              if (window.confirm('Tem certeza que deseja limpar o carrinho?')) {
+              if (window.confirm('Tem a certeza que deseja limpar o carrinho?')) {
                 clearCart();
               }
             }}
@@ -420,7 +420,7 @@ export default function Cart() {
                   />
                   <img 
                     src={referencia} 
-                    alt="Referencia" 
+                    alt="Referência" 
                     className="h-8 sm:h-10 md:h-12 opacity-100 object-contain" 
                   />
                   <img 

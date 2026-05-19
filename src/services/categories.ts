@@ -33,6 +33,7 @@ export const categoriesService = {
   list: async (params?: CategoryFilters) => {
     try {
       const response = await api.get<Category[]>('categories/', { params });
+      console.log('categorias: ',response)
       return response.data;
     } catch (error) {
       console.error('Erro na API categories.list:', error);

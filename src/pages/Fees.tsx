@@ -34,15 +34,15 @@ export default function Fees() {
                   <tr>
                     <td className="py-3 px-4 font-medium text-gray-800">Taxa de Anúncio</td>
                     <td className="py-3 px-4 text-right font-bold text-emerald-500">Grátis</td>
-                    <td className="py-3 px-4 text-gray-500 text-xs">Cadastro de produtos sem custo</td>
+                    <td className="py-3 px-4 text-gray-500 text-xs">Registo de produtos sem custo</td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 font-medium text-gray-800">Mensalidade</td>
                     <td className="py-3 px-4 text-right font-bold text-emerald-500">Grátis</td>
-                    <td className="py-3 px-4 text-gray-500 text-xs">Sem mensalidade para manter sua loja</td>
+                    <td className="py-3 px-4 text-gray-500 text-xs">Sem mensalidade para manter a sua loja</td>
                   </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-gray-800">Taxa de Saque</td>
+                    <td className="py-3 px-4 font-medium text-gray-800">Taxa de Levantamento</td>
                     <td className="py-3 px-4 text-right font-bold text-orange-500">2% (mín. 200 Kz)</td>
                     <td className="py-3 px-4 text-gray-500 text-xs">Para transferência bancária</td>
                   </tr>
@@ -58,13 +58,13 @@ export default function Fees() {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
-                  { category: 'Eletrônicos', fee: '8%' },
+                  { category: 'Electrónicos', fee: '8%' },
                   { category: 'Moda e Acessórios', fee: '10%' },
                   { category: 'Casa e Decoração', fee: '7%' },
                   { category: 'Beleza e Saúde', fee: '10%' },
                   { category: 'Alimentos', fee: '5%' },
                   { category: 'Automóveis', fee: '12%' },
-                  { category: 'Esportes', fee: '8%' },
+                  { category: 'Desportos', fee: '8%' },
                   { category: 'Brinquedos', fee: '9%' },
                 ].map((item) => (
                   <div key={item.category} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
@@ -82,9 +82,9 @@ export default function Fees() {
                 <div>
                   <h3 className="text-sm font-black text-blue-800 mb-1">Informações Importantes</h3>
                   <ul className="text-xs text-blue-700 space-y-1 list-disc list-inside">
-                    <li>A comissão é calculada sobre o valor total da venda (produto + frete)</li>
+                    <li>A comissão é calculada sobre o valor total da venda (produto + portes)</li>
                     <li>Não cobramos taxa de cancelamento de pedido</li>
-                    <li>Seu saque pode ser solicitado a qualquer momento (mínimo 5.000 Kz)</li>
+                    <li>O seu levantamento pode ser solicitado a qualquer momento (mínimo 5.000 Kz)</li>
                     <li>O pagamento é processado em até 3 dias úteis após a confirmação da entrega</li>
                   </ul>
                 </div>
@@ -94,12 +94,12 @@ export default function Fees() {
             {/* CTA */}
             <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-6 text-white text-center">
               <h3 className="text-lg font-black mb-2">Comece a vender hoje mesmo!</h3>
-              <p className="text-orange-100 text-sm mb-4">Cadastro gratuito e primeiros 30 dias com comissão reduzida</p>
+              <p className="text-orange-100 text-sm mb-4">Registo gratuito e primeiros 30 dias com comissão reduzida</p>
               <a
                 href="/company/register"
                 className="inline-flex items-center gap-2 bg-white text-orange-500 px-6 py-2 rounded-xl font-bold hover:bg-gray-100 transition-all"
               >
-                Abrir minha loja
+                Abrir a minha loja
               </a>
             </div>
           </div>

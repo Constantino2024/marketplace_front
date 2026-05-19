@@ -12,7 +12,7 @@ export default function Privacy() {
               <Shield className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Política de Privacidade</h1>
             </div>
-            <p className="text-gray-300 text-sm">Última atualização: Janeiro 2025</p>
+            <p className="text-gray-300 text-sm">Última actualização: Janeiro 2025</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -21,45 +21,45 @@ export default function Privacy() {
                 <Lock className="w-5 h-5 text-orange-500" /> 1. Introdução
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                A sua privacidade é importante para nós. Esta Política de Privacidade descreve como o HSE Marketplace Angola coleta, usa, compartilha e protege suas informações pessoais quando você utiliza nossa plataforma.
+                A sua privacidade é importante para nós. Esta Política de Privacidade descreve como o HSE Marketplace Angola recolhe, usa, partilha e protege as suas informações pessoais quando utiliza a nossa plataforma.
               </p>
             </section>
 
             <section>
               <h2 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
-                <Database className="w-5 h-5 text-orange-500" /> 2. Informações que Coletamos
+                <Database className="w-5 h-5 text-orange-500" /> 2. Informações que Recolhemos
               </h2>
               <ul className="space-y-2 text-sm text-gray-600 list-disc list-inside">
-                <li>Informações de cadastro (nome, email, telefone, endereço)</li>
+                <li>Informações de registo (nome, e-mail, telefone, endereço)</li>
                 <li>Informações de pagamento (processadas de forma segura por terceiros)</li>
                 <li>Histórico de compras e navegação</li>
                 <li>Dados de dispositivo e localização</li>
-                <li>Comunicações e interações com nosso suporte</li>
+                <li>Comunicações e interacções com o nosso suporte</li>
               </ul>
             </section>
 
             <section>
               <h2 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
-                <Eye className="w-5 h-5 text-orange-500" /> 3. Como Usamos suas Informações
+                <Eye className="w-5 h-5 text-orange-500" /> 3. Como Usamos as suas Informações
               </h2>
               <ul className="space-y-2 text-sm text-gray-600 list-disc list-inside">
-                <li>Processar e entregar seus pedidos</li>
-                <li>Personalizar sua experiência de compra</li>
-                <li>Enviar atualizações sobre seus pedidos</li>
-                <li>Melhorar nossos serviços e produtos</li>
-                <li>Enviar ofertas e novidades (com seu consentimento)</li>
+                <li>Processar e entregar os seus pedidos</li>
+                <li>Personalizar a sua experiência de compra</li>
+                <li>Enviar actualizações sobre os seus pedidos</li>
+                <li>Melhorar os nossos serviços e produtos</li>
+                <li>Enviar ofertas e novidades (com o seu consentimento)</li>
               </ul>
             </section>
 
             <section>
               <h2 className="text-lg font-black text-gray-900 mb-3 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-orange-500" /> 4. Compartilhamento de Informações
+                <FileText className="w-5 h-5 text-orange-500" /> 4. Partilha de Informações
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Não vendemos suas informações pessoais. Compartilhamos apenas com:
+                Não vendemos as suas informações pessoais. Partilhamos apenas com:
               </p>
               <ul className="mt-2 space-y-2 text-sm text-gray-600 list-disc list-inside">
-                <li>Vendedores para processar seus pedidos</li>
+                <li>Vendedores para processar os seus pedidos</li>
                 <li>Parceiros de pagamento e logística</li>
                 <li>Autoridades legais quando exigido por lei</li>
               </ul>
@@ -70,14 +70,14 @@ export default function Privacy() {
                 <CheckCircle className="w-5 h-5 text-orange-500" /> 5. Seus Direitos
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Você tem o direito de acessar, corrigir ou excluir suas informações pessoais. Para exercer esses direitos, entre em contato através do nosso email de suporte.
+                Você tem o direito de aceder, corrigir ou eliminar as suas informações pessoais. Para exercer esses direitos, entre em contacto através do nosso e-mail de suporte.
               </p>
             </section>
 
             <div className="bg-gray-50 rounded-xl p-4">
               <p className="text-xs text-gray-500">
                 Ao utilizar o HSE Marketplace Angola, você concorda com os termos desta Política de Privacidade.
-                Para dúvidas, entre em contato pelo email: contacto@caluloglobal.co.ao
+                Para dúvidas, entre em contacto pelo e-mail: contacto@caluloglobal.co.ao
               </p>
             </div>
           </div>

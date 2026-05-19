@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
       const data = await siteConfigService.getPublicConfig();
       setConfig(data);
     } catch (error) {
-      console.error('Erro ao carregar configurações do footer:', error);
+      console.error('Erro ao carregar configurações do rodapé:', error);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
 
-          {/* Marca / Informações de Contato */}
+          {/* Marca / Informações de Contacto */}
           <div className="col-span-2 md:col-span-1">
             <img
               src="https://caluloglobal.ao/img/Market_Place1.webp"

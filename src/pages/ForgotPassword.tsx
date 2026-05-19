@@ -31,7 +31,7 @@ export default function ForgotPassword() {
     e.preventDefault();
     
     if (!email.trim() || !email.includes('@')) {
-      setError('Por favor, insira um email válido');
+      setError('Por favor, introduza um e-mail válido');
       return;
     }
 
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
       
       if (result.success) {
         setToast({
-          message: result.message || 'Email de recuperação enviado! Verifique sua caixa de entrada.',
+          message: result.message || 'E-mail de recuperação enviado! Verifique a sua caixa de entrada.',
           type: 'success'
         });
         setTimeout(() => {
@@ -79,9 +79,9 @@ export default function ForgotPassword() {
           className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8"
         >
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-black text-primary mb-2">Esqueceu a senha?</h2>
+            <h2 className="text-3xl font-black text-primary mb-2">Esqueceu a palavra-passe?</h2>
             <p className="text-gray-500 text-sm">
-              Digite seu email e enviaremos um link para redefinir sua senha
+              Digite o seu e-mail e enviaremos um link para redefinir a sua palavra-passe
             </p>
           </div>
 
@@ -95,7 +95,7 @@ export default function ForgotPassword() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Email <span className="text-red-400">*</span>
+                E-mail <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -104,7 +104,7 @@ export default function ForgotPassword() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                  placeholder="seu@email.com"
+                  placeholder="o.seu@email.com"
                   disabled={isLoading}
                 />
               </div>

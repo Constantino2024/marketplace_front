@@ -96,9 +96,9 @@ export default function ShippingPolicy() {
                 {[
                   'Após a confirmação do pagamento, o pedido é separado e embalado',
                   'O vendedor gera o código de rastreio e envia o produto',
-                  'Você recebe o código por email e pode acompanhar a entrega',
-                  'O entregador entra em contato para combinar a entrega',
-                  'Assine o comprovante de recebimento ao receber o produto'
+                  'Você recebe o código por e-mail e pode acompanhar a entrega',
+                  'O entregador entra em contacto para combinar a entrega',
+                  'Assine o comprovativo de recebimento ao receber o produto'
                 ].map((step, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
@@ -115,23 +115,23 @@ export default function ShippingPolicy() {
                 <div>
                   <h3 className="text-sm font-black text-red-800 mb-2">O que fazer se houver problema na entrega?</h3>
                   <ul className="text-sm text-red-700 space-y-1 list-disc list-inside">
-                    <li>Entre em contato com o vendedor através da plataforma</li>
-                    <li>Acompanhe o rastreio para verificar o status</li>
-                    <li>Após 10 dias úteis sem atualização, acione nosso suporte</li>
-                    <li>Em caso de produto danificado, registre uma reclamação em até 48h</li>
+                    <li>Entre em contacto com o vendedor através da plataforma</li>
+                    <li>Acompanhe o rastreio para verificar o estado</li>
+                    <li>Após 10 dias úteis sem actualização, accione o nosso suporte</li>
+                    <li>Em caso de produto danificado, registe uma reclamação em até 48h</li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            {/* Frete Grátis */}
+            {/* Portes Grátis */}
             <div className="bg-emerald-50 rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <Truck className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="text-sm font-black text-emerald-800 mb-2">Frete Grátis</h3>
+                  <h3 className="text-sm font-black text-emerald-800 mb-2">Portes Grátis</h3>
                   <p className="text-sm text-emerald-700">
-                    Compras acima de <strong>50.000 Kz</strong> têm frete grátis para todo o país!
+                    Compras acima de <strong>50.000 Kz</strong> têm portes grátis para todo o país!
                   </p>
                 </div>
               </div>

@@ -18,9 +18,9 @@ interface ToastState { message: string; type: ToastType; }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const STATUS_CONFIG: Record<string, { pill: string; dot: string; label: string; icon: React.ElementType }> = {
-  active:       { pill: 'bg-emerald-50 text-emerald-700 border-emerald-100', dot: 'bg-emerald-500', label: 'Ativo',         icon: CheckCircle2 },
+  active:       { pill: 'bg-emerald-50 text-emerald-700 border-emerald-100', dot: 'bg-emerald-500', label: 'Activo',         icon: CheckCircle2 },
   draft:        { pill: 'bg-gray-100 text-gray-600 border-gray-200',         dot: 'bg-gray-400',    label: 'Rascunho',      icon: Clock },
-  out_of_stock: { pill: 'bg-red-50 text-red-600 border-red-100',             dot: 'bg-red-500',     label: 'Sem Estoque',   icon: XCircle },
+  out_of_stock: { pill: 'bg-red-50 text-red-600 border-red-100',             dot: 'bg-red-500',     label: 'Sem Stock',   icon: XCircle },
   discontinued: { pill: 'bg-zinc-100 text-zinc-500 border-zinc-200',         dot: 'bg-zinc-400',    label: 'Descontinuado', icon: XCircle },
 };
 const getStatus = (s: string) => STATUS_CONFIG[s] ?? STATUS_CONFIG.draft;
@@ -188,7 +188,7 @@ function ImageManagerModal({ isOpen, onClose, product, onImagesUpdated }: {
             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 block">Adicionar Imagens</label>
             <label htmlFor="img-upload" className="block border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/40 transition-all group">
               <Upload className="w-7 h-7 text-gray-300 group-hover:text-orange-400 mx-auto mb-2 transition-colors" />
-              <p className="text-sm text-gray-500 font-medium">{uploading ? 'A enviar…' : 'Clique para selecionar imagens'}</p>
+              <p className="text-sm text-gray-500 font-medium">{uploading ? 'A enviar…' : 'Clique para seleccionar imagens'}</p>
               <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP · máx. 2MB por ficheiro</p>
               <input id="img-upload" type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" disabled={uploading} />
             </label>
@@ -331,7 +331,7 @@ function ProductModal({ isOpen, onClose, product, onSave, categories }: {
     const e: Record<string, string> = {};
     if (!form.name?.trim() || form.name.length < 3) e.name = 'Nome deve ter pelo menos 3 caracteres';
     if (form.price <= 0) e.price = 'Preço deve ser maior que zero';
-    if (form.stock < 0) e.stock = 'Estoque não pode ser negativo';
+    if (form.stock < 0) e.stock = 'Stock não pode ser negativo';
     if (!form.category) e.category = 'Categoria obrigatória';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -394,7 +394,7 @@ function ProductModal({ isOpen, onClose, product, onSave, categories }: {
               <div className="flex-1 text-xs text-gray-400 leading-relaxed pt-1">
                 <p className="font-semibold text-gray-600 mb-0.5">Upload de imagem</p>
                 <p>JPG, PNG, WEBP · máx. 2MB</p>
-                <p className="mt-1 text-[10px]">Clique na área para selecionar</p>
+                <p className="mt-1 text-[10px]">Clique na área para seleccionar</p>
               </div>
             </div>
           </FormField>
@@ -409,16 +409,16 @@ function ProductModal({ isOpen, onClose, product, onSave, categories }: {
 
             <FormField label="Categoria" required error={errors.category}>
               <select name="category" value={form.category} onChange={handle} className={inputCls(errors.category)}>
-                <option value="">Selecione…</option>
+                <option value="">Seleccione…</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </FormField>
 
-            <FormField label="Status">
+            <FormField label="Estado">
               <select name="status" value={form.status} onChange={handle} className={inputCls()}>
-                <option value="active">Ativo</option>
+                <option value="active">Activo</option>
                 <option value="draft">Rascunho</option>
-                <option value="out_of_stock">Sem Estoque</option>
+                <option value="out_of_stock">Sem Stock</option>
                 <option value="discontinued">Descontinuado</option>
               </select>
             </FormField>
@@ -427,7 +427,7 @@ function ProductModal({ isOpen, onClose, product, onSave, categories }: {
               <input type="number" name="price" value={form.price} onChange={handle} min="0" step="0.01" placeholder="0,00" className={inputCls(errors.price)} />
             </FormField>
 
-            <FormField label="Estoque" required error={errors.stock}>
+            <FormField label="Stock" required error={errors.stock}>
               <input type="number" name="stock" value={form.stock} onChange={handle} min="0" placeholder="0" className={inputCls(errors.stock)} />
             </FormField>
 
@@ -473,7 +473,7 @@ function ProductModal({ isOpen, onClose, product, onSave, categories }: {
           </button>
           <button type="submit" form="product-form" disabled={saving}
             className="flex-[2] py-3 bg-orange-500 text-white rounded-2xl font-bold hover:bg-orange-600 transition-all text-sm shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center justify-center gap-2">
-            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> A processar…</> : product ? 'Salvar Alterações' : 'Criar Produto'}
+            {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> A processar…</> : product ? 'Guardar Alterações' : 'Criar Produto'}
           </button>
         </div>
       </motion.div>
@@ -686,7 +686,7 @@ export default function Products() {
     try {
       if (editing) {
         isCompany ? await productsService.updateCompanyProduct(editing.id, data) : await productsService.update(editing.id, data);
-        notify('Produto atualizado!', 'success');
+        notify('Produto actualizado!', 'success');
       } else {
         isCompany ? await productsService.createCompanyProduct(data) : await productsService.create(data);
         notify('Produto criado!', 'success');
@@ -697,7 +697,7 @@ export default function Products() {
     } catch (err: any) {
       const msg = typeof err.response?.data === 'object'
         ? Object.values(err.response.data)[0] as string
-        : 'Erro ao salvar produto';
+        : 'Erro ao guardar produto';
       notify(msg, 'error');
       throw err;
     }
@@ -720,8 +720,8 @@ export default function Products() {
 
   const statsCards = [
     { label: 'Total', value: stats.total_products, icon: ShoppingBag, color: 'bg-[#1E3A5F]/8 text-[#1E3A5F]' },
-    { label: 'Ativos', value: stats.active_products, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Sem Estoque', value: stats.out_of_stock, icon: XCircle, color: 'bg-red-50 text-red-500' },
+    { label: 'Activos', value: stats.active_products, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600' },
+    { label: 'Sem Stock', value: stats.out_of_stock, icon: XCircle, color: 'bg-red-50 text-red-500' },
     { label: 'Stock Baixo', value: stats.low_stock, icon: AlertTriangle, color: 'bg-amber-50 text-amber-500' },
     { label: 'Valor Total', value: `Kz ${formatCurrency(stats.total_value)}`, icon: TrendingUp, color: 'bg-orange-50 text-orange-500' },
   ];
@@ -739,7 +739,7 @@ export default function Products() {
         onClose={() => { setShowConfirm(false); setEditing(null); }}
         onConfirm={handleDelete}
         title="Eliminar Produto"
-        message={`Tem certeza que deseja eliminar "${editing?.name}"? Esta ação não pode ser desfeita.`}
+        message={`Tem a certeza que deseja eliminar "${editing?.name}"? Esta acção não pode ser desfeita.`}
       />
       {editing && (
         <ImageManagerModal isOpen={showImageModal} onClose={() => { setShowImageModal(false); setEditing(null); }} product={editing} onImagesUpdated={loadProducts} />
@@ -813,13 +813,13 @@ export default function Products() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Status</label>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Estado</label>
                   <select value={selectedStatus} onChange={e => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all">
-                    <option value="">Todos os status</option>
-                    <option value="active">Ativo</option>
+                    <option value="">Todos os estados</option>
+                    <option value="active">Activo</option>
                     <option value="draft">Rascunho</option>
-                    <option value="out_of_stock">Sem Estoque</option>
+                    <option value="out_of_stock">Sem Stock</option>
                     <option value="discontinued">Descontinuado</option>
                   </select>
                 </div>
@@ -845,7 +845,7 @@ export default function Products() {
                 <Package className="w-4 h-4 text-orange-400" />
               </div>
             </div>
-            <p className="text-sm text-gray-400 font-medium">Carregando produtos…</p>
+            <p className="text-sm text-gray-400 font-medium">A carregar produtos…</p>
           </div>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
@@ -883,11 +883,11 @@ export default function Products() {
                     <th className="px-6 py-4">Produto</th>
                     <th className="px-6 py-4">Categoria</th>
                     <th className="px-6 py-4">Preço</th>
-                    <th className="px-6 py-4">Estoque</th>
-                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4">Stock</th>
+                    <th className="px-6 py-4">Estado</th>
                     {isAdmin && <th className="px-6 py-4">Empresa</th>}
                     <th className="px-6 py-4 text-center">Dest.</th>
-                    <th className="px-6 py-4 text-right">Ações</th>
+                    <th className="px-6 py-4 text-right">Acções</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -935,13 +935,13 @@ export default function Products() {
                         {isAdmin && (
                           <td className="px-6 py-4">
                             <span className="text-xs text-gray-500 font-medium">{p.company_name || '—'}</span>
-                          </td>
+                           </td>
                         )}
                         <td className="px-6 py-4 text-center">
                           {p.is_featured
                             ? <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 mx-auto" />
                             : <StarOff className="w-4 h-4 text-gray-200 mx-auto" />}
-                        </td>
+                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
                             {p.additional_images && p.additional_images.length > 0 && (
@@ -956,8 +956,8 @@ export default function Products() {
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                         </td>
+                       </tr>
                     );
                   })}
                 </tbody>

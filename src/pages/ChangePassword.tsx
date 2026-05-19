@@ -35,23 +35,23 @@ export default function ChangePassword() {
 
   const validateForm = () => {
     if (!currentPassword) {
-      setError('Senha atual é obrigatória');
+      setError('Palavra-passe actual é obrigatória');
       return false;
     }
     if (!newPassword) {
-      setError('Nova senha é obrigatória');
+      setError('Nova palavra-passe é obrigatória');
       return false;
     }
     if (newPassword.length < 6) {
-      setError('A nova senha deve ter pelo menos 6 caracteres');
+      setError('A nova palavra-passe deve ter pelo menos 6 caracteres');
       return false;
     }
     if (newPassword !== confirmPassword) {
-      setError('As novas senhas não coincidem');
+      setError('As novas palavras-passe não coincidem');
       return false;
     }
     if (currentPassword === newPassword) {
-      setError('A nova senha deve ser diferente da senha atual');
+      setError('A nova palavra-passe deve ser diferente da palavra-passe actual');
       return false;
     }
     return true;
@@ -74,7 +74,7 @@ export default function ChangePassword() {
       
       if (result.success) {
         setToast({
-          message: result.message || 'Senha alterada com sucesso! Faça login novamente.',
+          message: result.message || 'Palavra-passe alterada com sucesso! Faça login novamente.',
           type: 'success'
         });
         setTimeout(() => {
@@ -82,7 +82,7 @@ export default function ChangePassword() {
           navigate('/login');
         }, 2000);
       } else {
-        setError(result.message || 'Erro ao alterar senha');
+        setError(result.message || 'Erro ao alterar palavra-passe');
       }
     } catch (error) {
       console.error('Erro:', error);
@@ -111,9 +111,9 @@ export default function ChangePassword() {
           className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-gray-100 p-8"
         >
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-black text-primary mb-2">Alterar Senha</h2>
+            <h2 className="text-3xl font-black text-primary mb-2">Alterar Palavra-passe</h2>
             <p className="text-gray-500 text-sm">
-              Altere sua senha atual por uma nova
+              Altere a sua palavra-passe actual por uma nova
             </p>
           </div>
 
@@ -127,7 +127,7 @@ export default function ChangePassword() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Senha Atual <span className="text-red-400">*</span>
+                Palavra-passe Actual <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -151,7 +151,7 @@ export default function ChangePassword() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Nova Senha <span className="text-red-400">*</span>
+                Nova Palavra-passe <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -176,7 +176,7 @@ export default function ChangePassword() {
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Confirmar Nova Senha <span className="text-red-400">*</span>
+                Confirmar Nova Palavra-passe <span className="text-red-400">*</span>
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -209,7 +209,7 @@ export default function ChangePassword() {
                   A processar...
                 </>
               ) : (
-                'Alterar Senha'
+                'Alterar Palavra-passe'
               )}
             </button>
 

@@ -221,7 +221,7 @@ const CategoryModal = ({ isOpen, onClose, category, onSave, canEdit }: {
               </label>
               {imagePreview && (
                 <div className="relative w-28 h-28 rounded-xl overflow-hidden border border-gray-100">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <img src={imagePreview} alt="Pré-visualização" className="w-full h-full object-cover" />
                   {canEdit && (
                     <button
                       type="button"
@@ -246,7 +246,7 @@ const CategoryModal = ({ isOpen, onClose, category, onSave, canEdit }: {
               value={formData.name}
               onChange={handleChange}
               disabled={!canEdit}
-              placeholder="Ex: Eletrónicos, Moda, Alimentos..."
+              placeholder="Ex: Electrónicos, Moda, Alimentos..."
               className={`w-full px-4 py-2.5 text-sm bg-gray-50 border rounded-xl
                 focus:outline-none transition-colors
                 ${errors.name ? 'border-red-300' : 'border-gray-200'}
@@ -286,7 +286,7 @@ const CategoryModal = ({ isOpen, onClose, category, onSave, canEdit }: {
           {/* Toggle */}
           <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
             <div>
-              <p className="text-sm font-medium" style={{ color: C.navy }}>Categoria ativa</p>
+              <p className="text-sm font-medium" style={{ color: C.navy }}>Categoria activa</p>
               <p className="text-xs text-gray-400">Visível para os utilizadores</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -374,7 +374,7 @@ const CategoryCard = ({ category, canEdit, canDelete, onEdit, onDelete, onToggle
               className="w-7 h-7 rounded-lg bg-white flex items-center justify-center
                 transition-colors hover:bg-orange-50"
               style={{ color: category.is_active ? '#1A6B35' : '#8A97A8' }}
-              aria-label={category.is_active ? 'Desativar' : 'Ativar'}
+              aria-label={category.is_active ? 'Desactivar' : 'Activar'}
             >
               {category.is_active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
             </button>
@@ -420,7 +420,7 @@ const CategoryCard = ({ category, canEdit, canDelete, onEdit, onDelete, onToggle
             ? { background: '#E6F4EC', color: '#1A6B35' }
             : { background: C.orangeLight, color: '#993C1D' }}
         >
-          {category.is_active ? 'Ativa' : 'Inativa'}
+          {category.is_active ? 'Activa' : 'Inactiva'}
         </span>
       </div>
     </div>
@@ -496,7 +496,7 @@ export default function Categories() {
     try {
       if (selectedCategory) {
         await categoriesService.update(selectedCategory.id, data);
-        showToast('Categoria atualizada!', 'success');
+        showToast('Categoria actualizada!', 'success');
       } else {
         await categoriesService.create(data);
         showToast('Categoria criada!', 'success');
@@ -526,7 +526,7 @@ export default function Categories() {
   const handleToggle = async (category: Category) => {
     try {
       await categoriesService.toggleActive(category.id, !category.is_active);
-      showToast(`Categoria ${!category.is_active ? 'ativada' : 'desativada'}!`, 'success');
+      showToast(`Categoria ${!category.is_active ? 'activada' : 'desactivada'}!`, 'success');
       await loadCategories();
     } catch { showToast('Erro ao alterar estado', 'error'); }
   };
@@ -546,7 +546,7 @@ export default function Categories() {
         onClose={() => { setShowConfirm(false); setSelectedCategory(null); }}
         onConfirm={handleDelete}
         title="Eliminar categoria"
-        message={`Tem a certeza que quer eliminar "${selectedCategory?.name}"? Esta ação não pode ser desfeita.`}
+        message={`Tem a certeza que quer eliminar "${selectedCategory?.name}"? Esta acção não pode ser desfeita.`}
         canDelete={canDelete(selectedCategory!)}
       />
 
@@ -583,7 +583,7 @@ export default function Categories() {
       {/* Estatísticas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard label="Total"    value={categories.length} sub="categorias"    accent={C.navy} />
-        <StatCard label="Ativas"   value={totalActive}       sub="em uso"        accent={C.orange} />
+        <StatCard label="Activas"   value={totalActive}       sub="em uso"        accent={C.orange} />
         <StatCard label="Globais"  value={totalGlobal}       sub="do sistema"    accent="#5B8DB8" />
         <StatCard label="Por loja" value={totalCompany}      sub="personalizadas" accent="#A0BAD0" />
       </div>
@@ -612,8 +612,8 @@ export default function Categories() {
             style={{ color: C.navy }}
           >
             <option value="all">Todos os estados</option>
-            <option value="active">Ativas</option>
-            <option value="inactive">Inativas</option>
+            <option value="active">Activas</option>
+            <option value="inactive">Inactivas</option>
           </select>
           {(isAdmin || isCompany) && (
             <select value={filterType} onChange={e => setFilterType(e.target.value)}

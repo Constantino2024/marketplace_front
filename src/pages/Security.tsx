@@ -12,8 +12,8 @@ export default function Security() {
     },
     {
       icon: Eye,
-      title: 'Proteção de Dados',
-      description: 'Seus dados pessoais nunca são compartilhados com terceiros',
+      title: 'Protecção de Dados',
+      description: 'Os seus dados pessoais nunca são partilhados com terceiros',
       color: 'text-blue-500',
       bgColor: 'bg-blue-50'
     },
@@ -27,7 +27,7 @@ export default function Security() {
     {
       icon: Smartphone,
       title: 'Autenticação em Duas Etapas',
-      description: 'Camada extra de segurança para sua conta',
+      description: 'Camada extra de segurança para a sua conta',
       color: 'text-purple-500',
       bgColor: 'bg-purple-50'
     }
@@ -43,7 +43,7 @@ export default function Security() {
               <Shield className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Segurança</h1>
             </div>
-            <p className="text-gray-300 text-sm">Como protegemos seus dados e transações</p>
+            <p className="text-gray-300 text-sm">Como protegemos os seus dados e transacções</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -70,12 +70,12 @@ export default function Security() {
               <h2 className="text-lg font-black text-gray-900 mb-4">Recomendações de Segurança</h2>
               <div className="space-y-3">
                 {[
-                  'Use uma senha forte e única para sua conta',
-                  'Nunca compartilhe sua senha com ninguém',
+                  'Use uma palavra-passe forte e única para a sua conta',
+                  'Nunca partilhe a sua palavra-passe com ninguém',
                   'Verifique sempre se está no site oficial antes de fazer login',
-                  'Ative a autenticação em duas etapas',
-                  'Não clique em links suspeitos enviados por email',
-                  'Mantenha seu dispositivo e navegador atualizados'
+                  'Active a autenticação em duas etapas',
+                  'Não clique em links suspeitos enviados por e-mail',
+                  'Mantenha o seu dispositivo e navegador actualizados'
                 ].map((tip, i) => (
                   <div key={i} className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
@@ -85,12 +85,12 @@ export default function Security() {
               </div>
             </div>
 
-            {/* Proteção ao Consumidor */}
+            {/* Protecção ao Consumidor */}
             <div className="bg-emerald-50 rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <Shield className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="text-sm font-black text-emerald-800 mb-2">Proteção ao Consumidor</h3>
+                  <h3 className="text-sm font-black text-emerald-800 mb-2">Protecção ao Consumidor</h3>
                   <p className="text-sm text-emerald-700">
                     O HSE Marketplace oferece garantia de reembolso caso o produto não seja entregue ou 
                     esteja em desacordo com o anunciado. Você tem até 7 dias após o recebimento para solicitar devolução.
@@ -99,15 +99,15 @@ export default function Security() {
               </div>
             </div>
 
-            {/* Contato para Segurança */}
+            {/* Contacto para Segurança */}
             <div className="bg-orange-50 rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="text-sm font-black text-orange-800 mb-2">Reportar problema de segurança</h3>
                   <p className="text-sm text-orange-700">
-                    Se você identificou alguma atividade suspeita ou vulnerabilidade em nossa plataforma, 
-                    entre em contato imediatamente pelo email: <strong>security@hsemarketplace.ao</strong>
+                    Se você identificou alguma actividade suspeita ou vulnerabilidade na nossa plataforma, 
+                    entre em contacto imediatamente pelo e-mail: <strong>security@hsemarketplace.ao</strong>
                   </p>
                 </div>
               </div>

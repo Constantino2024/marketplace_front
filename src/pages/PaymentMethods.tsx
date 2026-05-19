@@ -6,11 +6,11 @@ export default function PaymentMethods() {
     {
       icon: Smartphone,
       title: 'Multicaixa Express',
-      description: 'Pagamento instantâneo através do aplicativo do seu banco',
+      description: 'Pagamento instantâneo através da aplicação do seu banco',
       steps: [
-        'Selecione "Multicaixa Express" no checkout',
-        'Informe seu número de telefone associado à conta',
-        'Abra o app do seu banco e autorize o pagamento',
+        'Seleccione "Multicaixa Express" no checkout',
+        'Informe o seu número de telefone associado à conta',
+        'Abra a app do seu banco e autorize o pagamento',
         'Pagamento confirmado em segundos'
       ],
       time: 'Processamento: Imediato',
@@ -23,10 +23,10 @@ export default function PaymentMethods() {
       title: 'Referência Multicaixa',
       description: 'Pague em qualquer caixa ATM ou homebanking',
       steps: [
-        'Selecione "Referência Multicaixa" no checkout',
+        'Seleccione "Referência Multicaixa" no checkout',
         'Anote a entidade e referência geradas',
         'Dirija-se a uma caixa ATM ou app do banco',
-        'Selecione "Pagamento de Serviços" e digite os dados',
+        'Seleccione "Pagamento de Serviços" e digite os dados',
         'Confirme o valor e conclua o pagamento'
       ],
       time: 'Validade: 72 horas',
@@ -39,10 +39,10 @@ export default function PaymentMethods() {
       title: 'E-Kwanza',
       description: 'Pagamento via carteira digital E-Kwanza',
       steps: [
-        'Selecione "E-Kwanza" no checkout',
-        'Informe seu número de telefone',
-        'Escaneie o QR Code ou use o código gerado',
-        'Confirme o pagamento no app E-Kwanza'
+        'Seleccione "E-Kwanza" no checkout',
+        'Informe o seu número de telefone',
+        'Leia o Código QR ou utilize o código gerado',
+        'Confirme o pagamento na app E-Kwanza'
       ],
       time: 'Processamento: Imediato',
       fee: 'Sem taxas adicionais',
@@ -61,7 +61,7 @@ export default function PaymentMethods() {
               <CreditCard className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Formas de Pagamento</h1>
             </div>
-            <p className="text-gray-300 text-sm">Conheça todas as opções para pagar suas compras</p>
+            <p className="text-gray-300 text-sm">Conheça todas as opções para pagar as suas compras</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -119,8 +119,8 @@ export default function PaymentMethods() {
                 <div>
                   <h3 className="text-sm font-black text-gray-800 mb-2">Pagamento Seguro</h3>
                   <p className="text-sm text-gray-600">
-                    Todas as transações são processadas com criptografia de ponta a ponta. 
-                    Seus dados financeiros nunca são armazenados em nossos servidores.
+                    Todas as transacções são processadas com criptografia de ponta a ponta. 
+                    Os seus dados financeiros nunca são armazenados nos nossos servidores.
                   </p>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function PaymentMethods() {
                   <h3 className="text-sm font-black text-amber-800 mb-2">Importante</h3>
                   <p className="text-sm text-amber-700">
                     Nunca realize pagamentos fora da plataforma. O HSE Marketplace não se responsabiliza 
-                    por transações feitas por meios não oficiais.
+                    por transacções feitas por meios não oficiais.
                   </p>
                 </div>
               </div>

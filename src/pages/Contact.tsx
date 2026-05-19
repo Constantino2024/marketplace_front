@@ -25,7 +25,7 @@ export default function Contact() {
     setError('');
     
     try {
-      // Simular envio de email (implementar API real depois)
+      // Simular envio de e-mail (implementar API real depois)
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSubmitted(true);
       setFormData({ name: '', email: '', subject: '', message: '' });
@@ -41,17 +41,17 @@ export default function Contact() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Fale Conosco</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-gray-900">Fale Connosco</h1>
           <p className="text-sm text-gray-500 mt-2">
             Estamos aqui para ajudar. Respondemos o mais breve possível.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Informações de Contato */}
+          {/* Informações de Contacto */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
-              <h2 className="text-lg font-black text-gray-900 mb-6">Informações de Contato</h2>
+              <h2 className="text-lg font-black text-gray-900 mb-6">Informações de Contacto</h2>
               
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
@@ -80,7 +80,7 @@ export default function Contact() {
                     <Mail className="w-5 h-5 text-orange-500" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-gray-800">Email</h4>
+                    <h4 className="text-sm font-bold text-gray-800">E-mail</h4>
                     <p className="text-sm text-gray-500">suporte@hsemarketplace.ao</p>
                     <p className="text-xs text-gray-400">Respondemos em até 24h</p>
                   </div>
@@ -100,7 +100,7 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Formulário de Contato */}
+          {/* Formulário de Contacto */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
               {submitted ? (
@@ -114,7 +114,7 @@ export default function Contact() {
                   </div>
                   <h3 className="text-xl font-black text-gray-900 mb-2">Mensagem Enviada!</h3>
                   <p className="text-gray-500 mb-6">
-                    Agradecemos pelo seu contato. Responderemos em breve.
+                    Agradecemos pelo seu contacto. Responderemos em breve.
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
@@ -141,7 +141,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <label className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">
-                        Email *
+                        E-mail *
                       </label>
                       <input
                         type="email"
@@ -165,7 +165,7 @@ export default function Contact() {
                       onChange={handleChange}
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                     >
-                      <option value="">Selecione um assunto</option>
+                      <option value="">Seleccione um assunto</option>
                       <option value="Dúvida sobre produto">Dúvida sobre produto</option>
                       <option value="Problema com pedido">Problema com pedido</option>
                       <option value="Pagamento">Pagamento</option>
@@ -202,7 +202,7 @@ export default function Contact() {
                     className="w-full py-3 bg-orange-500 text-white rounded-xl font-black text-sm hover:bg-orange-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Enviando...</>
+                      <><Loader2 className="w-4 h-4 animate-spin" /> A enviar...</>
                     ) : (
                       <><Send className="w-4 h-4" /> Enviar Mensagem</>
                     )}

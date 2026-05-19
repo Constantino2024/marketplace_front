@@ -9,7 +9,7 @@ import { reportsService, SalesStats, MonthlySales } from '../../services/reports
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const fmt = (value: number) =>
-  new Intl.NumberFormat('pt-AO', {
+  new Intl.NumberFormat('pt-PT', {
     style: 'currency',
     currency: 'AOA',
     minimumFractionDigits: 0,
@@ -228,7 +228,7 @@ export default function StoreReports() {
               />
             </div>
             <div className="flex-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Status</label>
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Estado</label>
               <select
                 value={filters.status}
                 onChange={e => setFilters(p => ({ ...p, status: e.target.value }))}
@@ -292,7 +292,7 @@ export default function StoreReports() {
             <div className="w-16 h-16 rounded-3xl bg-gray-50 border-2 border-dashed border-gray-200 flex items-center justify-center">
               <TrendingUp className="w-7 h-7 text-gray-300" />
             </div>
-            <p className="text-sm text-gray-500 font-medium">Nenhum dado para o período selecionado</p>
+            <p className="text-sm text-gray-500 font-medium">Nenhum dado para o período seleccionado</p>
           </div>
         ) : (
           <>

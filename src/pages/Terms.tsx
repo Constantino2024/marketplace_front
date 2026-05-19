@@ -12,7 +12,7 @@ export default function Terms() {
               <FileText className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Termos de Uso</h1>
             </div>
-            <p className="text-gray-300 text-sm">Última atualização: Janeiro 2025</p>
+            <p className="text-gray-300 text-sm">Última actualização: Janeiro 2025</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -21,7 +21,7 @@ export default function Terms() {
                 <Scale className="w-5 h-5 text-orange-500" /> 1. Aceitação dos Termos
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Ao acessar ou usar o HSE Marketplace Angola, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá usar nossos serviços.
+                Ao aceder ou usar o HSE Marketplace Angola, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, não poderá usar os nossos serviços.
               </p>
             </section>
 
@@ -30,12 +30,12 @@ export default function Terms() {
                 <Users className="w-5 h-5 text-orange-500" /> 2. Elegibilidade
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Para usar nossos serviços, você deve:
+                Para usar os nossos serviços, você deve:
               </p>
               <ul className="mt-2 space-y-2 text-sm text-gray-600 list-disc list-inside">
                 <li>Fornecer informações precisas e completas</li>
-                <li>Manter a confidencialidade de sua conta</li>
-                <li>Ser responsável por todas as atividades em sua conta</li>
+                <li>Manter a confidencialidade da sua conta</li>
+                <li>Ser responsável por todas as actividades na sua conta</li>
               </ul>
             </section>
 
@@ -79,7 +79,7 @@ export default function Terms() {
                 <AlertCircle className="w-5 h-5 text-orange-500" /> 6. Limitação de Responsabilidade
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed">
-                O HSE Marketplace Angola atua como intermediário entre compradores e vendedores. Não nos responsabilizamos pela qualidade, segurança ou legalidade dos produtos vendidos por terceiros em nossa plataforma.
+                O HSE Marketplace Angola actua como intermediário entre compradores e vendedores. Não nos responsabilizamos pela qualidade, segurança ou legalidade dos produtos vendidos por terceiros na nossa plataforma.
               </p>
             </section>
 

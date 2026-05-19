@@ -8,25 +8,25 @@ export default function HowToBuy() {
       icon: Search,
       title: '1. Encontre o Produto',
       description: 'Use a busca ou navegue por categorias para encontrar o produto desejado.',
-      tip: 'Dica: Utilize filtros para refinar sua busca por preço, marca ou vendedor.'
+      tip: 'Dica: Utilize filtros para refinar a sua busca por preço, marca ou vendedor.'
     },
     {
       icon: ShoppingCart,
       title: '2. Adicione ao Carrinho',
-      description: 'Selecione a quantidade desejada e clique em "Comprar agora" ou "Adicionar ao carrinho".',
+      description: 'Seleccione a quantidade desejada e clique em "Comprar agora" ou "Adicionar ao carrinho".',
       tip: 'Dica: Verifique as especificações do produto antes de adicionar ao carrinho.'
     },
     {
       icon: CreditCard,
       title: '3. Escolha o Pagamento',
-      description: 'Selecione seu método de pagamento preferido e preencha os dados necessários.',
+      description: 'Seleccione o seu método de pagamento preferido e preencha os dados necessários.',
       tip: 'Dica: Pagamentos via Multicaixa Express são processados imediatamente.'
     },
     {
       icon: CheckCircle,
       title: '4. Confirme o Pedido',
-      description: 'Revise seus dados e finalize a compra. Você receberá a confirmação por email.',
-      tip: 'Dica: Guarde o número do pedido para rastrear sua compra.'
+      description: 'Revise os seus dados e finalize a compra. Você receberá a confirmação por e-mail.',
+      tip: 'Dica: Guarde o número do pedido para rastrear a sua compra.'
     }
   ];
 
@@ -34,7 +34,7 @@ export default function HowToBuy() {
     {
       icon: Smartphone,
       title: 'Multicaixa Express',
-      description: 'Pagamento imediato através do aplicativo do banco',
+      description: 'Pagamento imediato através da aplicação do banco',
       time: 'Processamento imediato'
     },
     {
@@ -61,7 +61,7 @@ export default function HowToBuy() {
               <ShoppingCart className="w-8 h-8 text-orange-400" />
               <h1 className="text-2xl sm:text-3xl font-black">Como Comprar no HSE Marketplace</h1>
             </div>
-            <p className="text-gray-300 text-sm">Guia completo para fazer suas compras com segurança</p>
+            <p className="text-gray-300 text-sm">Guia completo para fazer as suas compras com segurança</p>
           </div>
 
           <div className="p-6 sm:p-8 space-y-8">
@@ -118,7 +118,7 @@ export default function HowToBuy() {
                     <li>Leia a descrição do produto e as avaliações de outros compradores</li>
                     <li>Guarde todos os comprovantes de pagamento</li>
                     <li>Nunca faça pagamentos fora da plataforma</li>
-                    <li>Em caso de dúvidas, entre em contato com nosso suporte</li>
+                    <li>Em caso de dúvidas, entre em contacto com o nosso suporte</li>
                   </ul>
                 </div>
               </div>

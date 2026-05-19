@@ -35,7 +35,7 @@ const Header: React.FC = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
 
-  // Detectar categoria ativa baseada na URL
+  // Detectar categoria activa baseada na URL
   useEffect(() => {
     const match = location.pathname.match(/^\/category\/([^/]+)/);
     if (match) {
@@ -117,7 +117,7 @@ const Header: React.FC = () => {
     setShowSuggestions(false);
   };
 
-  // Função para verificar se uma categoria está ativa
+  // Função para verificar se uma categoria está activa
   const isCategoryActive = (categorySlug: string) => {
     return activeCategorySlug === categorySlug;
   };
@@ -249,7 +249,7 @@ const Header: React.FC = () => {
               </AnimatePresence>
             </div>
 
-            {/* Ações lado direito Desktop/Tablet */}
+            {/* Acções lado direito Desktop/Tablet */}
             <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
               {/* Favoritos */}
               <Link
@@ -269,7 +269,7 @@ const Header: React.FC = () => {
                 </button>
               )}
 
-              {/* Usuário */}
+              {/* Utilizador */}
               <div className="relative">
                 {authenticated ? (
                   <>
@@ -330,7 +330,7 @@ const Header: React.FC = () => {
                             <button
                               onClick={() => {
                                 setShowUserMenu(false);
-                                if (window.confirm('Tem certeza que deseja sair?')) logout();
+                                if (window.confirm('Tem a certeza que deseja sair?')) logout();
                               }}
                               className="flex items-center gap-2.5 px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg w-full"
                             >
@@ -367,7 +367,7 @@ const Header: React.FC = () => {
               </Link>
             </div>
 
-            {/* Ações Tablet (md a lg) */}
+            {/* Acções Tablet (md a lg) */}
             <div className="flex lg:hidden items-center gap-3 flex-shrink-0">
               <button
                 onClick={() => setIsMobileSearchOpen(true)}
@@ -456,7 +456,7 @@ const Header: React.FC = () => {
               ))
             ) : (
               <>
-                {/* Link Início - ativo quando na home */}
+                {/* Link Início - activo quando na home */}
                 <Link
                   to="/"
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-medium transition-colors border-b-2 ${
@@ -469,7 +469,7 @@ const Header: React.FC = () => {
                   Início
                 </Link>
 
-                {/* Links das Categorias - ativo quando na página da categoria */}
+                {/* Links das Categorias - activo quando na página da categoria */}
                 {categories.slice(0, 7).map((category) => (
                   <Link
                     key={category.id}
@@ -571,7 +571,7 @@ const Header: React.FC = () => {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="O que você está procurando?"
+                      placeholder="O que está à procura?"
                       className="w-full h-12 bg-gray-50 border-2 border-gray-200 rounded-xl px-4 pr-10 text-base focus:outline-none focus:border-primary transition-colors"
                       autoFocus
                     />
@@ -618,7 +618,7 @@ const Header: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ── Drawer Mobile (Menu Lateral) - Atualizado com categoria ativa ── */}
+      {/* ── Drawer Mobile (Menu Lateral) - Actualizado com categoria activa ── */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
@@ -630,7 +630,7 @@ const Header: React.FC = () => {
               transition={{ type: 'spring', damping: 28, stiffness: 260 }}
               className="fixed left-0 top-0 bottom-0 w-80 bg-white shadow-2xl z-50 flex flex-col overflow-y-auto"
             >
-              {/* Header do Drawer */}
+              {/* Cabeçalho do Drawer */}
               <div className="p-4 bg-primary text-white">
                 <div className="flex items-center justify-between mb-3">
                   
@@ -896,7 +896,7 @@ const Header: React.FC = () => {
                       <button
                         onClick={() => {
                           setMobileMenuOpen(false);
-                          if (window.confirm('Tem certeza que deseja sair?')) logout();
+                          if (window.confirm('Tem a certeza que deseja sair?')) logout();
                         }}
                         className="flex items-center gap-3 px-3 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl w-full transition-colors group"
                       >
@@ -908,7 +908,7 @@ const Header: React.FC = () => {
                 )}
               </nav>
 
-              {/* Footer do Drawer */}
+              {/* Rodapé do Drawer */}
               <div className="p-4 border-t border-gray-100 bg-gray-50">
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>© {new Date().getFullYear()} HSE Marketplace</span>
@@ -974,7 +974,7 @@ const Header: React.FC = () => {
                   <button
                     onClick={() => {
                       setShowUserMenu(false);
-                      if (window.confirm('Tem certeza que deseja sair?')) logout();
+                      if (window.confirm('Tem a certeza que deseja sair?')) logout();
                     }}
                     className="flex items-center gap-3 px-3 py-3 text-sm text-red-500 hover:bg-red-50 rounded-xl w-full border-t border-gray-100 mt-2 pt-3"
                   >

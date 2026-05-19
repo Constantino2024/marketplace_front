@@ -14,7 +14,7 @@ const menuItems = [
   { id: 'orders', label: 'Meus Pedidos', icon: Package, path: '/orders' },
   { id: 'favorites', label: 'Meus Favoritos', icon: Heart, path: '/favorites' },
   { id: 'addresses', label: 'Meus Endereços', icon: MapPin, path: '/addresses' },
-  { id: 'change-password', label: 'Alterar Senha', icon: Key, action: 'password' },
+  { id: 'change-password', label: 'Alterar Palavra-passe', icon: Key, action: 'password' },
   { id: 'settings', label: 'Configurações', icon: Settings, path: '/settings' },
 ];
 
@@ -154,9 +154,9 @@ export default function Profile() {
       const updated = await customerService.updateProfile(editForm);
       setProfile(updated);
       setIsEditing(false);
-      showToast('Perfil atualizado com sucesso!', 'success');
+      showToast('Perfil actualizado com sucesso!', 'success');
     } catch {
-      showToast('Erro ao atualizar perfil', 'error');
+      showToast('Erro ao actualizar perfil', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -165,7 +165,7 @@ export default function Profile() {
   const handleChangePassword = async (currentPassword: string, newPassword: string) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      showToast('Senha alterada com sucesso!', 'success');
+      showToast('Palavra-passe alterada com sucesso!', 'success');
       return true;
     } catch { return false; }
   };
@@ -210,7 +210,7 @@ export default function Profile() {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center space-y-3">
           <Loader2 className="w-10 h-10 text-[#F59E0B] animate-spin mx-auto" />
-          <p className="text-sm text-gray-400 font-medium">Carregando seu perfil…</p>
+          <p className="text-sm text-gray-400 font-medium">A carregar o seu perfil…</p>
         </div>
       </div>
     );
@@ -219,7 +219,7 @@ export default function Profile() {
   return (
     <CustomerLayout
       title="Meu Perfil"
-      subtitle="Gerencie suas informações pessoais"
+      subtitle="Gerencie as suas informações pessoais"
       menuItems={menuItems}
       activeItem="profile"
       toast={toast}
@@ -313,7 +313,7 @@ export default function Profile() {
                     <select name="city" value={editForm.city || ''} onChange={handleChange}
                       className="h-11 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm text-gray-800 font-medium
                         focus:outline-none focus:ring-2 focus:ring-[#F59E0B]/40 focus:border-[#F59E0B] transition-all appearance-none cursor-pointer">
-                      <option value="">Selecione uma cidade</option>
+                      <option value="">Seleccione uma cidade</option>
                       {angolaCities.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </InputField>
@@ -340,8 +340,8 @@ export default function Profile() {
                       disabled:opacity-50 shadow-sm shadow-amber-200"
                   >
                     {isSaving
-                      ? <><Loader2 className="w-4 h-4 animate-spin" /> Salvando…</>
-                      : <><Save className="w-4 h-4" /> Salvar Alterações</>}
+                      ? <><Loader2 className="w-4 h-4 animate-spin" /> A guardar…</>
+                      : <><Save className="w-4 h-4" /> Guardar Alterações</>}
                   </button>
                 </div>
               </motion.div>
@@ -363,7 +363,7 @@ export default function Profile() {
                   <FieldDisplay icon={MapPin} label="Endereço" value={profile?.address} />
                   {profile?.birth_date && (
                     <FieldDisplay icon={Calendar} label="Data de Nascimento"
-                      value={new Date(profile.birth_date).toLocaleDateString('pt-AO')} />
+                      value={new Date(profile.birth_date).toLocaleDateString('pt-PT')} />
                   )}
                   {profile?.tax_id && (
                     <FieldDisplay icon={BadgeCheck} label="NIF / BI" value={profile.tax_id} />
@@ -376,7 +376,7 @@ export default function Profile() {
                   {[
                     { icon: Package, label: 'Meus Pedidos', sub: `${stats.total_orders} pedidos`, path: '/orders' },
                     { icon: Heart, label: 'Favoritos', sub: 'Ver lista', path: '/favorites' },
-                    { icon: Key, label: 'Alterar Senha', sub: 'Segurança', path: null },
+                    { icon: Key, label: 'Alterar Palavra-passe', sub: 'Segurança', path: null },
                   ].map(item => (
                     <button key={item.label}
                       className="flex items-center gap-3 p-4 rounded-2xl bg-gray-50 hover:bg-gray-100

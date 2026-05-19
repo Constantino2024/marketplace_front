@@ -45,7 +45,7 @@ export default function StoreDashboard() {
   useEffect(() => {
     loadDashboardData();
     
-    // Monitorar resize da janela para atualizar os gráficos
+    // Monitorar resize da janela para actualizar os gráficos
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -165,7 +165,7 @@ export default function StoreDashboard() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Carregando dashboard...</p>
+          <p className="text-gray-400">A carregar dashboard...</p>
         </div>
       </div>
     );
@@ -180,7 +180,7 @@ export default function StoreDashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-gray-800">Painel de Controle</h1>
+          <h1 className="text-2xl font-black text-gray-800">Painel de Controlo</h1>
           <p className="text-sm text-gray-400">Visão geral das vendas e desempenho da loja.</p>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function StoreDashboard() {
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="font-black text-gray-800">Faturamento Diário</h2>
+              <h2 className="font-black text-gray-800">Facturamento Diário</h2>
               <p className="text-xs text-gray-400">Desempenho financeiro dos últimos 7 dias</p>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-bold">
@@ -376,9 +376,9 @@ export default function StoreDashboard() {
                 <th className="px-6 py-4">Cliente</th>
                 <th className="px-6 py-4">Data</th>
                 <th className="px-6 py-4">Valor</th>
-                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4">Estado</th>
                 <th className="px-6 py-4"></th>
-               </tr>
+              </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {stats.recent_orders.length > 0 ? (

@@ -144,7 +144,7 @@ const WaitingForPaymentModal = ({
 
             <div className="p-6">
               <p className="text-sm text-gray-600 text-center mb-5 leading-relaxed">
-                Abra o app <span className="font-black text-gray-900">Multicaixa Express</span> e autorize o pagamento agora.
+                Abra a app <span className="font-black text-gray-900">Multicaixa Express</span> e autorize o pagamento agora.
               </p>
 
               <div className={`rounded-2xl p-5 text-center border-2 transition-all duration-300 ${
@@ -426,7 +426,7 @@ const ReferencePaymentModal = ({
                       <ol className="space-y-2.5">
                         {[
                           'Dirija-se a uma caixa ATM Multicaixa',
-                          `Selecione "Pagamento de Serviços"`,
+                          `Seleccione "Pagamento de Serviços"`,
                           `Digite a Entidade: ${paymentData.entity}`,
                           `Digite a Referência: ${paymentData.reference}`,
                           `Confirme o valor de ${formatCurrency(paymentData.amount)}`,
@@ -560,7 +560,7 @@ const EkwanzaPaymentModal = ({
       if (res.success && res.status === 'completed') handleSuccess();
       else alert('Pagamento ainda não confirmado. Aguarde ou tente novamente.');
     } catch {
-      alert('Erro ao verificar status. Tente novamente.');
+      alert('Erro ao verificar estado. Tente novamente.');
     } finally {
       setIsManualChecking(false);
     }
@@ -636,7 +636,7 @@ const EkwanzaPaymentModal = ({
 
                     {paymentData.qr_code && (
                       <div className="text-center">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">QR Code</p>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Código QR</p>
                         <div className="bg-white p-3 rounded-2xl shadow-md inline-block border-2 border-gray-100">
                           <img src={paymentData.qr_code} alt="QR Code E-Kwanza" className="w-44 h-44 mx-auto" />
                         </div>
@@ -664,9 +664,9 @@ const EkwanzaPaymentModal = ({
                     <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
                       <p className="text-xs font-black text-blue-900 mb-2">📱 Como pagar com E-Kwanza:</p>
                       <ol className="text-xs text-blue-700 space-y-1.5 list-decimal list-inside leading-relaxed">
-                        <li>Abra o app E-Kwanza no seu telemóvel</li>
-                        <li>Escolha "Pagar com QR Code" ou "Código"</li>
-                        <li>Scan o QR Code ou insira o código</li>
+                        <li>Abra a app E-Kwanza no seu telemóvel</li>
+                        <li>Escolha "Pagar com Código QR" ou "Código"</li>
+                        <li>Faça scan ao Código QR ou introduza o código</li>
                         <li>Confirme o valor de {formatCurrency(paymentData.amount)}</li>
                         <li>Autorize com o seu PIN</li>
                       </ol>
@@ -823,7 +823,7 @@ const ReceiptDisplay = ({
       } else {
         const a = document.createElement('a');
         a.href = url;
-        a.download = `fatura_${orderData?.order_number || 'temp'}.pdf`;
+        a.download = `factura_${orderData?.order_number || 'temp'}.pdf`;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 100);
       }
@@ -884,7 +884,7 @@ const ReceiptDisplay = ({
             </div>
           </div>
           <div className="text-right">
-            <p className="text-orange-400 font-black text-xs sm:text-sm">FATURA PRÓ-FORMA</p>
+            <p className="text-orange-400 font-black text-xs sm:text-sm">FACTURA PRÓ-FORMA</p>
             <p className="text-[10px] text-gray-400">Nº {orderData?.order_number || 'N/A'}</p>
           </div>
         </div>
@@ -1002,7 +1002,7 @@ const ReceiptDisplay = ({
 
         <div className="px-5 py-3 border-t border-gray-100 text-center">
           <p className="text-[9px] text-gray-400">
-            Esta fatura pró-forma é um documento válido. Guarde-a para futuras referências.
+            Esta factura pró-forma é um documento válido. Guarde-a para futuras referências.
           </p>
           <p className="text-[8px] text-gray-300 mt-0.5">HSE Marketplace Angola © {new Date().getFullYear()}</p>
         </div>
@@ -1048,7 +1048,7 @@ const OrderSuccess = ({
         className="px-6 py-3 bg-orange-500 text-white rounded-2xl font-black text-sm hover:bg-orange-600 active:scale-[0.98] transition-all shadow-md shadow-orange-500/20 flex items-center justify-center gap-2"
       >
         <Download className="w-4 h-4" />
-        Baixar Fatura
+        Baixar Factura
       </button>
       <Link
         to="/"
@@ -1221,7 +1221,7 @@ export default function Checkout() {
       setCurrentStep(3);
       showToast('Pagamento confirmado com sucesso!', 'success');
     } catch {
-      showToast('Pagamento confirmado, mas houve erro ao gerar fatura.', 'error');
+      showToast('Pagamento confirmado, mas houve erro ao gerar factura.', 'error');
     }
   }, [cartTotal]);
 
@@ -1719,7 +1719,7 @@ export default function Checkout() {
                       <div>
                         <p className="text-xs font-black text-blue-800 mb-1">Informação importante</p>
                         <p className="text-xs text-blue-700 leading-relaxed">
-                          Para pagamento via <strong>Multicaixa Express</strong>, terá 60 segundos para autorizar no app.
+                          Para pagamento via <strong>Multicaixa Express</strong>, terá 60 segundos para autorizar na app.
                           Para <strong>Referência Multicaixa</strong>, terá 72 horas para efectuar o pagamento num ATM.
                         </p>
                       </div>

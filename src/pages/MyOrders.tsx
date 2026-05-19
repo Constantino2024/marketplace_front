@@ -38,7 +38,7 @@ const menuItems = [
   { id: 'orders', label: 'Meus Pedidos', icon: Package, path: '/orders' },
   { id: 'favorites', label: 'Meus Favoritos', icon: Heart, path: '/favorites' },
   { id: 'addresses', label: 'Meus Endereços', icon: MapPin, path: '/addresses' },
-  { id: 'change-password', label: 'Alterar Senha', icon: Key, action: 'password' },
+  { id: 'change-password', label: 'Alterar Palavra-passe', icon: Key, action: 'password' },
   { id: 'settings', label: 'Configurações', icon: Settings, path: '/settings' },
 ];
 
@@ -476,7 +476,7 @@ export default function MyOrders() {
   return (
     <CustomerLayout
       title="Meus Pedidos"
-      subtitle="Acompanhe o status de todos os seus pedidos"
+      subtitle="Acompanhe o estado de todos os seus pedidos"
       menuItems={menuItems}
       activeItem="orders"
       toast={toast}
@@ -577,7 +577,7 @@ export default function MyOrders() {
             </div>
             <h3 className="text-base font-black text-gray-800 mb-1.5">Nenhum pedido ainda</h3>
             <p className="text-sm text-gray-400 mb-6 max-w-xs">
-              Você ainda não realizou nenhuma compra. Comece a explorar os nossos produtos!
+              Ainda não realizou nenhuma compra. Comece a explorar os nossos produtos!
             </p>
             <Link
               to="/"

@@ -14,7 +14,7 @@ const menuItems = [
   { id: 'orders', label: 'Meus Pedidos', icon: Package, path: '/orders' },
   { id: 'favorites', label: 'Meus Favoritos', icon: Heart, path: '/favorites' },
   { id: 'addresses', label: 'Meus Endereços', icon: MapPin, path: '/addresses' },
-  { id: 'change-password', label: 'Alterar Senha', icon: Key, action: 'password' },
+  { id: 'change-password', label: 'Alterar Palavra-passe', icon: Key, action: 'password' },
   { id: 'settings', label: 'Configurações', icon: Settings, path: '/settings' },
 ];
 
@@ -153,12 +153,12 @@ export default function Favorites() {
       setToast={setToast}
       onChangePassword={handleChangePassword}
     >
-      {/* Barra de ações */}
+      {/* Barra de acções */}
       {favorites.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <input type="checkbox" checked={paginatedFavorites.length > 0 && paginatedFavorites.every(p => selectedProducts.includes(p.id))} onChange={toggleSelectAll} className="w-4 h-4 rounded border-gray-300 text-[#F59E0B] focus:ring-[#F59E0B]" />
-            <span>{selectedProducts.length} de {totalItems} selecionado(s)</span>
+            <span>{selectedProducts.length} de {totalItems} seleccionado(s)</span>
           </div>
           {selectedProducts.length > 0 && (
             <button onClick={handleBulkRemove} disabled={isDeleting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center gap-2 text-sm font-medium disabled:opacity-50">
@@ -251,7 +251,7 @@ export default function Favorites() {
           {totalPages > 1 && (
             <div className="mt-6 sm:mt-8 px-4 sm:px-6 py-3 sm:py-4 bg-white rounded-xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-[10px] sm:text-xs text-gray-500 font-bold">
-                Mostrando <span className="text-gray-800">{startIndex + 1}</span> a <span className="text-gray-800">{Math.min(startIndex + ITEMS_PER_PAGE, totalItems)}</span> de <span className="text-gray-800">{totalItems}</span> produtos
+                A mostrar <span className="text-gray-800">{startIndex + 1}</span> a <span className="text-gray-800">{Math.min(startIndex + ITEMS_PER_PAGE, totalItems)}</span> de <span className="text-gray-800">{totalItems}</span> produtos
               </p>
               <div className="flex items-center gap-2">
                 <button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1} className="p-1.5 sm:p-2 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-all">
@@ -270,8 +270,8 @@ export default function Favorites() {
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-pink-400" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">Sua lista está vazia</h2>
-          <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">Você ainda não adicionou nenhum produto aos favoritos. Comece a explorar e encontre seus produtos favoritos!</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">A sua lista está vazia</h2>
+          <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">Ainda não adicionou nenhum produto aos favoritos. Comece a explorar e encontre os seus produtos favoritos!</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/" className="px-6 py-3 bg-[#F59E0B] text-white rounded-lg hover:bg-[#D97706] transition-colors font-bold inline-flex items-center justify-center gap-2 text-sm">
               <ShoppingBag className="w-4 h-4" /> Explorar Produtos

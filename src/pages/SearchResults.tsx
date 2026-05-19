@@ -15,7 +15,7 @@ import {
   Store,
   Loader2,
   Filter,
-  ShoppingCart  // 👈 ADICIONE ESTA IMPORTAÇÃO
+  ShoppingCart 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { searchService, SearchProduct, SearchFilters } from '../services/search';
@@ -88,7 +88,7 @@ const ProductCard = ({ product }: { product: SearchProduct }) => {
           </h3>
         </Link>
         <p className="text-[10px] text-green-500 font-bold mb-2">
-          {product.stock > 0 ? 'Em estoque' : 'Fora de estoque'}
+          {product.stock > 0 ? 'Em stock' : 'Fora de stock'}
         </p>
         <div className="flex gap-0.5 mb-3">
           {[...Array(5)].map((_, i) => (
@@ -113,7 +113,7 @@ const ProductCard = ({ product }: { product: SearchProduct }) => {
             }}
             className="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
           >
-            <ShoppingCart className="w-5 h-5" /> {/* 👈 CORRIGIDO: Search → ShoppingCart */}
+            <ShoppingCart className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -216,7 +216,7 @@ const Pagination = ({
   );
 };
 
-// Componente de Filtros (mantido igual)
+// Componente de Filtros
 interface FiltersPanelProps {
   filters: SearchFilters;
   onFilterChange: (filters: SearchFilters) => void;
@@ -359,7 +359,7 @@ const FiltersPanel = ({ filters, onFilterChange, categories, onClose, isMobile }
         </div>
       </div>
 
-      {/* Disponível em estoque */}
+      {/* Disponível em stock */}
       <div>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
@@ -368,7 +368,7 @@ const FiltersPanel = ({ filters, onFilterChange, categories, onClose, isMobile }
             onChange={(e) => handleStockChange(e.target.checked)}
             className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
           />
-          <span className="text-sm text-gray-600">Apenas em estoque</span>
+          <span className="text-sm text-gray-600">Apenas em stock</span>
         </label>
       </div>
     </div>
@@ -457,7 +457,7 @@ export default function SearchResults() {
             type="text"
             name="search"
             defaultValue={query}
-            placeholder="Buscar produtos..."
+            placeholder="Pesquisar produtos..."
             className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
           />
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -491,7 +491,7 @@ export default function SearchResults() {
                 type="text"
                 name="search"
                 defaultValue={query}
-                placeholder="Buscar produtos..."
+                placeholder="Pesquisar produtos..."
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -526,7 +526,7 @@ export default function SearchResults() {
               <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <p className="text-gray-400 font-bold">Nenhum produto encontrado</p>
               <p className="text-sm text-gray-400 mt-2">
-                Tente buscar por outros termos ou remover alguns filtros.
+                Tente pesquisar por outros termos ou remover alguns filtros.
               </p>
             </div>
           )}

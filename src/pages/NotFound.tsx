@@ -26,13 +26,13 @@ export default function NotFound() {
 
   // Sugestões de categorias populares
   const popularCategories = [
-    { name: 'Eletrônicos', icon: Package, path: '/category/eletronicos' },
+    { name: 'Electrónicos', icon: Package, path: '/category/eletronicos' },
     { name: 'Moda', icon: ShoppingBag, path: '/category/moda' },
     { name: 'Calçados', icon: Store, path: '/category/calcados' },
     { name: 'Mantimentos', icon: Package, path: '/category/mantimentos' },
   ];
 
-  // Links rápidos baseados no tipo de usuário
+  // Links rápidos baseados no tipo de utilizador
   const quickLinks = [
     ...(authenticated ? [
       ...(user?.is_admin ? [{ name: 'Dashboard Admin', path: '/admin', icon: Users }] : []),
@@ -88,11 +88,11 @@ export default function NotFound() {
               Página Não Encontrada
             </h1>
             <p className="text-gray-500 max-w-md mx-auto mb-8">
-              Ops! A página que você está procurando pode ter sido removida, 
+              Ops! A página que procura pode ter sido removida, 
               renomeada ou está temporariamente indisponível.
             </p>
 
-            {/* Botões de Ação */}
+            {/* Botões de Acção */}
             <div className="flex flex-wrap gap-4 justify-center">
               <button
                 onClick={goBack}
@@ -147,7 +147,7 @@ export default function NotFound() {
                 type="submit"
                 className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-all"
               >
-                Buscar
+                Pesquisar
               </button>
             </form>
           </div>
@@ -161,7 +161,7 @@ export default function NotFound() {
           className="mt-8 text-center"
         >
           <p className="text-xs text-gray-400">
-            Se você acredita que isso é um erro, entre em contato com o nosso{' '}
+            Se acredita que isto é um erro, entre em contacto com o nosso{' '}
             <a href="mailto:suporte@hsemarketplace.ao" className="text-primary font-bold hover:underline">
               suporte
             </a>

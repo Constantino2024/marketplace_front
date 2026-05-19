@@ -76,9 +76,9 @@ export default function Register() {
         
       case 'email':
         if (!formData.email.trim()) {
-          error = 'Email é obrigatório';
+          error = 'E-mail é obrigatório';
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-          error = 'Email inválido (exemplo: nome@dominio.com)';
+          error = 'E-mail inválido (exemplo: nome@dominio.com)';
         }
         break;
         
@@ -87,7 +87,7 @@ export default function Register() {
         if (!formData.phone.trim()) {
           error = 'Telefone é obrigatório';
         } else if (phoneDigits.length !== 9) {
-          error = 'Telefone deve ter exatamente 9 dígitos';
+          error = 'Telefone deve ter exactamente 9 dígitos';
         } else if (phoneDigits[0] !== '9') {
           error = 'Telefone deve começar com 9 (exemplo: 9XX XXX XXX)';
         }
@@ -105,7 +105,7 @@ export default function Register() {
         
       case 'confirm_password':
         if (!formData.confirm_password) {
-          error = 'Confirme sua palavra-passe';
+          error = 'Confirme a sua palavra-passe';
         } else if (formData.password !== formData.confirm_password) {
           error = 'As palavras-passe não coincidem';
         }
@@ -168,7 +168,7 @@ export default function Register() {
         setErrors({ form: result.error || 'Erro ao realizar registo' });
       }
     } catch (error) {
-      console.error('Erro no registro:', error);
+      console.error('Erro no registo:', error);
       setErrors({ form: 'Erro ao realizar registo. Tente novamente.' });
     } finally {
       setIsLoading(false);
@@ -233,7 +233,7 @@ export default function Register() {
                 value={formData.full_name}
                 onChange={handleChange}
                 onBlur={() => handleBlur('full_name')}
-                placeholder="Seu nome completo"
+                placeholder="O seu nome completo"
                 className={`w-full bg-gray-50 border ${getInputStyles('full_name')} rounded-lg pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-xs sm:text-sm focus:outline-none focus:ring-2 transition-all`}
               />
               {getFieldStatus('full_name') === 'success' && (
@@ -254,10 +254,10 @@ export default function Register() {
             </AnimatePresence>
           </div>
 
-          {/* Email */}
+          {/* E-mail */}
           <div>
             <label className="block text-[10px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 sm:mb-2">
-              Email <span className="text-red-400">*</span>
+              E-mail <span className="text-red-400">*</span>
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
@@ -448,7 +448,7 @@ export default function Register() {
               </div>
             ) : (
               <>
-                Registrar
+                Registar
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </>
             )}

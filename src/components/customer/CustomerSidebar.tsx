@@ -9,7 +9,7 @@ export interface MenuItem {
   label: string;
   icon: React.ElementType;
   path?: string;
-  action?: () => void;  // Agora é uma função, não string
+  action?: () => void;
 }
 
 interface CustomerSidebarProps {
@@ -19,7 +19,7 @@ interface CustomerSidebarProps {
   menuItems: MenuItem[];
   onLogout?: () => void;
   isMobile?: boolean;
-  onActionClick?: (actionId: string) => void;  // Callback para ações
+  onActionClick?: (actionId: string) => void;
 }
 
 export const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
@@ -34,7 +34,7 @@ export const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
   const user = getCurrentUser();
 
   const handleLogout = () => {
-    if (window.confirm('Tem certeza que deseja sair?')) {
+    if (window.confirm('Tem a certeza que deseja sair?')) {
       logout();
       if (onLogout) onLogout();
     }
@@ -51,7 +51,7 @@ export const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
 
   const SidebarContent = () => (
     <>
-      {/* Perfil do Usuário */}
+      {/* Perfil do Utilizador */}
       <div className="bg-gradient-to-r from-[#1E3A5F] to-[#2C4A6F] p-6 text-white">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
@@ -96,7 +96,6 @@ export const CustomerSidebar: React.FC<CustomerSidebarProps> = ({
             );
           }
           
-          // Para itens com action (callback function)
           if (item.action || onActionClick) {
             return (
               <button

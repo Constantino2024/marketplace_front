@@ -75,7 +75,7 @@ export default function StoreSettings() {
   const [editForm, setEditForm] = useState<CompanyUpdateData>({});
   const [isEditing, setIsEditing] = useState(false);
   
-  // Estado para alteração de senha
+  // Estado para alteração de palavra-passe
   const [passwordForm, setPasswordForm] = useState({
     current_password: '',
     new_password: '',
@@ -150,9 +150,9 @@ export default function StoreSettings() {
       if (profile) {
         setProfile({ ...profile, logo_url: result.logo_url });
       }
-      showToast('Logo atualizado com sucesso!', 'success');
+      showToast('Logótipo actualizado com sucesso!', 'success');
     } catch (error: any) {
-      const errorMsg = error?.error || 'Erro ao fazer upload do logo';
+      const errorMsg = error?.error || 'Erro ao fazer upload do logótipo';
       showToast(errorMsg, 'error');
     } finally {
       setIsUploading(false);
@@ -163,7 +163,7 @@ export default function StoreSettings() {
   };
 
   const handleRemoveLogo = async () => {
-    if (!window.confirm('Tem certeza que deseja remover o logo da loja?')) return;
+    if (!window.confirm('Tem a certeza que deseja remover o logótipo da loja?')) return;
     
     setIsUploading(true);
     try {
@@ -172,9 +172,9 @@ export default function StoreSettings() {
       if (profile) {
         setProfile({ ...profile, logo_url: undefined });
       }
-      showToast('Logo removido com sucesso!', 'success');
+      showToast('Logótipo removido com sucesso!', 'success');
     } catch (error: any) {
-      const errorMsg = error?.error || 'Erro ao remover logo';
+      const errorMsg = error?.error || 'Erro ao remover logótipo';
       showToast(errorMsg, 'error');
     } finally {
       setIsUploading(false);
@@ -187,9 +187,9 @@ export default function StoreSettings() {
       const updated = await companyService.updateProfile(editForm);
       setProfile(updated);
       setIsEditing(false);
-      showToast('Dados da loja atualizados com sucesso!', 'success');
+      showToast('Dados da loja actualizados com sucesso!', 'success');
     } catch (error: any) {
-      const errorMsg = error?.response?.data?.error || 'Erro ao atualizar dados';
+      const errorMsg = error?.response?.data?.error || 'Erro ao actualizar dados';
       showToast(errorMsg, 'error');
     } finally {
       setIsSaving(false);
@@ -216,12 +216,12 @@ export default function StoreSettings() {
     e.preventDefault();
     
     if (passwordForm.new_password !== passwordForm.confirm_password) {
-      setPasswordError('As senhas não coincidem');
+      setPasswordError('As palavras-passe não coincidem');
       return;
     }
     
     if (passwordForm.new_password.length < 6) {
-      setPasswordError('A nova senha deve ter pelo menos 6 caracteres');
+      setPasswordError('A nova palavra-passe deve ter pelo menos 6 caracteres');
       return;
     }
 
@@ -234,14 +234,14 @@ export default function StoreSettings() {
         passwordForm.new_password,
         passwordForm.confirm_password
       );
-      showToast('Senha alterada com sucesso!', 'success');
+      showToast('Palavra-passe alterada com sucesso!', 'success');
       setPasswordForm({
         current_password: '',
         new_password: '',
         confirm_password: ''
       });
     } catch (error: any) {
-      const errorMsg = error?.error || error?.message || 'Erro ao alterar senha';
+      const errorMsg = error?.error || error?.message || 'Erro ao alterar palavra-passe';
       setPasswordError(errorMsg);
     } finally {
       setIsChangingPassword(false);
@@ -262,7 +262,7 @@ export default function StoreSettings() {
   };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-AO', {
+    return new Intl.NumberFormat('pt-PT', {
       style: 'currency',
       currency: 'AOA',
       minimumFractionDigits: 0,
@@ -272,8 +272,8 @@ export default function StoreSettings() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      active: { text: 'Ativo', class: 'bg-emerald-100 text-emerald-700' },
-      inactive: { text: 'Inativo', class: 'bg-gray-100 text-gray-700' },
+      active: { text: 'Activo', class: 'bg-emerald-100 text-emerald-700' },
+      inactive: { text: 'Inactivo', class: 'bg-gray-100 text-gray-700' },
       pending: { text: 'Pendente', class: 'bg-yellow-100 text-yellow-700' },
       suspended: { text: 'Suspenso', class: 'bg-red-100 text-red-700' },
     };
@@ -286,7 +286,7 @@ export default function StoreSettings() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-orange-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-500">Carregando dados da loja...</p>
+          <p className="text-gray-500">A carregar dados da loja...</p>
         </div>
       </div>
     );
@@ -305,7 +305,7 @@ export default function StoreSettings() {
 
   const tabs = [
     { id: 'profile', label: 'Dados da Loja', icon: Store },
-    { id: 'password', label: 'Alterar Senha', icon: Key },
+    { id: 'password', label: 'Alterar Palavra-passe', icon: Key },
   ];
 
   return (
@@ -318,7 +318,7 @@ export default function StoreSettings() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">Configurações da Loja</h1>
-          <p className="text-sm text-gray-500 mt-1">Gerencie as informações da sua loja e sua conta</p>
+          <p className="text-sm text-gray-500 mt-1">Gerencie as informações da sua loja e a sua conta</p>
         </div>
         {activeTab === 'profile' && !isEditing && (
           <button
@@ -344,7 +344,7 @@ export default function StoreSettings() {
               className="px-6 py-2.5 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 transition-all flex items-center gap-2 disabled:opacity-50"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+              {isSaving ? 'A guardar...' : 'Guardar Alterações'}
             </button>
           </div>
         )}
@@ -397,7 +397,7 @@ export default function StoreSettings() {
               <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-xl p-4 text-white">
                 <div className="flex items-center justify-between mb-2">
                   <CheckCircle className="w-5 h-5 opacity-80" />
-                  <span className="text-xs opacity-80">Status</span>
+                  <span className="text-xs opacity-80">Estado</span>
                 </div>
                 <div className="text-sm font-black">
                   {getStatusBadge(profile.status)}
@@ -416,14 +416,14 @@ export default function StoreSettings() {
             <div className="border-b border-gray-200 pb-6 mb-6">
               <h3 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
                 <Image className="w-4 h-4 text-orange-500" />
-                Logo da Empresa
+                Logótipo da Empresa
               </h3>
               <div className="flex flex-col sm:flex-row items-start gap-6">
                 <div className="w-32 h-32 bg-gray-100 rounded-2xl overflow-hidden border-2 border-gray-200 flex items-center justify-center flex-shrink-0">
                   {logoPreview ? (
                     <img 
                       src={logoPreview} 
-                      alt="Logo da empresa" 
+                      alt="Logótipo da empresa" 
                       className="w-full h-full object-cover"
                       onError={() => setLogoPreview(null)}
                     />
@@ -444,7 +444,7 @@ export default function StoreSettings() {
                       />
                       <span className={`inline-flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-bold hover:bg-orange-600 transition-all ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
                         {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                        {isUploading ? 'Enviando...' : 'Fazer upload'}
+                        {isUploading ? 'A enviar...' : 'Fazer upload'}
                       </span>
                     </label>
                     {logoPreview && (
@@ -459,7 +459,7 @@ export default function StoreSettings() {
                     )}
                   </div>
                   <p className="text-xs text-gray-400">
-                    Formatos aceitos: JPG, PNG, WEBP. Tamanho máximo: 2MB.
+                    Formatos aceites: JPG, PNG, WEBP. Tamanho máximo: 2MB.
                     <br />Recomendado: 200x200px.
                   </p>
                 </div>
@@ -649,7 +649,7 @@ export default function StoreSettings() {
                   </div>
                 </div>
 
-                {/* Status e Datas */}
+                {/* Estado e Datas */}
                 <div className="border-t border-gray-200 pt-6">
                   <h3 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-orange-500" />
@@ -657,7 +657,7 @@ export default function StoreSettings() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Status</p>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Estado</p>
                       <div className="mt-1">{getStatusBadge(profile.status)}</div>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-4">
@@ -675,7 +675,7 @@ export default function StoreSettings() {
                       <p className="text-sm font-semibold text-gray-900 mt-1">{formatDate(profile.joined_date)}</p>
                     </div>
                     <div className="bg-gray-50 rounded-xl p-4">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Última Atualização</p>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Última Actualização</p>
                       <p className="text-sm font-semibold text-gray-900 mt-1">
                         {formatDate(profile.updated_at) || formatDate(profile.joined_date)}
                       </p>
@@ -687,7 +687,7 @@ export default function StoreSettings() {
           </div>
         )}
 
-        {/* Alterar Senha */}
+        {/* Alterar Palavra-passe */}
         {activeTab === 'password' && (
           <div className="p-6 sm:p-8">
             <div className="max-w-md mx-auto">
@@ -695,14 +695,14 @@ export default function StoreSettings() {
                 <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <Key className="w-8 h-8 text-orange-500" />
                 </div>
-                <h2 className="text-xl font-black text-gray-900">Alterar Senha</h2>
-                <p className="text-sm text-gray-500 mt-1">Mantenha sua conta segura</p>
+                <h2 className="text-xl font-black text-gray-900">Alterar Palavra-passe</h2>
+                <p className="text-sm text-gray-500 mt-1">Mantenha a sua conta segura</p>
               </div>
 
               <form onSubmit={handleChangePassword} className="space-y-5">
                 <div>
                   <label className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">
-                    Senha Atual
+                    Palavra-passe Actual
                   </label>
                   <div className="relative">
                     <input
@@ -724,7 +724,7 @@ export default function StoreSettings() {
 
                 <div>
                   <label className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">
-                    Nova Senha
+                    Nova Palavra-passe
                   </label>
                   <div className="relative">
                     <input
@@ -746,7 +746,7 @@ export default function StoreSettings() {
 
                 <div>
                   <label className="text-xs font-black text-gray-400 uppercase tracking-wider block mb-2">
-                    Confirmar Nova Senha
+                    Confirmar Nova Palavra-passe
                   </label>
                   <div className="relative">
                     <input
@@ -779,9 +779,9 @@ export default function StoreSettings() {
                   className="w-full py-3 bg-orange-500 text-white rounded-xl font-black text-sm hover:bg-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isChangingPassword ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Alterando...</>
+                    <><Loader2 className="w-4 h-4 animate-spin" /> A alterar...</>
                   ) : (
-                    <><Key className="w-4 h-4" /> Alterar Senha</>
+                    <><Key className="w-4 h-4" /> Alterar Palavra-passe</>
                   )}
                 </button>
               </form>
@@ -790,11 +790,11 @@ export default function StoreSettings() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-black text-blue-800 mb-1">Requisitos da senha</p>
+                    <p className="text-xs font-black text-blue-800 mb-1">Requisitos da palavra-passe</p>
                     <ul className="text-xs text-blue-700 space-y-1 list-disc list-inside">
                       <li>Mínimo de 6 caracteres</li>
                       <li>Use letras, números e caracteres especiais</li>
-                      <li>Não use senhas óbvias como "123456" ou "senha"</li>
+                      <li>Não use palavras-passe óbvias como "123456" ou "password"</li>
                     </ul>
                   </div>
                 </div>

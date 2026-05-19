@@ -25,12 +25,12 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
     e.preventDefault();
     
     if (passwordForm.new_password !== passwordForm.confirm_password) {
-      setError('As senhas não coincidem');
+      setError('As palavras-passe não coincidem');
       return;
     }
     
     if (passwordForm.new_password.length < 6) {
-      setError('A nova senha deve ter pelo menos 6 caracteres');
+      setError('A nova palavra-passe deve ter pelo menos 6 caracteres');
       return;
     }
 
@@ -47,10 +47,10 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
         });
         onClose();
       } else {
-        setError('Erro ao alterar senha. Verifique sua senha atual.');
+        setError('Erro ao alterar palavra-passe. Verifique a sua palavra-passe actual.');
       }
     } catch {
-      setError('Erro ao alterar senha. Verifique sua senha atual.');
+      setError('Erro ao alterar palavra-passe. Verifique a sua palavra-passe actual.');
     } finally {
       setIsChanging(false);
     }
@@ -77,7 +77,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
             className="bg-white rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-gray-800 text-base sm:text-lg">Alterar Senha</h3>
+              <h3 className="font-bold text-gray-800 text-base sm:text-lg">Alterar Palavra-passe</h3>
               <button
                 onClick={handleClose}
                 className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
@@ -89,7 +89,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                  Senha Atual
+                  Palavra-passe Actual
                 </label>
                 <input
                   type="password"
@@ -102,7 +102,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
 
               <div>
                 <label className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                  Nova Senha
+                  Nova Palavra-passe
                 </label>
                 <input
                   type="password"
@@ -115,7 +115,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
 
               <div>
                 <label className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">
-                  Confirmar Nova Senha
+                  Confirmar Nova Palavra-passe
                 </label>
                 <input
                   type="password"
@@ -149,10 +149,10 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
                   {isChanging ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Alterando...
+                      A alterar...
                     </>
                   ) : (
-                    'Alterar Senha'
+                    'Alterar Palavra-passe'
                   )}
                 </button>
               </div>

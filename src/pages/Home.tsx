@@ -451,7 +451,7 @@ const ProductCard = ({ product }: { product: HomeProduct }) => {
         </div>
 
         <p className={`text-[8px] font-bold mb-1.5 ${product.stock > 0 ? 'text-emerald-500' : 'text-red-400'}`}>
-          {product.stock > 0 ? '● Em estoque' : '● Fora de estoque'}
+          {product.stock > 0 ? '● Em stock' : '● Fora de stock'}
         </p>
 
         <div className="flex items-center justify-between gap-1 mt-auto">
@@ -654,7 +654,7 @@ const PromoBanners = ({ banners }: { banners: Banner[] }) => {
   const items = banners.length > 0
     ? banners
     : [
-        { id: 1, title: 'ELETRÓNICOS', subtitle: 'Nova Coleção', description: 'Os melhores equipamentos eletrónicos', image_url: 'https://picsum.photos/seed/promo1/800/400', link: '/', position: 2, discount_text: '', button_text: '' },
+        { id: 1, title: 'ELECTRÓNICOS', subtitle: 'Nova Colecção', description: 'Os melhores equipamentos electrónicos', image_url: 'https://picsum.photos/seed/promo1/800/400', link: '/', position: 2, discount_text: '', button_text: '' },
         { id: 2, title: 'MODA & ESTILO', subtitle: 'Tendências 2025', description: 'Vista-se com o melhor', image_url: 'https://picsum.photos/seed/promo2/800/400', link: '/', position: 2, discount_text: '', button_text: '' },
         { id: 3, title: 'CASA & DECORAÇÃO', subtitle: 'Para o seu lar', description: 'Produtos de qualidade para casa', image_url: 'https://picsum.photos/seed/promo3/800/400', link: '/', position: 2, discount_text: '', button_text: '' },
       ];
@@ -783,7 +783,7 @@ const SecondaryBanners = ({ promotions }: { promotions: Promotion[] }) => {
     : [
         { id: 1, title: 'TELEMÓVEIS', description: 'As melhores marcas disponíveis', discount: 'NOVO', image_url: 'https://picsum.photos/seed/phone/150/150', link: '/', background_color: 'bg-blue-50', border_color: 'border-blue-100', discount_badge_color: 'bg-orange-500' },
         { id: 2, title: 'SMARTWATCH', description: 'Tecnologia sempre consigo', discount: 'DESTAQUE', image_url: 'https://picsum.photos/seed/watch/150/150', link: '/', background_color: 'bg-orange-50', border_color: 'border-orange-100', discount_badge_color: 'bg-blue-900' },
-        { id: 3, title: 'CÂMERAS', description: 'Capture cada momento especial', discount: 'POPULAR', image_url: 'https://picsum.photos/seed/camera/150/150', link: '/', background_color: 'bg-blue-50', border_color: 'border-blue-100', discount_badge_color: 'bg-orange-500' },
+        { id: 3, title: 'CÂMARAS', description: 'Capture cada momento especial', discount: 'POPULAR', image_url: 'https://picsum.photos/seed/camera/150/150', link: '/', background_color: 'bg-blue-50', border_color: 'border-blue-100', discount_badge_color: 'bg-orange-500' },
       ];
 
   return (
@@ -863,7 +863,7 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.includes('@')) {
-      setToast({ message: 'Insira um email válido', type: 'error' });
+      setToast({ message: 'Introduza um e-mail válido', type: 'error' });
       return;
     }
     setLoading(true);
@@ -892,7 +892,7 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
             Newsletter
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-3 leading-tight">
-            Fique sempre atualizado
+            Fique sempre actualizado
           </h2>
           <p className="text-white/60 text-sm mb-7">
             Subscreva a newsletter do HSE Marketplace e receba novidades, lançamentos e informações sobre os nossos produtos e parceiros.
@@ -902,7 +902,7 @@ const Newsletter = ({ config }: { config: SiteConfig }) => {
               <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="email"
-                placeholder="O seu melhor email"
+                placeholder="O seu melhor e-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={loading}

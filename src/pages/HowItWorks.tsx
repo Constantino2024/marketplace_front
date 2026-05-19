@@ -6,26 +6,26 @@ export default function HowItWorks() {
   const steps = [
     {
       icon: Store,
-      title: '1. Cadastre sua Empresa',
-      description: 'Preencha o formulário com os dados da sua empresa e aguarde a aprovação da nossa equipe.',
+      title: '1. Registe a sua Empresa',
+      description: 'Preencha o formulário com os dados da sua empresa e aguarde a aprovação da nossa equipa.',
       link: '/company/register'
     },
     {
       icon: Users,
-      title: '2. Configure sua Loja',
-      description: 'Personalize sua loja, adicione logo e informações de contato.',
+      title: '2. Configure a sua Loja',
+      description: 'Personalize a sua loja, adicione logótipo e informações de contacto.',
       link: '/store-admin'
     },
     {
       icon: CreditCard,
-      title: '3. Cadastre Produtos',
-      description: 'Adicione seus produtos com fotos, descrições e preços competitivos.',
+      title: '3. Registe Produtos',
+      description: 'Adicione os seus produtos com fotos, descrições e preços competitivos.',
       link: '/store-admin/products'
     },
     {
       icon: TrendingUp,
       title: '4. Comece a Vender',
-      description: 'Receba pedidos, gerencie estoque e envie produtos para seus clientes.',
+      description: 'Receba pedidos, gerencie o stock e envie produtos para os seus clientes.',
       link: '/store-admin/orders'
     }
   ];
@@ -75,7 +75,7 @@ export default function HowItWorks() {
 
         {/* Benefits */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-8">
-          <h2 className="text-xl font-black text-gray-900 text-center mb-6">Por que vender no HSE Marketplace?</h2>
+          <h2 className="text-xl font-black text-gray-900 text-center mb-6">Porquê vender no HSE Marketplace?</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon;
@@ -100,7 +100,7 @@ export default function HowItWorks() {
               to="/company/register"
               className="px-6 py-3 bg-white text-orange-500 rounded-xl font-bold hover:bg-gray-100 transition-all"
             >
-              Abrir minha loja
+              Abrir a minha loja
             </Link>
             <Link
               to="/help/taxas"
