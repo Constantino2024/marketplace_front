@@ -197,9 +197,9 @@ export default function Orders() {
   const handlePrintInvoice = async (order: Order) => {
     try {
       await ordersService.downloadInvoice(order.id);
-      showToast('Factura gerada com sucesso!', 'success');
+      showToast('Fatura gerada com sucesso!', 'success');
     } catch (error) {
-      showToast('Erro ao gerar factura', 'error');
+      showToast('Erro ao gerar fatura', 'error');
     }
   };
 
@@ -311,14 +311,14 @@ export default function Orders() {
   const handleUpdateStatus = async (orderId: number, newStatus: string) => {
     try {
       await ordersService.updateStatus(orderId, newStatus);
-      showToast('Estado actualizado com sucesso!', 'success');
+      showToast('Status atualizado com sucesso!', 'success');
       loadOrders();
       if (selectedOrder?.id === orderId) {
         setSelectedOrder(null);
       }
     } catch (error) {
-      console.error('Erro ao actualizar estado:', error);
-      showToast('Erro ao actualizar estado', 'error');
+      console.error('Erro ao atualizar status:', error);
+      showToast('Erro ao atualizar status', 'error');
     }
   };
 
@@ -378,7 +378,7 @@ export default function Orders() {
         }}
         onConfirm={handleCancelOrder}
         title="Cancelar Pedido"
-        message={`Tem a certeza que deseja cancelar o pedido ${orderToCancel?.order_number}? Esta acção não pode ser desfeita.`}
+        message={`Tem certeza que deseja cancelar o pedido ${orderToCancel?.order_number}? Esta ação não pode ser desfeita.`}
       />
 
       {/* Header */}
@@ -496,7 +496,7 @@ export default function Orders() {
             }}
             className="flex-1 px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm text-gray-500 focus:outline-none focus:ring-1 focus:ring-primary"
           >
-            <option value="">Todos os estados</option>
+            <option value="">Todos os status</option>
             <option value="pending">Pendente</option>
             <option value="paid">Pago</option>
             <option value="shipped">Enviado</option>
@@ -538,9 +538,9 @@ export default function Orders() {
                     <th className="px-6 py-4">Empresa</th>
                     <th className="px-6 py-4">Data</th>
                     <th className="px-6 py-4">Total</th>
-                    <th className="px-6 py-4">Estado</th>
-                    <th className="px-6 py-4 text-right">Acções</th>
-                  </table>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right">Ações</th>
+                  </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {orders.map((order) => {
@@ -562,7 +562,7 @@ export default function Orders() {
                           <span className="font-bold text-gray-800">
                             {order.order_number}
                           </span>
-                         </td>
+                        </td>
                         <td className="px-6 py-4">
                           <div>
                             <p className="font-medium text-gray-800">
@@ -572,20 +572,20 @@ export default function Orders() {
                               {customerInfo.email}
                             </p>
                           </div>
-                         </td>
+                        </td>
                         <td className="px-6 py-4">
                           <span className="text-gray-600">
                             {order.company || 'Loja Geral'}
                           </span>
-                         </td>
+                        </td>
                         <td className="px-6 py-4 text-gray-400 whitespace-nowrap">
                           {formatDate(order.created_at)}
-                         </td>
+                        </td>
                         <td className="px-6 py-4">
                           <span className="font-black text-primary whitespace-nowrap">
                             Kz {order.total?.toLocaleString() || 0}
                           </span>
-                         </td>
+                        </td>
                         <td className="px-6 py-4">
                           <span
                             className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase inline-flex items-center gap-1 ${status.bgColor} ${status.color}`}
@@ -593,7 +593,7 @@ export default function Orders() {
                             <StatusIcon className="w-3 h-3" />
                             {status.label}
                           </span>
-                         </td>
+                        </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
@@ -657,8 +657,8 @@ export default function Orders() {
                                 </>
                               )}
                           </div>
-                         </td>
-                       </tr>
+                        </td>
+                      </tr>
                     );
                   })}
 
@@ -673,11 +673,11 @@ export default function Orders() {
                         <p className="text-sm mt-2">
                           Tente ajustar os filtros ou realizar uma nova busca.
                         </p>
-                       </td>
+                      </td>
                     </tr>
                   )}
                 </tbody>
-               </table>
+              </table>
             </div>
 
             {/* Mobile cards */}
@@ -798,7 +798,7 @@ export default function Orders() {
             {totalPages > 0 && (
               <div className="px-4 sm:px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <p className="text-xs text-gray-500 font-bold text-center sm:text-left">
-                  A mostrar{' '}
+                  Mostrando{' '}
                   <span className="text-gray-800">{startIndex + 1}</span> a{' '}
                   <span className="text-gray-800">
                     {Math.min(startIndex + ITEMS_PER_PAGE, totalItems)}
@@ -1042,7 +1042,7 @@ export default function Orders() {
                     className="flex-1 py-2.5 sm:py-3 bg-white text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-100 transition-all flex items-center justify-center gap-2 border border-gray-200"
                   >
                     <Printer className="w-4 h-4" />
-                    <span>Factura</span>
+                    <span>Fatura</span>
                   </button>
 
                   {isAdmin &&
