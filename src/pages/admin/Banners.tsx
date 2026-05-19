@@ -177,7 +177,7 @@ function BannerModal({ isOpen, onClose, banner, onSave }: {
         <div className="flex items-center justify-between px-5 sm:px-8 pt-4 pb-4 border-b border-gray-100 flex-shrink-0">
           <div>
             <h2 className="text-lg font-black text-gray-800">{banner ? 'Editar Banner' : 'Novo Banner'}</h2>
-            {banner && <p className="text-xs text-gray-400 mt-0.5">A editar: <span className="font-bold text-orange-500">{banner.title}</span></p>}
+            {banner && <p className="text-xs text-gray-400 mt-0.5">Editando: <span className="font-bold text-orange-500">{banner.title}</span></p>}
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
             <X className="w-4 h-4 text-gray-500" />
@@ -193,7 +193,7 @@ function BannerModal({ isOpen, onClose, banner, onSave }: {
               <div className="relative flex-shrink-0">
                 <label className="block w-28 h-28 sm:w-32 sm:h-32 rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer group hover:border-orange-400 transition-colors bg-gray-50">
                   {imgPreview
-                    ? <img src={imgPreview} alt="Pré-visualização" className="w-full h-full object-cover" />
+                    ? <img src={imgPreview} alt="Preview" className="w-full h-full object-cover" />
                     : <div className="w-full h-full flex flex-col items-center justify-center gap-1">
                         <ImageIcon className="w-7 h-7 text-gray-300 group-hover:text-orange-400 transition-colors" />
                         <span className="text-[10px] text-gray-400 font-medium">Clique</span>
@@ -272,7 +272,7 @@ function BannerModal({ isOpen, onClose, banner, onSave }: {
           <label className="flex items-center gap-3 cursor-pointer p-4 bg-gray-50 rounded-2xl border border-gray-100 hover:border-orange-200 transition-colors">
             <input type="checkbox" name="is_active" checked={form.is_active} onChange={handle} className="w-4 h-4 rounded accent-orange-500" />
             <div className="flex-1">
-              <p className="text-sm font-bold text-gray-700">Banner activo</p>
+              <p className="text-sm font-bold text-gray-700">Banner ativo</p>
               <p className="text-xs text-gray-400 mt-0.5">Visível na loja para os clientes</p>
             </div>
             {form.is_active
@@ -291,7 +291,7 @@ function BannerModal({ isOpen, onClose, banner, onSave }: {
             className="flex-[2] py-3 bg-orange-500 text-white rounded-2xl font-bold hover:bg-orange-600 transition-all text-sm shadow-lg shadow-orange-500/20 disabled:opacity-50 flex items-center justify-center gap-2">
             {saving
               ? <><Loader2 className="w-4 h-4 animate-spin" />A processar…</>
-              : banner ? 'Actualizar Banner' : 'Criar Banner'}
+              : banner ? 'Atualizar Banner' : 'Criar Banner'}
           </button>
         </div>
       </motion.div>
@@ -342,7 +342,7 @@ function BannerCard({ banner, index, total, onEdit, onDelete, onToggle, onMove }
 
         {/* status toggle */}
         <button onClick={onToggle} className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors ${banner.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100'}`}>
-          {banner.is_active ? 'Activo' : 'Inactivo'}
+          {banner.is_active ? 'Ativo' : 'Inativo'}
         </button>
 
         {/* context menu */}
@@ -425,15 +425,15 @@ export default function Banners() {
         api.patch(`banners/${next[swap].id}/`, { order: swap }),
       ]);
       setBanners(next);
-      notify('Ordem actualizada!', 'success');
-    } catch { notify('Erro ao actualizar ordem', 'error'); }
+      notify('Ordem atualizada!', 'success');
+    } catch { notify('Erro ao atualizar ordem', 'error'); }
   };
 
   const handleSave = async (fd: FormData) => {
     try {
       if (selected) {
         await api.put(`banners/${selected.id}/`, fd, { headers: { 'Content-Type': 'multipart/form-data' } });
-        notify('Banner actualizado!', 'success');
+        notify('Banner atualizado!', 'success');
       } else {
         await api.post('banners/', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
         notify('Banner criado!', 'success');
@@ -442,7 +442,7 @@ export default function Banners() {
     } catch (err: any) {
       const msg = typeof err.response?.data === 'object'
         ? String(Object.values(err.response.data)[0])
-        : 'Erro ao guardar banner';
+        : 'Erro ao salvar banner';
       notify(msg, 'error');
       throw err;
     }
@@ -461,9 +461,9 @@ export default function Banners() {
   const toggleActive = async (banner: Banner) => {
     try {
       await api.patch(`banners/${banner.id}/`, { is_active: !banner.is_active });
-      notify(`Banner ${!banner.is_active ? 'activado' : 'desactivado'}!`, 'success');
+      notify(`Banner ${!banner.is_active ? 'ativado' : 'desativado'}!`, 'success');
       await load();
-    } catch { notify('Erro ao alterar estado', 'error'); }
+    } catch { notify('Erro ao alterar status', 'error'); }
   };
 
   const openEdit = (b: Banner) => { setSelected(b); setShowModal(true); };
@@ -486,7 +486,7 @@ export default function Banners() {
         onClose={() => { setShowConfirm(false); setSelected(null); }}
         onConfirm={handleDelete}
         title="Eliminar Banner"
-        message={`Tem a certeza que deseja eliminar "${selected?.title}"? Esta acção não pode ser desfeita.`}
+        message={`Tem certeza que deseja eliminar "${selected?.title}"? Esta ação não pode ser desfeita.`}
       />
       <BannerModal isOpen={showModal} onClose={() => { setShowModal(false); setSelected(null); }} banner={selected} onSave={handleSave} />
 
@@ -511,8 +511,8 @@ export default function Banners() {
       <div className="grid grid-cols-3 gap-3">
         {[
           { label: 'Total', value: banners.length, color: 'text-gray-800' },
-          { label: 'Activos', value: activeCount, color: 'text-emerald-600' },
-          { label: 'Inactivos', value: banners.length - activeCount, color: 'text-gray-400' },
+          { label: 'Ativos', value: activeCount, color: 'text-emerald-600' },
+          { label: 'Inativos', value: banners.length - activeCount, color: 'text-gray-400' },
         ].map(s => (
           <div key={s.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 text-center">
             <p className={`text-2xl font-black ${s.color}`}>{s.value}</p>
@@ -548,7 +548,7 @@ export default function Banners() {
                 <ImageIcon className="w-4 h-4 text-orange-400" />
               </div>
             </div>
-            <p className="text-sm text-gray-400 font-medium">A carregar banners…</p>
+            <p className="text-sm text-gray-400 font-medium">Carregando banners…</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
@@ -591,10 +591,10 @@ export default function Banners() {
                     <th className="px-6 py-4">Imagem</th>
                     <th className="px-6 py-4">Título</th>
                     <th className="px-6 py-4">Posição</th>
-                    <th className="px-6 py-4">Estado</th>
+                    <th className="px-6 py-4">Status</th>
                     <th className="px-6 py-4">Ordem</th>
-                    <th className="px-6 py-4 text-right">Acções</th>
-                  </table>
+                    <th className="px-6 py-4 text-right">Ações</th>
+                  </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {filtered.map((banner, idx) => {
@@ -630,7 +630,7 @@ export default function Banners() {
                             }`}
                           >
                             <span className={`w-1.5 h-1.5 rounded-full ${banner.is_active ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                            {banner.is_active ? 'Activo' : 'Inactivo'}
+                            {banner.is_active ? 'Ativo' : 'Inativo'}
                           </button>
                         </td>
                         {/* order */}
