@@ -65,7 +65,7 @@ export const checkoutService = {
       const response = await api.post<OrderResponse>('orders/', orderData);
       return response.data;
     } catch (error: any) {
-      console.error('Erro ao criar pedido:', error.response?.data || error);
+      console.error('Erro ao criar pedido:');
       throw error;
     }
   },
@@ -86,7 +86,7 @@ export const checkoutService = {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Erro ao baixar fatura:', error);
+      console.error('Erro ao baixar fatura:');
       throw error;
     }
   },
@@ -131,7 +131,7 @@ export const checkoutService = {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
+      console.error('Erro ao gerar PDF:');
       throw error;
     }
   },
@@ -157,7 +157,7 @@ export const checkoutService = {
         status: 'pending'
       };
     } catch (error) {
-      console.error('Erro ao gerar referência:', error);
+      console.error('Erro ao gerar referência:');
       throw error;
     }
   },
@@ -168,7 +168,7 @@ export const checkoutService = {
       const response = await api.get(`payments/status/${reference}/`);
       return response.data;
     } catch (error) {
-      console.error('Erro ao verificar pagamento:', error);
+      console.error('Erro ao verificar pagamento:');
       throw error;
     }
   }

@@ -40,7 +40,6 @@ export const categoryService = {
     try {
       // Usar o novo endpoint específico para slug
       const response = await api.get<CategoryDetails>(`categories/${slug}/`);
-      console.log('categorias: ',response)
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar categoria por slug:', error);

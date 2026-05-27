@@ -36,7 +36,7 @@ export const siteConfigService = {
       const response = await api.get<PublicSiteConfig>('public/site-config/');
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar configurações públicas:', error);
+      console.error('Erro ao buscar configurações públicas:');
       // Retornar valores padrão em caso de erro
       return {
         site_name: 'HSE Marketplace',
@@ -58,7 +58,7 @@ export const siteConfigService = {
       const response = await api.get<SiteConfig>('site-configs/');
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar configurações:', error);
+      console.error('Erro ao buscar configurações:');
       throw error;
     }
   },
@@ -69,7 +69,7 @@ export const siteConfigService = {
       const response = await api.patch<SiteConfig>('site-configs/', data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao atualizar configurações:', error);
+      console.error('Erro ao atualizar configurações:');
       throw error;
     }
   },

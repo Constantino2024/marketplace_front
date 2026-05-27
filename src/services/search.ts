@@ -85,7 +85,7 @@ export const searchService = {
       const response = await api.get<SearchResponse>('products/', { params });
       return response.data;
     } catch (error) {
-      console.error('Erro na busca de produtos:', error);
+      console.error('Erro na busca de produtos:');
       throw error;
     }
   },
@@ -100,7 +100,7 @@ export const searchService = {
       });
       return response.data.suggestions;
     } catch (error) {
-      console.error('Erro ao buscar sugestões:', error);
+      console.error('Erro ao buscar sugestões:');
       return [];
     }
   },

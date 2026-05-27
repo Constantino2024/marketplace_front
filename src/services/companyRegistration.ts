@@ -32,7 +32,7 @@ export const companyRegistrationService = {
       const response = await api.post<CompanyRegistrationResponse>('company/register/', data);
       return response.data;
     } catch (error: any) {
-      console.error('Erro no registro da empresa:', error);
+      console.error('Erro no registro da empresa:');
       
       // Extrair mensagens de erro detalhadas
       let errorMessage = 'Erro ao registrar empresa';

@@ -223,7 +223,7 @@ export const ordersService = {
       // Abre em nova aba para download
       window.open(`${api.defaults.baseURL}invoice/${orderId}/download/`, '_blank');
     } catch (error) {
-      console.error('Erro ao baixar fatura:', error);
+      console.error('Erro ao baixar fatura:');
       throw error;
     }
   },
@@ -243,7 +243,7 @@ export const ordersService = {
       
       window.open(url, '_blank');
     } catch (error) {
-      console.error('Erro ao baixar relatório:', error);
+      console.error('Erro ao baixar relatório:');
       throw error;
     }
   },
@@ -261,7 +261,7 @@ export const ordersService = {
       const queryString = params.toString();
       window.open(`/api/orders/export/csv/${queryString ? `?${queryString}` : ''}`, '_blank');
     } catch (error) {
-      console.error('Erro ao baixar CSV:', error);
+      console.error('Erro ao baixar CSV:');
       throw error;
     }
   }

@@ -90,7 +90,7 @@ export const companyService = {
       }
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar perfil da empresa:', error);
+      console.error('Erro ao buscar perfil da empresa:');
       throw error;
     }
   },
@@ -101,7 +101,7 @@ export const companyService = {
       const response = await api.patch<CompanyProfile>('store-settings/profile/', data);
       return response.data;
     } catch (error) {
-      console.error('Erro ao atualizar perfil da empresa:', error);
+      console.error('Erro ao atualizar perfil da empresa:');
       throw error;
     }
   },
@@ -112,7 +112,7 @@ export const companyService = {
       const response = await api.get<CompanyStats>('store-dashboard/stats/');
       return response.data;
     } catch (error) {
-      console.error('Erro ao buscar dados do dashboard:', error);
+      console.error('Erro ao buscar dados do dashboard:');
       return {
         total_sales: 0,
         total_orders: 0,
@@ -142,7 +142,7 @@ export const companyService = {
       );
       return { logo_url: response.data.logo_url, message: response.data.message };
     } catch (error: any) {
-      console.error('Erro ao fazer upload do logo:', error);
+      console.error('Erro ao fazer upload do logo:');
       throw error.response?.data || { error: 'Erro ao fazer upload' };
     }
   },
@@ -153,7 +153,7 @@ export const companyService = {
       const response = await api.delete<{ success: boolean; message: string }>('store-settings/upload-logo/');
       return { message: response.data.message };
     } catch (error: any) {
-      console.error('Erro ao remover logo:', error);
+      console.error('Erro ao remover logo:');
       throw error.response?.data || { error: 'Erro ao remover logo' };
     }
   },
@@ -167,7 +167,7 @@ export const companyService = {
         confirm_password: confirmPassword
       });
     } catch (error: any) {
-      console.error('Erro ao alterar senha:', error);
+      console.error('Erro ao alterar senha:');
       throw error.response?.data || { error: 'Erro ao alterar senha' };
     }
   },

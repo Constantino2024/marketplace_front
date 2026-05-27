@@ -21,7 +21,6 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('Erro no interceptor de requisição:', error);
     return Promise.reject(error);
   }
 );
@@ -32,7 +31,6 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.error(`❌ Erro ${error.response?.status} ${error.config?.url}`, error.response?.data);
     
     const originalRequest = error.config;
 
@@ -51,7 +49,6 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        console.error('Erro ao fazer refresh token:', refreshError);
         localStorage.removeItem("token");
         localStorage.removeItem("refresh");
         localStorage.removeItem("user");

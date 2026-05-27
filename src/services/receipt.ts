@@ -63,7 +63,7 @@ export const receiptService = {
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
       pdf.save(`fatura-${receiptData.order.order_number}.pdf`);
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
+      console.error('Erro ao gerar PDF:');
       throw error;
     }
   },

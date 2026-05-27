@@ -35,7 +35,7 @@ export const proformaService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro ao gerar fatura proforma:', error);
+      console.error('Erro ao gerar fatura proforma:');
       throw error;
     }
   },
@@ -57,7 +57,7 @@ export const proformaService = {
       
       return { success: true };
     } catch (error: any) {
-      console.error('Erro ao baixar fatura proforma:', error);
+      console.error('Erro ao baixar fatura proforma:');
       return { 
         success: false, 
         error: error.response?.data?.message || 'Erro ao gerar fatura' 

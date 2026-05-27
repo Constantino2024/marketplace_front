@@ -33,10 +33,9 @@ export const categoriesService = {
   list: async (params?: CategoryFilters) => {
     try {
       const response = await api.get<Category[]>('categories/', { params });
-      console.log('categorias: ',response)
       return response.data;
     } catch (error) {
-      console.error('Erro na API categories.list:', error);
+      console.error('Erro na API categories.list:');
       throw error;
     }
   },
@@ -47,7 +46,7 @@ export const categoriesService = {
       const response = await api.get<Category>(`categories/${id}/`);
       return response.data;
     } catch (error) {
-      console.error('Erro na API categories.getById:', error);
+      console.error('Erro na API categories.getById:');
       throw error;
     }
   },
@@ -68,7 +67,7 @@ export const categoriesService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API categories.create:', error.response?.data || error);
+      console.error('Erro na API categories.create:');
       throw error;
     }
   },
@@ -89,7 +88,7 @@ export const categoriesService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API categories.update:', error.response?.data || error);
+      console.error('Erro na API categories.update:');
       throw error;
     }
   },
@@ -99,7 +98,7 @@ export const categoriesService = {
     try {
       await api.delete(`categories/${id}/`);
     } catch (error: any) {
-      console.error('Erro na API categories.delete:', error.response?.data || error);
+      console.error('Erro na API categories.delete:');
       throw error;
     }
   },
@@ -112,7 +111,7 @@ export const categoriesService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API categories.toggleActive:', error.response?.data || error);
+      console.error('Erro na API categories.toggleActive:');
       throw error;
     }
   }

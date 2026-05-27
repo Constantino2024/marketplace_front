@@ -48,7 +48,7 @@ export const companiesService = {
       const response = await api.get<Company[]>('companies/');
       return response.data;
     } catch (error) {
-      console.error('Erro na API companies.list:', error);
+      console.error('Erro na API companies.list:');
       throw error;
     }
   },
@@ -59,7 +59,7 @@ export const companiesService = {
       const response = await api.get<Company>(`companies/${id}/`);
       return response.data;
     } catch (error) {
-      console.error('Erro na API companies.getById:', error);
+      console.error('Erro na API companies.getById:');
       throw error;
     }
   },
@@ -70,7 +70,7 @@ export const companiesService = {
       const response = await api.post<Company>('companies/', data);
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API companies.create:', error.response?.data || error);
+      console.error('Erro na API companies.create:');
       throw error;
     }
   },
@@ -89,7 +89,7 @@ export const companiesService = {
       const response = await api.put<Company>(`companies/${id}/`, updateData);
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API companies.update:', error.response?.data || error);
+      console.error('Erro na API companies.update:');
       throw error;
     }
   },
@@ -99,7 +99,7 @@ export const companiesService = {
     try {
       await api.delete(`companies/${id}/`);
     } catch (error: any) {
-      console.error('Erro na API companies.delete:', error.response?.data || error);
+      console.error('Erro na API companies.delete:');
       throw error;
     }
   },
@@ -110,7 +110,7 @@ export const companiesService = {
       const response = await api.post<{ status: string }>(`companies/${id}/toggle_status/`);
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API companies.toggleStatus:', error.response?.data || error);
+      console.error('Erro na API companies.toggleStatus:');
       throw error;
     }
   },
@@ -121,7 +121,7 @@ export const companiesService = {
       const response = await api.post<{ message: string; new_password: string }>(`companies/${id}/reset_password/`);
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API companies.resetPassword:', error.response?.data || error);
+      console.error('Erro na API companies.resetPassword:');
       throw error;
     }
   },
@@ -136,7 +136,7 @@ export const companiesService = {
       }>('companies/stats/');
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API companies.getStats:', error.response?.data || error);
+      console.error('Erro na API companies.getStats:');
       throw error;
     }
   },
@@ -147,7 +147,7 @@ export const companiesService = {
       const response = await api.post<{ success: boolean; message: string }>(`admin/companies/${companyId}/approve/`);
       return { success: true, message: response.data.message };
     } catch (error: any) {
-      console.error('Erro na API companies.approveCompany:', error);
+      console.error('Erro na API companies.approveCompany:');
       return {
         success: false,
         error: error.response?.data?.error || 'Erro ao aprovar empresa'
@@ -161,7 +161,7 @@ export const companiesService = {
       const response = await api.post<{ success: boolean; message: string }>(`admin/companies/${companyId}/reject/`, { reason });
       return { success: true, message: response.data.message };
     } catch (error: any) {
-      console.error('Erro na API companies.rejectCompany:', error);
+      console.error('Erro na API companies.rejectCompany:');
       return {
         success: false,
         error: error.response?.data?.error || 'Erro ao rejeitar empresa'

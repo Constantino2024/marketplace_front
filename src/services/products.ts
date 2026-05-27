@@ -88,7 +88,6 @@ export const productsService = {
       
       return response.data;
     } catch (error) {
-      console.error('Erro na API products.list:', error);
       throw error;
     }
   },
@@ -106,7 +105,6 @@ export const productsService = {
       
       return product;
     } catch (error) {
-      console.error('Erro na API products.getById:', error);
       throw error;
     }
   },
@@ -150,7 +148,6 @@ export const productsService = {
         additional_images: response.data.additional_images || []
       };
     } catch (error: any) {
-      console.error('Erro na API products.create:', error.response?.data || error);
       throw error;
     }
   },
@@ -185,7 +182,7 @@ export const productsService = {
         additional_images: response.data.additional_images || []
       };
     } catch (error: any) {
-      console.error('Erro na API products.update:', error.response?.data || error);
+      console.error('Erro na API products.update:');
       throw error;
     }
   },
@@ -195,7 +192,7 @@ export const productsService = {
     try {
       await api.delete(`products/${id}/`);
     } catch (error: any) {
-      console.error('Erro na API products.delete:', error.response?.data || error);
+      console.error('Erro na API products.delete:');
       throw error;
     }
   },
@@ -210,7 +207,7 @@ export const productsService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API products.uploadAdditionalImages:', error.response?.data || error);
+      console.error('Erro na API products.uploadAdditionalImages:');
       throw error;
     }
   },
@@ -220,7 +217,7 @@ export const productsService = {
     try {
       await api.delete(`products/${productId}/images/${imageId}/`);
     } catch (error: any) {
-      console.error('Erro na API products.deleteImage:', error.response?.data || error);
+      console.error('Erro na API products.deleteImage:');
       throw error;
     }
   },
@@ -230,7 +227,7 @@ export const productsService = {
     try {
       await api.post(`products/${productId}/images/set-primary/`, { image_id: imageId });
     } catch (error: any) {
-      console.error('Erro na API products.setPrimaryImage:', error.response?.data || error);
+      console.error('Erro na API products.setPrimaryImage:');
       throw error;
     }
   },
@@ -240,7 +237,7 @@ export const productsService = {
     try {
       await api.post(`products/${productId}/images/reorder/`, { images: imageOrders });
     } catch (error: any) {
-      console.error('Erro na API products.reorderImages:', error.response?.data || error);
+      console.error('Erro na API products.reorderImages:');
       throw error;
     }
   },
@@ -251,7 +248,7 @@ export const productsService = {
       const response = await api.get<ProductStats>('products/stats/');
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API products.getStats:', error.response?.data || error);
+      console.error('Erro na API products.getStats:');
       throw error;
     }
   },
@@ -322,7 +319,7 @@ export const productsService = {
         additional_images: response.data.additional_images || []
       };
     } catch (error: any) {
-      console.error('Erro na API products.createCompanyProduct:', error.response?.data || error);
+      console.error('Erro na API products.createCompanyProduct:');
       throw error;
     }
   },
@@ -352,7 +349,7 @@ export const productsService = {
         additional_images: response.data.additional_images || []
       };
     } catch (error: any) {
-      console.error('Erro na API products.updateCompanyProduct:', error.response?.data || error);
+      console.error('Erro na API products.updateCompanyProduct:');
       throw error;
     }
   },
@@ -362,7 +359,7 @@ export const productsService = {
     try {
       await api.delete(`company/products/${id}/`);
     } catch (error: any) {
-      console.error('Erro na API products.deleteCompanyProduct:', error.response?.data || error);
+      console.error('Erro na API products.deleteCompanyProduct:');
       throw error;
     }
   },
@@ -377,7 +374,7 @@ export const productsService = {
       });
       return response.data;
     } catch (error: any) {
-      console.error('Erro na API products.uploadCompanyProductImages:', error.response?.data || error);
+      console.error('Erro na API products.uploadCompanyProductImages:');
       throw error;
     }
   },
@@ -387,7 +384,7 @@ export const productsService = {
     try {
       await api.delete(`company/products/${productId}/images/${imageId}/`);
     } catch (error: any) {
-      console.error('Erro na API products.deleteCompanyProductImage:', error.response?.data || error);
+      console.error('Erro na API products.deleteCompanyProductImage:');
       throw error;
     }
   },
@@ -397,7 +394,7 @@ export const productsService = {
     try {
       await api.post(`company/products/${productId}/images/set-primary/`, { image_id: imageId });
     } catch (error: any) {
-      console.error('Erro na API products.setCompanyProductPrimaryImage:', error.response?.data || error);
+      console.error('Erro na API products.setCompanyProductPrimaryImage:');
       throw error;
     }
   },
@@ -407,7 +404,7 @@ export const productsService = {
     try {
       await api.post(`company/products/${productId}/images/reorder/`, { images: imageOrders });
     } catch (error: any) {
-      console.error('Erro na API products.reorderCompanyProductImages:', error.response?.data || error);
+      console.error('Erro na API products.reorderCompanyProductImages:');
       throw error;
     }
   },
@@ -430,7 +427,7 @@ export const productsService = {
       
       return related;
     } catch (error) {
-      console.error('Erro na API products.getRelatedProducts:', error);
+      console.error('Erro na API products.getRelatedProducts:');
       return [];
     }
   }

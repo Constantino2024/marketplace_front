@@ -52,7 +52,7 @@ export const paymentService = {
       
       return responseData;
     } catch (error: any) {
-      console.error('Erro no pagamento Express:', error);
+      console.error('Erro no pagamento Express:');
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };
     }
   },
@@ -66,7 +66,6 @@ export const paymentService = {
         order_id: orderId
       });
       
-      console.log('Resposta da API de referência:', response.data);
       
       // Extrair dados da estrutura correta
       const responseData = response.data;
@@ -81,8 +80,6 @@ export const paymentService = {
         const expiryDate = responseData.data.expiry_date || 
                           (responseData.data.dueDate) ||
                           responseData.data.due_date;
-        
-        console.log('Dados extraídos - Referência:', referenceNumber, 'Entidade:', entity, 'Expira:', expiryDate);
         
         return {
           success: true,
@@ -100,7 +97,7 @@ export const paymentService = {
       
       return responseData;
     } catch (error: any) {
-      console.error('Erro no pagamento por Referência:', error);
+      console.error('Erro no pagamento por Referência');
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };
     }
   },
@@ -137,7 +134,7 @@ export const paymentService = {
       
       return responseData;
     } catch (error: any) {
-      console.error('Erro no pagamento E-Kwanza:', error);
+      console.error('Erro no pagamento E-Kwanza:');
       return error.response?.data || { success: false, error: 'Erro ao processar pagamento' };
     }
   },
