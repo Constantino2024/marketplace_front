@@ -122,7 +122,6 @@ const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-xs">
               {[
                 { label: 'Todos os produtos', to: '/search' },
-                { label: 'Categorias', to: '/categories' },
                 { label: 'Ofertas do dia', to: '/search?q=ofertas' },
                 { label: 'Novidades', to: '/search?q=novo' },
                 { label: 'Meu carrinho', to: '/cart' },

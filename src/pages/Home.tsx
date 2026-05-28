@@ -192,7 +192,7 @@ const Hero = ({ banners }: { banners: Banner[] }) => {
 // ─── Trust Bar ────────────────────────────────────────────────────────────────
 const TrustBar = () => {
   const items = [
-    { icon: Truck, label: 'Entrega em todo Angola', sub: 'Rápida e segura' },
+    { icon: Truck, label: 'Entrega em toda Angola', sub: 'Rápida e segura' },
     { icon: Shield, label: 'Compra Protegida', sub: 'Pagamento seguro' },
     { icon: RefreshCcw, label: 'Troca Fácil', sub: 'Até 7 dias' },
     { icon: Headphones, label: 'Suporte 24h', sub: 'Sempre disponível' },

@@ -1,22 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { BrowserRouter, Routes, Route, Link, Outlet, useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout, isAuthenticated } from './services/auth';
-import { 
-  LogOut,
-  Search, 
-  User, 
-  UserIcon, 
-  ShoppingCart, 
-  ChevronDown, 
-  Menu,
-  Settings,
-  Store,
-  Facebook,
-  Twitter,
-  Instagram,
-  Loader2
-} from 'lucide-react';
+import React from 'react';
+import { BrowserRouter, Routes, Route} from 'react-router-dom';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -37,8 +21,6 @@ import AdminCustomers from './pages/admin/Customers';
 import { CartProvider, useCart } from './context/CartContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import SearchResults from './pages/SearchResults';
-import { useDebounce } from './hooks/useDebounce';
-import { searchService } from './services/search';
 import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
 import MyOrders from './pages/MyOrders';
