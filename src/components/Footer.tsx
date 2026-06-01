@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
               {config?.contact_email && (
                 <div className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-gray-600 flex-shrink-0" />
-                  <a href={`mailto:${config.contact_email}`} className="hover:text-white transition-colors">
+                  <a href={`mailto:${config.contact_email}`} target="_blank" className="hover:text-white transition-colors">
                     {config.contact_email}
                   </a>
                 </div>
